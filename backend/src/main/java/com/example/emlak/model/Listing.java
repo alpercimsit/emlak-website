@@ -1,0 +1,20 @@
+package com.example.emlak.model;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class Listing {
+    private Long id;
+    private String title;
+    private String description;
+    private Double price;
+    private Integer rooms;
+    private Double latitude;
+    private Double longitude;
+    private String imageUrl;
+}
+
