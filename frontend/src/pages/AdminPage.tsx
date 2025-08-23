@@ -5,6 +5,8 @@ import { Listing } from './ListingsPage';
 function AdminPage() {
   const [token, setToken] = useState('');
   const [feedback, setFeedback] = useState('');
+  const [feedbackType, setFeedbackType] = useState<'success' | 'error' | ''>('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [form, setForm] = useState<Partial<Listing>>({
     title: '',
     description: '',
@@ -21,53 +23,213 @@ function AdminPage() {
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!token.trim()) {
+      setFeedback('Admin token gerekli');
+      setFeedbackType('error');
+      return;
+    }
+
+    setIsSubmitting(true);
+    setFeedback('');
+
     try {
       await axios.post('/api/listings', form, { headers: { 'X-ADMIN-TOKEN': token } });
-      setFeedback('İlan başarıyla eklendi');
+      setFeedback('İlan başarıyla eklendi! ✅');
+      setFeedbackType('success');
+      // Reset form
+      setForm({
+        title: '',
+        description: '',
+        price: 0,
+        rooms: 0,
+        latitude: 0,
+        longitude: 0,
+        imageUrl: ''
+      });
     } catch (err) {
-      setFeedback('Hata: İlan eklenemedi (token?)');
+      setFeedback('Hata: İlan eklenemedi. Token geçerli mi? ❌');
+      setFeedbackType('error');
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
   return (
-    <div style={{ padding: '1rem' }}>
-      <h2>Admin - Yeni İlan Ekle</h2>
-      <form onSubmit={submit} style={{ maxWidth: 400 }}>
-        <div>
-          <label>Admin Token</label>
-          <input type="password" value={token} onChange={(e) => setToken(e.target.value)} />
+    <div className="container" style={{ paddingTop: 'var(--spacing-xl)', paddingBottom: 'var(--spacing-xl)' }}>
+      <div className="d-flex justify-center align-center mb-4">
+        <h1 className="text-center mb-4">
+          <i className="fas fa-cog" style={{ marginRight: 'var(--spacing-sm)', color: 'var(--primary-color)' }}></i>
+          Admin Panel
+        </h1>
+      </div>
+
+      <div className="card" style={{ maxWidth: '600px', margin: '0 auto' }}>
+        <div className="card-header">
+          <h3 style={{ margin: 0, color: 'var(--text-primary)' }}>
+            <i className="fas fa-plus-circle" style={{ marginRight: 'var(--spacing-sm)' }}></i>
+            Yeni İlan Ekle
+          </h3>
         </div>
-        <div>
-          <label>Başlık</label>
-          <input name="title" value={form.title} onChange={handleChange} />
+        <div className="card-body">
+          <form onSubmit={submit}>
+            <div className="form-group">
+              <label className="form-label">
+                <i className="fas fa-key" style={{ marginRight: 'var(--spacing-sm)' }}></i>
+                Admin Token
+              </label>
+              <input
+                type="password"
+                className="form-control"
+                placeholder="Admin token girin..."
+                value={token}
+                onChange={(e) => setToken(e.target.value)}
+                required
+              />
+            </div>
+
+            <div className="form-group">
+              <label className="form-label">
+                <i className="fas fa-heading" style={{ marginRight: 'var(--spacing-sm)' }}></i>
+                İlan Başlığı
+              </label>
+              <input
+                name="title"
+                className="form-control"
+                placeholder="Örn: 3+1 Daire Kadıköy'de"
+                value={form.title}
+                onChange={handleChange}
+                required
+              />
+            </div>
+
+            <div className="form-group">
+              <label className="form-label">
+                <i className="fas fa-align-left" style={{ marginRight: 'var(--spacing-sm)' }}></i>
+                Açıklama
+              </label>
+              <textarea
+                name="description"
+                className="form-control"
+                placeholder="İlan detaylarını yazın..."
+                value={form.description}
+                onChange={handleChange}
+                required
+              />
+            </div>
+
+            <div className="d-flex gap-3" style={{ flexWrap: 'wrap' }}>
+              <div className="form-group" style={{ flex: 1, minWidth: '200px' }}>
+                <label className="form-label">
+                  <i className="fas fa-lira-sign" style={{ marginRight: 'var(--spacing-sm)' }}></i>
+                  Fiyat (TL)
+                </label>
+                <input
+                  type="number"
+                  name="price"
+                  className="form-control"
+                  placeholder="150000"
+                  value={form.price}
+                  onChange={handleChange}
+                  min="0"
+                  required
+                />
+              </div>
+
+              <div className="form-group" style={{ flex: 1, minWidth: '150px' }}>
+                <label className="form-label">
+                  <i className="fas fa-bed" style={{ marginRight: 'var(--spacing-sm)' }}></i>
+                  Oda Sayısı
+                </label>
+                <input
+                  type="number"
+                  name="rooms"
+                  className="form-control"
+                  placeholder="3"
+                  value={form.rooms}
+                  onChange={handleChange}
+                  min="1"
+                  required
+                />
+              </div>
+            </div>
+
+            <div className="d-flex gap-3" style={{ flexWrap: 'wrap' }}>
+              <div className="form-group" style={{ flex: 1, minWidth: '200px' }}>
+                <label className="form-label">
+                  <i className="fas fa-map-marker-alt" style={{ marginRight: 'var(--spacing-sm)' }}></i>
+                  Enlem (Latitude)
+                </label>
+                <input
+                  type="number"
+                  step="any"
+                  name="latitude"
+                  className="form-control"
+                  placeholder="41.0082"
+                  value={form.latitude}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+
+              <div className="form-group" style={{ flex: 1, minWidth: '200px' }}>
+                <label className="form-label">
+                  <i className="fas fa-map-marker-alt" style={{ marginRight: 'var(--spacing-sm)' }}></i>
+                  Boylam (Longitude)
+                </label>
+                <input
+                  type="number"
+                  step="any"
+                  name="longitude"
+                  className="form-control"
+                  placeholder="28.9784"
+                  value={form.longitude}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+            </div>
+
+            <div className="form-group">
+              <label className="form-label">
+                <i className="fas fa-image" style={{ marginRight: 'var(--spacing-sm)' }}></i>
+                Resim URL (İsteğe bağlı)
+              </label>
+              <input
+                name="imageUrl"
+                className="form-control"
+                placeholder="https://example.com/image.jpg"
+                value={form.imageUrl}
+                onChange={handleChange}
+              />
+            </div>
+
+            <button
+              type="submit"
+              className="btn btn-primary btn-lg"
+              disabled={isSubmitting}
+              style={{ width: '100%' }}
+            >
+              {isSubmitting ? (
+                <>
+                  <div className="spinner" style={{ width: '16px', height: '16px', marginRight: 'var(--spacing-sm)' }}></div>
+                  Kaydediliyor...
+                </>
+              ) : (
+                <>
+                  <i className="fas fa-save" style={{ marginRight: 'var(--spacing-sm)' }}></i>
+                  İlanı Kaydet
+                </>
+              )}
+            </button>
+          </form>
+
+          {feedback && (
+            <div className={`mt-3 ${feedbackType === 'success' ? 'text-success' : 'text-error'}`}>
+              {feedback}
+            </div>
+          )}
         </div>
-        <div>
-          <label>Açıklama</label>
-          <textarea name="description" value={form.description} onChange={handleChange} />
-        </div>
-        <div>
-          <label>Fiyat</label>
-          <input type="number" name="price" value={form.price} onChange={handleChange} />
-        </div>
-        <div>
-          <label>Oda Sayısı</label>
-          <input type="number" name="rooms" value={form.rooms} onChange={handleChange} />
-        </div>
-        <div>
-          <label>Enlem (lat)</label>
-          <input type="number" step="any" name="latitude" value={form.latitude} onChange={handleChange} />
-        </div>
-        <div>
-          <label>Boylam (lon)</label>
-          <input type="number" step="any" name="longitude" value={form.longitude} onChange={handleChange} />
-        </div>
-        <div>
-          <label>Resim URL</label>
-          <input name="imageUrl" value={form.imageUrl} onChange={handleChange} />
-        </div>
-        <button type="submit">Kaydet</button>
-      </form>
-      {feedback && <p>{feedback}</p>}
+      </div>
     </div>
   );
 }

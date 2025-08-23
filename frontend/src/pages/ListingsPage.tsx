@@ -17,26 +17,53 @@ export interface Listing {
 function ListingsPage() {
   const [listings, setListings] = useState<Listing[]>([]);
   const [view, setView] = useState<'list' | 'map'>('list');
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    axios.get<Listing[]>('/api/listings').then((res) => setListings(res.data));
+    setLoading(true);
+    axios.get<Listing[]>('/api/listings')
+      .then((res) => setListings(res.data))
+      .catch((err) => console.error('İlanlar yüklenirken hata:', err))
+      .finally(() => setLoading(false));
   }, []);
 
   return (
-    <div style={{ padding: '1rem' }}>
-      <div style={{ marginBottom: '1rem' }}>
-        <button onClick={() => setView('list')} disabled={view === 'list'}>
+    <div className="container" style={{ paddingTop: 'var(--spacing-xl)', paddingBottom: 'var(--spacing-xl)' }}>
+      <div className="d-flex justify-center align-center mb-4">
+        <h1 className="text-center mb-4">
+          <i className="fas fa-home" style={{ marginRight: 'var(--spacing-sm)', color: 'var(--primary-color)' }}></i>
+          Emlak İlanları
+        </h1>
+      </div>
+
+      <div className="view-toggle">
+        <button
+          className={`toggle-btn ${view === 'list' ? 'active' : ''}`}
+          onClick={() => setView('list')}
+        >
+          <i className="fas fa-list"></i>
           Liste Görünümü
-        </button>{' '}
-        <button onClick={() => setView('map')} disabled={view === 'map'}>
+        </button>
+        <button
+          className={`toggle-btn ${view === 'map' ? 'active' : ''}`}
+          onClick={() => setView('map')}
+        >
+          <i className="fas fa-map-marked-alt"></i>
           Harita Görünümü
         </button>
       </div>
 
-      {view === 'list' ? (
+      {loading ? (
+        <div className="loading">
+          <div className="spinner"></div>
+          <span style={{ marginLeft: 'var(--spacing-sm)' }}>İlanlar yükleniyor...</span>
+        </div>
+      ) : view === 'list' ? (
         <ListingList listings={listings} />
       ) : (
-        <ListingMap listings={listings} />
+        <div className="map-container">
+          <ListingMap listings={listings} />
+        </div>
       )}
     </div>
   );

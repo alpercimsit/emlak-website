@@ -5,21 +5,43 @@ interface Props {
 }
 
 function ListingList({ listings }: Props) {
-  if (!listings.length) return <p>Henüz ilan yok.</p>;
+  if (!listings.length) {
+    return (
+      <div className="empty-state">
+        <i className="fas fa-home"></i>
+        <h3>Henüz İlan Yok</h3>
+        <p>Yakında yeni emlak ilanları eklenecektir.</p>
+      </div>
+    );
+  }
 
   return (
-    <ul style={{ listStyle: 'none', padding: 0 }}>
+    <div className="d-flex flex-column gap-3">
       {listings.map((l) => (
-        <li key={l.id} style={{ border: '1px solid #ddd', marginBottom: 8, padding: 8 }}>
-          <h3>{l.title}</h3>
-          <p>{l.description}</p>
-          <p>
-            <strong>Fiyat:</strong> {l.price.toLocaleString('tr-TR')} TL
-          </p>
-          {l.imageUrl && <img src={l.imageUrl} alt={l.title} style={{ maxWidth: '100%', height: 'auto' }} />}
-        </li>
+        <div key={l.id} className="card listing-card">
+          <div className="listing-content">
+            <div className="listing-title">{l.title}</div>
+            <div className="listing-description">{l.description}</div>
+            <div className="listing-price">
+              {l.price.toLocaleString('tr-TR')} TL
+            </div>
+            <div className="listing-meta">
+              <span>
+                <i className="fas fa-bed"></i>
+                {l.rooms} Oda
+              </span>
+              <span>
+                <i className="fas fa-map-marker-alt"></i>
+                {l.latitude.toFixed(4)}, {l.longitude.toFixed(4)}
+              </span>
+            </div>
+          </div>
+          {l.imageUrl && (
+            <img src={l.imageUrl} alt={l.title} className="listing-image" />
+          )}
+        </div>
       ))}
-    </ul>
+    </div>
   );
 }
 
