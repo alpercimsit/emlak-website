@@ -1,9 +1,9 @@
 import { useState } from 'react';
-import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+import axios from '../utils/api';
 import { Listing } from './ListingsPage';
 
-function AdminPage() {
-  const [token, setToken] = useState('');
+function AdminDashboard() {
   const [feedback, setFeedback] = useState('');
   const [feedbackType, setFeedbackType] = useState<'success' | 'error' | ''>('');
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -16,6 +16,7 @@ function AdminPage() {
     longitude: 0,
     imageUrl: ''
   });
+  const navigate = useNavigate();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -23,17 +24,12 @@ function AdminPage() {
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!token.trim()) {
-      setFeedback('Admin token gerekli');
-      setFeedbackType('error');
-      return;
-    }
 
     setIsSubmitting(true);
     setFeedback('');
 
     try {
-      await axios.post('/api/listings', form, { headers: { 'X-ADMIN-TOKEN': token } });
+      await axios.post('/api/listings', form);
       setFeedback('İlan başarıyla eklendi! ✅');
       setFeedbackType('success');
       // Reset form
@@ -46,21 +42,40 @@ function AdminPage() {
         longitude: 0,
         imageUrl: ''
       });
-    } catch (err) {
-      setFeedback('Hata: İlan eklenemedi. Token geçerli mi? ❌');
+    } catch (err: any) {
+      if (err.response?.status === 401 || err.response?.status === 403) {
+        // Token expired or invalid, redirect to login
+        localStorage.removeItem('adminToken');
+        navigate('/admin/login');
+        return;
+      }
+      setFeedback('Hata: İlan eklenemedi. ❌');
       setFeedbackType('error');
     } finally {
       setIsSubmitting(false);
     }
   };
 
+  const logout = () => {
+    localStorage.removeItem('adminToken');
+    navigate('/admin/login');
+  };
+
   return (
     <div className="container" style={{ paddingTop: 'var(--spacing-xl)', paddingBottom: 'var(--spacing-xl)' }}>
-      <div className="d-flex justify-center align-center mb-4">
+      <div className="d-flex justify-between align-center mb-4">
         <h1 className="text-center mb-4">
           <i className="fas fa-cog" style={{ marginRight: 'var(--spacing-sm)', color: 'var(--primary-color)' }}></i>
           Admin Panel
         </h1>
+        <button
+          onClick={logout}
+          className="btn btn-secondary"
+          style={{ marginTop: '0' }}
+        >
+          <i className="fas fa-sign-out-alt" style={{ marginRight: 'var(--spacing-sm)' }}></i>
+          Çıkış Yap
+        </button>
       </div>
 
       <div className="card" style={{ maxWidth: '600px', margin: '0 auto' }}>
@@ -72,21 +87,6 @@ function AdminPage() {
         </div>
         <div className="card-body">
           <form onSubmit={submit}>
-            <div className="form-group">
-              <label className="form-label">
-                <i className="fas fa-key" style={{ marginRight: 'var(--spacing-sm)' }}></i>
-                Admin Token
-              </label>
-              <input
-                type="password"
-                className="form-control"
-                placeholder="Admin token girin..."
-                value={token}
-                onChange={(e) => setToken(e.target.value)}
-                required
-              />
-            </div>
-
             <div className="form-group">
               <label className="form-label">
                 <i className="fas fa-heading" style={{ marginRight: 'var(--spacing-sm)' }}></i>
@@ -234,5 +234,4 @@ function AdminPage() {
   );
 }
 
-export default AdminPage;
-
+export default AdminDashboard;

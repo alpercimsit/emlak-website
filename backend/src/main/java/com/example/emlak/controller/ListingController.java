@@ -1,5 +1,6 @@
 package com.example.emlak.controller;
 
+import com.example.emlak.config.JwtUtil;
 import com.example.emlak.model.Listing;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -17,12 +18,28 @@ import java.util.stream.Stream;
 public class ListingController {
 
     private final List<Listing> listings = new CopyOnWriteArrayList<>();
-    private final String adminToken;
+    private final JwtUtil jwtUtil;
 
-    public ListingController(@Value("${admin.token:changeme}") String adminToken) {
-        this.adminToken = adminToken;
+    @Value("${admin.username:admin}")
+    private String adminUsername;
+
+    public ListingController(JwtUtil jwtUtil) {
+        this.jwtUtil = jwtUtil;
         // Example seed data
         listings.add(new Listing(1L, "Örnek Daire", "Merkezi konumda 2+1", 1500000.0, 2, 41.015137, 28.979530, "https://picsum.photos/400"));
+    }
+
+    private boolean isValidAdminToken(String authHeader) {
+        try {
+            if (authHeader != null && authHeader.startsWith("Bearer ")) {
+                String token = authHeader.substring(7);
+                String username = jwtUtil.extractUsername(token);
+                return jwtUtil.isTokenValid(token) && adminUsername.equals(username);
+            }
+        } catch (Exception e) {
+            // Token is invalid
+        }
+        return false;
     }
 
     @GetMapping
@@ -45,8 +62,8 @@ public class ListingController {
 
     @PostMapping
     public ResponseEntity<Listing> addListing(@RequestBody Listing listing,
-                                              @RequestHeader("X-ADMIN-TOKEN") String token) {
-        if (!Objects.equals(token, adminToken)) {
+                                              @RequestHeader("Authorization") String authHeader) {
+        if (!isValidAdminToken(authHeader)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
         long nextId = listings.stream().mapToLong(Listing::getId).max().orElse(0L) + 1;
@@ -57,8 +74,8 @@ public class ListingController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteListing(@PathVariable Long id,
-                                              @RequestHeader("X-ADMIN-TOKEN") String token) {
-        if (!Objects.equals(token, adminToken)) {
+                                              @RequestHeader("Authorization") String authHeader) {
+        if (!isValidAdminToken(authHeader)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
         boolean removed = listings.removeIf(l -> Objects.equals(l.getId(), id));

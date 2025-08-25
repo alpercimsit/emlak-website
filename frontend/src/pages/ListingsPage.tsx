@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import axios from 'axios';
+import axios from '../utils/api';
 import ListingList from '../components/ListingList';
 import ListingMap from '../components/ListingMap';
 
@@ -42,6 +42,7 @@ function ListingsPage() {
           onClick={() => setView('list')}
         >
           <i className="fas fa-list"></i>
+          &nbsp;
           Liste Görünümü
         </button>
         <button
@@ -49,6 +50,7 @@ function ListingsPage() {
           onClick={() => setView('map')}
         >
           <i className="fas fa-map-marked-alt"></i>
+          &nbsp;
           Harita Görünümü
         </button>
       </div>

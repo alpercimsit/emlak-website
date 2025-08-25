@@ -1,8 +1,10 @@
 import React from 'react';
-import { Routes, Route, Link } from 'react-router-dom';
+import { Routes, Route, Link, Navigate } from 'react-router-dom';
 import ListingsPage from './pages/ListingsPage';
 import ContactPage from './pages/ContactPage';
-import AdminPage from './pages/AdminPage';
+import AdminLoginPage from './pages/AdminLoginPage';
+import AdminDashboard from './pages/AdminDashboard';
+import ProtectedRoute from './components/ProtectedRoute';
 
 function App() {
   return (
@@ -12,27 +14,24 @@ function App() {
           <div className="navbar-container">
             <Link to="/" className="navbar-brand">
               <i className="fas fa-home"></i>
-              Emlak Dükkanım
+              Öz Kafkas Emlak
             </Link>
             <ul className="navbar-nav">
               <li>
                 <Link to="/" className="nav-link">
                   <i className="fas fa-list"></i>
+                  &nbsp;
                   İlanlar
                 </Link>
               </li>
               <li>
                 <Link to="/iletisim" className="nav-link">
                   <i className="fas fa-phone"></i>
+                  &nbsp;
                   İletişim
                 </Link>
               </li>
-              <li>
-                <Link to="/admin" className="nav-link">
-                  <i className="fas fa-cog"></i>
-                  Admin
-                </Link>
-              </li>
+
             </ul>
           </div>
         </div>
@@ -41,7 +40,17 @@ function App() {
         <Routes>
           <Route path="/" element={<ListingsPage />} />
           <Route path="/iletisim" element={<ContactPage />} />
-          <Route path="/admin" element={<AdminPage />} />
+          <Route path="/admin/login" element={<AdminLoginPage />} />
+          <Route
+            path="/admin/dashboard"
+            element={
+              <ProtectedRoute>
+                <AdminDashboard />
+              </ProtectedRoute>
+            }
+          />
+          {/* Redirect /admin to /admin/login */}
+          <Route path="/admin" element={<Navigate to="/admin/login" replace />} />
         </Routes>
       </main>
     </div>
