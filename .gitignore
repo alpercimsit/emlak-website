@@ -16,3 +16,4 @@ backend/target/
 npm-debug.log*
 
 
+backend\src\main\resources\application.properties 
