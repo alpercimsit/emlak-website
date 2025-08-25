@@ -11,7 +11,7 @@ function ContactPage() {
       <div className="card" style={{ maxWidth: '600px', margin: '0 auto' }}>
         <div className="card-body text-center">
           <div style={{ fontSize: '4rem', color: 'var(--primary-color)', marginBottom: 'var(--spacing-lg)' }}>
-            <i className="fas fa-map-marked-alt"></i>
+            <i className="fas fa-building"></i>
           </div>
 
           <h3 style={{ marginBottom: 'var(--spacing-lg)', color: 'var(--text-primary)' }}>

@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import axios from '../utils/api';
 import ListingList from '../components/ListingList';
-import ListingMap from '../components/ListingMap';
 
 export interface Listing {
   ilanNo: number;              // ilan_no int8 primary key
@@ -35,7 +34,6 @@ export interface Listing {
 
 function ListingsPage() {
   const [listings, setListings] = useState<Listing[]>([]);
-  const [view, setView] = useState<'list' | 'map'>('list');
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -55,36 +53,13 @@ function ListingsPage() {
         </h1>
       </div>
 
-      <div className="view-toggle">
-        <button
-          className={`toggle-btn ${view === 'list' ? 'active' : ''}`}
-          onClick={() => setView('list')}
-        >
-          <i className="fas fa-list"></i>
-          &nbsp;
-          Liste Görünümü
-        </button>
-        <button
-          className={`toggle-btn ${view === 'map' ? 'active' : ''}`}
-          onClick={() => setView('map')}
-        >
-          <i className="fas fa-map-marked-alt"></i>
-          &nbsp;
-          Harita Görünümü
-        </button>
-      </div>
-
       {loading ? (
         <div className="loading">
           <div className="spinner"></div>
           <span style={{ marginLeft: 'var(--spacing-sm)' }}>İlanlar yükleniyor...</span>
         </div>
-      ) : view === 'list' ? (
-        <ListingList listings={listings} />
       ) : (
-        <div className="map-container">
-          <ListingMap listings={listings} />
-        </div>
+        <ListingList listings={listings} />
       )}
     </div>
   );
