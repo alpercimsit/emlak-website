@@ -22,23 +22,25 @@ interface Props {
 }
 
 function ListingMap({ listings }: Props) {
-  const center: [number, number] = listings.length
-    ? [listings[0].latitude, listings[0].longitude]
-    : [41.015137, 28.97953]; // Istanbul default
-
+  // Geçici olarak harita devre dışı - koordinat bilgisi henüz backend'de yok
   return (
-    <MapContainer center={center} zoom={13} style={{ height: '70vh', width: '100%' }}>
-      <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-      {listings.map((l) => (
-        <Marker key={l.id} position={[l.latitude, l.longitude]}>
-          <Popup>
-            <strong>{l.title}</strong>
-            <br />
-            {l.price.toLocaleString('tr-TR')} TL
-          </Popup>
-        </Marker>
-      ))}
-    </MapContainer>
+    <div style={{ 
+      height: '70vh', 
+      width: '100%', 
+      display: 'flex', 
+      alignItems: 'center', 
+      justifyContent: 'center',
+      backgroundColor: '#f8f9fa',
+      border: '1px solid #dee2e6',
+      borderRadius: '8px'
+    }}>
+      <div style={{ textAlign: 'center', color: '#6c757d' }}>
+        <i className="fas fa-map-marked-alt" style={{ fontSize: '48px', marginBottom: '16px' }}></i>
+        <h3>Harita Görünümü Geliştiriliyor</h3>
+        <p>Koordinat sistemi güncellendikten sonra harita aktif olacak.</p>
+        <p>Şu anda {listings.length} ilan listeleniyor.</p>
+      </div>
+    </div>
   );
 }
 

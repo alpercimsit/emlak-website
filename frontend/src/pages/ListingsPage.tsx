@@ -4,14 +4,33 @@ import ListingList from '../components/ListingList';
 import ListingMap from '../components/ListingMap';
 
 export interface Listing {
-  id: number;
-  title: string;
-  description: string;
-  price: number;
-  rooms: number;
-  latitude: number;
-  longitude: number;
-  imageUrl: string;
+  ilanNo: number;              // ilan_no int8 primary key
+  ilanTarihi: string;          // ilan_tarihi timestamp
+  baslik: string;              // baslik text
+  emlakTipi: string;           // emlak_tipi text
+  fiyat: number;               // fiyat int8
+  detay: string;               // detay text
+  m2: number;                  // m2 int8
+  il: string;                  // il text
+  ilce: string;                // ilce text
+  mahalle: string;             // mahalle text
+  sahibindenNo: number;        // sahibinden_no int8
+  sahibiAd: string;            // sahibi_ad text
+  sahibiTel: string;           // sahibi_tel text
+  sahibindenTarih: string;     // sahibinden_tarih date
+  ada: number;                 // ada int8
+  parsel: number;              // parsel int8
+  odaSayisi: string;           // oda_sayisi text
+  binaYasi: string;            // bina_yasi text
+  bulunduguKat: number;        // bulundugu_kat int8
+  katSayisi: number;           // kat_sayisi int8
+  isitma: string;              // isitma text
+  banyoSayisi: number;         // banyo_sayisi int8
+  balkon: boolean;             // balkon bool
+  asansor: boolean;            // asansor bool
+  esyali: boolean;             // esyali bool
+  aidat: number;               // aidat int8
+  fotolar: string;             // fotolar text
 }
 
 function ListingsPage() {
