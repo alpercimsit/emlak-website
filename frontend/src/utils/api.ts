@@ -41,7 +41,7 @@ export const api = {
     if (isAdmin) {
       // Admin can see all listing details including owner info
       const { data, error } = await supabase
-        .from('listings')
+        .from('ilan')
         .select('*')
         .order('ilan_tarihi', { ascending: false });
       
@@ -50,7 +50,7 @@ export const api = {
     } else {
       // Regular users see limited info (no owner details)
       const { data, error } = await supabase
-        .from('listings')
+        .from('ilan')
         .select(`
           ilan_no,
           ilan_tarihi,
@@ -93,7 +93,7 @@ export const api = {
     }
 
     const { data, error } = await supabase
-      .from('listings')
+      .from('ilan')
       .insert([{
         ...listing,
         ilan_tarihi: new Date().toISOString()
@@ -112,7 +112,7 @@ export const api = {
     }
 
     const { error } = await supabase
-      .from('listings')
+      .from('ilan')
       .delete()
       .eq('ilan_no', id);
     
