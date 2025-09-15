@@ -3,28 +3,28 @@ import api from '../utils/api';
 import ListingList from '../components/ListingList';
 
 export interface Listing {
-  ilanNo: number;              // ilan_no int8 primary key
-  ilanTarihi: string;          // ilan_tarihi timestamp
+  ilan_no: number;              // ilan_no int8 primary key
+  ilan_tarihi: string;          // ilan_tarihi timestamp
   baslik: string;              // baslik text
-  emlakTipi: string;           // emlak_tipi text
+  emlak_tipi: string;           // emlak_tipi text
   fiyat: number;               // fiyat int8
   detay: string;               // detay text
   m2: number;                  // m2 int8
   il: string;                  // il text
   ilce: string;                // ilce text
   mahalle: string;             // mahalle text
-  sahibindenNo: number;        // sahibinden_no int8
-  sahibiAd: string;            // sahibi_ad text
-  sahibiTel: string;           // sahibi_tel text
-  sahibindenTarih: string;     // sahibinden_tarih date
+  sahibinden_no: number;        // sahibinden_no int8
+  sahibi_ad?: string;          // sahibi_ad text (optional for non-admin users)
+  sahibi_tel?: string;         // sahibi_tel text (optional for non-admin users)
+  sahibinden_tarih: string;     // sahibinden_tarih date
   ada: number;                 // ada int8
   parsel: number;              // parsel int8
-  odaSayisi: string;           // oda_sayisi text
-  binaYasi: string;            // bina_yasi text
-  bulunduguKat: number;        // bulundugu_kat int8
-  katSayisi: number;           // kat_sayisi int8
-  isitma: string;              // isitma text
-  banyoSayisi: number;         // banyo_sayisi int8
+  oda_sayisi: string;           // oda_sayisi text
+  bina_yasi: string;            // bina_yasi text
+  bulundugu_kat: number;        // bulundugu_kat int8
+  kat_sayisi: number;           // kat_sayisi int8
+  isitma: string;              // isitma text (note: table has 'isitma')
+  banyo_sayisi: number;         // banyo_sayisi int8
   balkon: boolean;             // balkon bool
   asansor: boolean;            // asansor bool
   esyali: boolean;             // esyali bool

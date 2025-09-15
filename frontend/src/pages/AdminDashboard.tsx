@@ -10,20 +10,20 @@ function AdminDashboard() {
   const [form, setForm] = useState<Partial<Listing>>({
     baslik: '',
     detay: '',
-    emlakTipi: 'Daire',
+    emlak_tipi: 'Daire',
     fiyat: 0,
     m2: 0,
     il: '',
     ilce: '',
     mahalle: '',
-    sahibiAd: '',
-    sahibiTel: '',
-    odaSayisi: '2+1',
-    binaYasi: '0-5 yıl',
-    bulunduguKat: 1,
-    katSayisi: 5,
-    isitma: 'Kombi',
-    banyoSayisi: 1,
+    sahibi_ad: '',
+    sahibi_tel: '',
+    oda_sayisi: '2+1',
+    bina_yasi: '0-5 yıl',
+    bulundugu_kat: 1,
+    kat_sayisi: 5,
+    isitma: 'Kombi', // Will be mapped to 'isitma' in database
+    banyo_sayisi: 1,
     balkon: false,
     asansor: false,
     esyali: false,
@@ -58,20 +58,20 @@ function AdminDashboard() {
       setForm({
         baslik: '',
         detay: '',
-        emlakTipi: 'Arsa',
+        emlak_tipi: 'Arsa',
         fiyat: 0,
         m2: 0,
         il: '',
         ilce: '',
         mahalle: '',
-        sahibiAd: '',
-        sahibiTel: '',
-        odaSayisi: '2+1',
-        binaYasi: '0-5 yıl',
-        bulunduguKat: 1,
-        katSayisi: 5,
-        isitma: 'Kombi',
-        banyoSayisi: 1,
+        sahibi_ad: '',
+        sahibi_tel: '',
+        oda_sayisi: '2+1',
+        bina_yasi: '0-5 yıl',
+        bulundugu_kat: 1,
+        kat_sayisi: 5,
+        isitma: 'Kombi', // Will be mapped to 'isitma' in database
+        banyo_sayisi: 1,
         balkon: false,
         asansor: false,
         esyali: false,
@@ -79,13 +79,14 @@ function AdminDashboard() {
         fotolar: ''
       });
     } catch (err: any) {
+      console.error('Error adding listing:', err);
       if (err.message === 'Unauthorized') {
         // Token expired or invalid, redirect to login
         localStorage.removeItem('adminToken');
         navigate('/admin/login');
         return;
       }
-      setFeedback('Hata: İlan eklenemedi. ❌');
+      setFeedback(`Hata: İlan eklenemedi. ${err.message || err.details || 'Bilinmeyen hata'} ❌`);
       setFeedbackType('error');
     } finally {
       setIsSubmitting(false);
@@ -164,7 +165,7 @@ function AdminDashboard() {
                 <select
                   name="emlakTipi"
                   className="form-control"
-                  value={form.emlakTipi}
+                  value={form.emlak_tipi}
                   onChange={handleChange}
                   required
                 >
@@ -268,7 +269,7 @@ function AdminDashboard() {
                   name="sahibiAd"
                   className="form-control"
                   placeholder="Ahmet Yılmaz"
-                  value={form.sahibiAd}
+                  value={form.sahibi_ad}
                   onChange={handleChange}
                   required
                 />
@@ -283,7 +284,7 @@ function AdminDashboard() {
                   name="sahibiTel"
                   className="form-control"
                   placeholder="0532 123 45 67"
-                  value={form.sahibiTel}
+                  value={form.sahibi_tel}
                   onChange={handleChange}
                   required
                 />
@@ -300,7 +301,7 @@ function AdminDashboard() {
                 <select
                   name="odaSayisi"
                   className="form-control"
-                  value={form.odaSayisi}
+                  value={form.oda_sayisi}
                   onChange={handleChange}
                   required
                 >
@@ -322,7 +323,7 @@ function AdminDashboard() {
                 <select
                   name="binaYasi"
                   className="form-control"
-                  value={form.binaYasi}
+                  value={form.bina_yasi}
                   onChange={handleChange}
                   required
                 >
@@ -344,7 +345,7 @@ function AdminDashboard() {
                   name="bulunduguKat"
                   className="form-control"
                   placeholder="3"
-                  value={form.bulunduguKat}
+                  value={form.bulundugu_kat}
                   onChange={handleChange}
                   min="0"
                   required
@@ -361,7 +362,7 @@ function AdminDashboard() {
                   name="katSayisi"
                   className="form-control"
                   placeholder="7"
-                  value={form.katSayisi}
+                  value={form.kat_sayisi}
                   onChange={handleChange}
                   min="1"
                   required
@@ -401,7 +402,7 @@ function AdminDashboard() {
                   name="banyoSayisi"
                   className="form-control"
                   placeholder="1"
-                  value={form.banyoSayisi}
+                  value={form.banyo_sayisi}
                   onChange={handleChange}
                   min="1"
                   required

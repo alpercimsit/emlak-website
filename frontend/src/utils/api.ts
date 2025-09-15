@@ -92,15 +92,49 @@ export const api = {
       throw new Error('Unauthorized');
     }
 
+    // Convert camelCase to snake_case for Supabase
+    const listingData = {
+      ilan_tarihi: new Date().toISOString(),
+      baslik: listing.baslik,
+      emlak_tipi: listing.emlakTipi,
+      fiyat: listing.fiyat,
+      detay: listing.detay,
+      m2: listing.m2,
+      il: listing.il,
+      ilce: listing.ilce,
+      mahalle: listing.mahalle,
+      sahibinden_no: listing.sahibindenNo,
+      sahibi_ad: listing.sahibiAd,
+      sahibi_tel: listing.sahibiTel,
+      sahibinden_tarih: listing.sahibindenTarih,
+      ada: listing.ada,
+      parsel: listing.parsel,
+      oda_sayisi: listing.odaSayisi,
+      bina_yasi: listing.binaYasi,
+      bulundugu_kat: listing.bulunduguKat,
+      kat_sayisi: listing.katSayisi,
+      isitma: listing.isitma, // Note: table has 'isitma' but form has 'isitma'
+      banyo_sayisi: listing.banyoSayisi,
+      balkon: listing.balkon,
+      asansor: listing.asansor,
+      esyali: listing.esyali,
+      aidat: listing.aidat,
+      fotolar: listing.fotolar
+    };
+
+    console.log('Inserting listing data:', listingData);
+
     const { data, error } = await supabase
       .from('ilan')
-      .insert([{
-        ...listing,
-        ilan_tarihi: new Date().toISOString()
-      }])
+      .insert([listingData])
       .select();
     
-    if (error) throw error;
+    if (error) {
+      console.error('Supabase error:', error);
+      throw error;
+    }
+    
+    console.log('Successfully inserted:', data);
     return data[0];
   },
 
