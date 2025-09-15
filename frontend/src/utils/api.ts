@@ -48,7 +48,7 @@ export const api = {
       if (error) throw error;
       return data;
     } else {
-      // Regular users see limited info (no owner details)
+      // Regular users see limited info (no owner details) and only non-hidden listings
       const { data, error } = await supabase
         .from('ilan')
         .select(`
@@ -76,8 +76,10 @@ export const api = {
           asansor,
           esyali,
           aidat,
-          fotolar
+          fotolar,
+          gizli
         `)
+        .eq('gizli', false) // Only show non-hidden listings to regular users
         .order('ilan_tarihi', { ascending: false });
       
       if (error) throw error;
@@ -92,34 +94,35 @@ export const api = {
       throw new Error('Unauthorized');
     }
 
-    // Convert camelCase to snake_case for Supabase
+    // Convert form data to database format
     const listingData = {
       ilan_tarihi: new Date().toISOString(),
       baslik: listing.baslik,
-      emlak_tipi: listing.emlakTipi,
+      emlak_tipi: listing.emlak_tipi,
       fiyat: listing.fiyat,
       detay: listing.detay,
       m2: listing.m2,
       il: listing.il,
       ilce: listing.ilce,
       mahalle: listing.mahalle,
-      sahibinden_no: listing.sahibindenNo,
-      sahibi_ad: listing.sahibiAd,
-      sahibi_tel: listing.sahibiTel,
-      sahibinden_tarih: listing.sahibindenTarih,
+      sahibinden_no: listing.sahibinden_no,
+      sahibi_ad: listing.sahibi_ad,
+      sahibi_tel: listing.sahibi_tel,
+      sahibinden_tarih: listing.sahibinden_tarih,
       ada: listing.ada,
       parsel: listing.parsel,
-      oda_sayisi: listing.odaSayisi,
-      bina_yasi: listing.binaYasi,
-      bulundugu_kat: listing.bulunduguKat,
-      kat_sayisi: listing.katSayisi,
-      isitma: listing.isitma, // Note: table has 'isitma' but form has 'isitma'
-      banyo_sayisi: listing.banyoSayisi,
+      oda_sayisi: listing.oda_sayisi,
+      bina_yasi: listing.bina_yasi,
+      bulundugu_kat: listing.bulundugu_kat,
+      kat_sayisi: listing.kat_sayisi,
+      isitma: listing.isitma,
+      banyo_sayisi: listing.banyo_sayisi,
       balkon: listing.balkon,
       asansor: listing.asansor,
       esyali: listing.esyali,
       aidat: listing.aidat,
-      fotolar: listing.fotolar
+      fotolar: listing.fotolar,
+      gizli: listing.gizli || false // Default to false (not hidden)
     };
 
     console.log('Inserting listing data:', listingData);
@@ -135,6 +138,27 @@ export const api = {
     }
     
     console.log('Successfully inserted:', data);
+    return data[0];
+  },
+
+  async updateListing(id: number, updates: any) {
+    // Check if user is admin
+    const token = localStorage.getItem('adminToken');
+    if (!token || !token.startsWith('admin-token-')) {
+      throw new Error('Unauthorized');
+    }
+
+    const { data, error } = await supabase
+      .from('ilan')
+      .update(updates)
+      .eq('ilan_no', id)
+      .select();
+    
+    if (error) {
+      console.error('Supabase error:', error);
+      throw error;
+    }
+    
     return data[0];
   },
 

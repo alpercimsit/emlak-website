@@ -23,13 +23,14 @@ export interface Listing {
   bina_yasi: string;            // bina_yasi text
   bulundugu_kat: number;        // bulundugu_kat int8
   kat_sayisi: number;           // kat_sayisi int8
-  isitma: string;              // isitma text (note: table has 'isitma')
+  isitma: string;              // isitma text
   banyo_sayisi: number;         // banyo_sayisi int8
   balkon: boolean;             // balkon bool
   asansor: boolean;            // asansor bool
   esyali: boolean;             // esyali bool
   aidat: number;               // aidat int8
   fotolar: string;             // fotolar text
+  gizli: boolean;              // gizli bool - admin can hide listings
 }
 
 function ListingsPage() {

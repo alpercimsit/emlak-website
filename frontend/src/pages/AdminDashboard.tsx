@@ -24,11 +24,12 @@ function AdminDashboard() {
     kat_sayisi: 5,
     isitma: 'Kombi', // Will be mapped to 'isitma' in database
     banyo_sayisi: 1,
-    balkon: false,
-    asansor: false,
-    esyali: false,
-    aidat: 0,
-    fotolar: ''
+      balkon: false,
+      asansor: false,
+      esyali: false,
+      aidat: 0,
+      fotolar: '',
+      gizli: false
   });
   const navigate = useNavigate();
 
@@ -72,11 +73,12 @@ function AdminDashboard() {
         kat_sayisi: 5,
         isitma: 'Kombi', // Will be mapped to 'isitma' in database
         banyo_sayisi: 1,
-        balkon: false,
-        asansor: false,
-        esyali: false,
-        aidat: 0,
-        fotolar: ''
+      balkon: false,
+      asansor: false,
+      esyali: false,
+      aidat: 0,
+      fotolar: '',
+      gizli: false
       });
     } catch (err: any) {
       console.error('Error adding listing:', err);
@@ -469,6 +471,21 @@ function AdminDashboard() {
                   Eşyalı
                 </label>
               </div>
+            </div>
+
+            {/* Admin Seçenekleri */}
+            <div className="form-group">
+              <label className="form-label">
+                <input
+                  type="checkbox"
+                  name="gizli"
+                  checked={form.gizli}
+                  onChange={handleChange}
+                  style={{ marginRight: 'var(--spacing-sm)' }}
+                />
+                <i className="fas fa-eye-slash" style={{ marginRight: 'var(--spacing-sm)' }}></i>
+                İlanı Gizle (Sadece admin görebilir)
+              </label>
             </div>
 
             {/* Fotoğraflar */}
