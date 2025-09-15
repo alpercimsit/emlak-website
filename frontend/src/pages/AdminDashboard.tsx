@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from '../utils/api';
+import api from '../utils/api';
 import { Listing } from './ListingsPage';
 
 function AdminDashboard() {
@@ -51,14 +51,14 @@ function AdminDashboard() {
     setFeedback('');
 
     try {
-      await axios.post('/api/listings', form);
+      await api.addListing(form);
       setFeedback('İlan başarıyla eklendi! ✅');
       setFeedbackType('success');
       // Reset form
       setForm({
         baslik: '',
         detay: '',
-        emlakTipi: 'Daire',
+        emlakTipi: 'Arsa',
         fiyat: 0,
         m2: 0,
         il: '',
@@ -79,7 +79,7 @@ function AdminDashboard() {
         fotolar: ''
       });
     } catch (err: any) {
-      if (err.response?.status === 401 || err.response?.status === 403) {
+      if (err.message === 'Unauthorized') {
         // Token expired or invalid, redirect to login
         localStorage.removeItem('adminToken');
         navigate('/admin/login');
@@ -168,12 +168,9 @@ function AdminDashboard() {
                   onChange={handleChange}
                   required
                 >
-                  <option value="Daire">Daire</option>
-                  <option value="Villa">Villa</option>
-                  <option value="Müstakil Ev">Müstakil Ev</option>
-                  <option value="Dublex">Dublex</option>
-                  <option value="İş Yeri">İş Yeri</option>
                   <option value="Arsa">Arsa</option>
+                  <option value="kiralikDaire">Kiralık Daire</option>
+                  <option value="satilikDaire">Satılık Daire</option>
                 </select>
               </div>
 

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from '../utils/api';
+import api from '../utils/api';
 
 function AdminLoginPage() {
   const [credentials, setCredentials] = useState({
@@ -28,11 +28,7 @@ function AdminLoginPage() {
     setFeedback('');
 
     try {
-      const response = await axios.post('/api/auth/login', credentials);
-      const { token } = response.data;
-
-      // Store token in localStorage
-      localStorage.setItem('adminToken', token);
+      const result = await api.login(credentials.username, credentials.password);
 
       setFeedback('Giriş başarılı! Yönlendiriliyorsunuz...');
       setFeedbackType('success');

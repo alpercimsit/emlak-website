@@ -1,6 +1,6 @@
 import { Navigate } from 'react-router-dom';
 import { ReactNode, useEffect, useState } from 'react';
-import axios from '../utils/api';
+import api from '../utils/api';
 
 interface ProtectedRouteProps {
   children: ReactNode;
@@ -16,20 +16,16 @@ function ProtectedRoute({ children }: ProtectedRouteProps) {
       return;
     }
 
-    // Verify token with backend
-    axios.post('/api/auth/verify', {}, {
-      headers: { Authorization: `Bearer ${token}` }
-    })
+    // Verify token with our API
+    api.verifyToken()
     .then(response => {
-      if (response.data.valid) {
+      if (response.valid) {
         setIsAuthenticated(true);
       } else {
-        localStorage.removeItem('adminToken');
         setIsAuthenticated(false);
       }
     })
     .catch(() => {
-      localStorage.removeItem('adminToken');
       setIsAuthenticated(false);
     });
   }, [token]);

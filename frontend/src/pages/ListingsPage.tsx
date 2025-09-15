@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import axios from '../utils/api';
+import api from '../utils/api';
 import ListingList from '../components/ListingList';
 
 export interface Listing {
@@ -38,8 +38,8 @@ function ListingsPage() {
 
   useEffect(() => {
     setLoading(true);
-    axios.get<Listing[]>('/api/listings')
-      .then((res) => setListings(res.data))
+    api.getListings()
+      .then((data) => setListings(data))
       .catch((err) => console.error('İlanlar yüklenirken hata:', err))
       .finally(() => setLoading(false));
   }, []);
