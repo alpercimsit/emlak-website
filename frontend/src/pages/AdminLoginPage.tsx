@@ -33,9 +33,9 @@ function AdminLoginPage() {
       setFeedback('Giriş başarılı! Yönlendiriliyorsunuz...');
       setFeedbackType('success');
 
-      // Redirect to admin dashboard after a short delay
+      // Redirect to main page (listings) in admin mode after a short delay
       setTimeout(() => {
-        window.location.href = '/admin/dashboard';
+        window.location.href = '/';
       }, 1000);
 
     } catch (err) {
