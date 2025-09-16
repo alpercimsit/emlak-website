@@ -100,12 +100,12 @@ function ListingsPage() {
         if (listing.emlak_tipi !== 'Arsa') return false;
       } else if (filters.category === 'konut') {
         if (filters.subCategory === 'satilik') {
-          if (!['satilikDaire', 'Daire'].includes(listing.emlak_tipi)) return false;
+          if (listing.emlak_tipi !== 'satilikDaire') return false;
         } else if (filters.subCategory === 'kiralik') {
           if (listing.emlak_tipi !== 'kiralikDaire') return false;
         } else {
           // 'all' - hem satılık hem kiralık
-          if (!['satilikDaire', 'kiralikDaire', 'Daire'].includes(listing.emlak_tipi)) return false;
+          if (!['satilikDaire', 'kiralikDaire'].includes(listing.emlak_tipi)) return false;
         }
       }
 

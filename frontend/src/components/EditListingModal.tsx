@@ -183,7 +183,6 @@ function EditListingModal({ listing, isOpen, onClose, onUpdate }: Props) {
                   required
                 >
                   <option value="Arsa">Arsa</option>
-                  <option value="Daire">Daire</option>
                   <option value="kiralikDaire">Kiralık Daire</option>
                   <option value="satilikDaire">Satılık Daire</option>
                 </select>

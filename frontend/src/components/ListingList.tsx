@@ -13,6 +13,22 @@ function ListingList({ listings, isAdmin = false, onUpdate }: Props) {
   const [deletingId, setDeletingId] = useState<number | null>(null);
   const [editingListing, setEditingListing] = useState<Listing | null>(null);
 
+  // Emlak tipi görüntüleme için helper fonksiyon
+  const formatEmlakTipi = (emlakTipi: string) => {
+    switch (emlakTipi) {
+      case 'kiralikDaire':
+        return 'Kiralık Daire';
+      case 'satilikDaire':
+        return 'Satılık Daire';
+      case 'Arsa':
+        return 'Arsa';
+      case 'Daire':
+        return 'Daire';
+      default:
+        return emlakTipi;
+    }
+  };
+
   const handleDelete = async (listingId: number) => {
     if (!confirm('Bu ilanı silmek istediğinize emin misiniz?')) {
       return;
@@ -89,7 +105,7 @@ function ListingList({ listings, isAdmin = false, onUpdate }: Props) {
               </span>
               <span>
                 <i className="fas fa-home"></i>
-                {l.emlak_tipi}
+                {formatEmlakTipi(l.emlak_tipi)}
               </span>
             </div>
             {(isAdmin || (l.sahibi_ad && l.sahibi_tel)) && (
