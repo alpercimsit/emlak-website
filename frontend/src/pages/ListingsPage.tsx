@@ -1,7 +1,8 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../utils/api';
 import ListingList from '../components/ListingList';
+import FilterPanel, { FilterState } from '../components/FilterPanel';
 
 export interface Listing {
   ilan_no: number;              // ilan_no int8 primary key
@@ -39,6 +40,24 @@ function ListingsPage() {
   const [loading, setLoading] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
   const navigate = useNavigate();
+  
+  // Filtre state'i - default olarak konut seçili (çünkü database'de daha çok konut var)
+  const [filters, setFilters] = useState<FilterState>({
+    category: 'konut',
+    subCategory: 'all',
+    searchText: '',
+    ilanNo: '',
+    fiyatMin: '',
+    fiyatMax: '',
+    alanMin: '',
+    alanMax: '',
+    il: '',
+    ilce: '',
+    mahalle: '',
+    binaYaslari: [],
+    odaSayilari: [],
+    katlar: []
+  });
 
   useEffect(() => {
     // Check if user is admin
@@ -62,6 +81,79 @@ function ListingsPage() {
     // Refresh the page to reload listings without admin privileges
     window.location.reload();
   };
+
+  // Filtrelenmiş ilanları hesapla
+  const filteredListings = useMemo(() => {
+    console.log('Filtering listings:', { 
+      totalListings: listings.length, 
+      currentCategory: filters.category,
+      currentSubCategory: filters.subCategory,
+      filters 
+    });
+    
+    return listings.filter(listing => {
+      // Debug: Her ilan için emlak_tipi'ni logla
+      console.log('Listing emlak_tipi:', listing.emlak_tipi, 'Filter category:', filters.category);
+      
+      // Kategori filtresi
+      if (filters.category === 'arsa') {
+        if (listing.emlak_tipi !== 'Arsa') return false;
+      } else if (filters.category === 'konut') {
+        if (filters.subCategory === 'satilik') {
+          if (!['satilikDaire', 'Daire'].includes(listing.emlak_tipi)) return false;
+        } else if (filters.subCategory === 'kiralik') {
+          if (listing.emlak_tipi !== 'kiralikDaire') return false;
+        } else {
+          // 'all' - hem satılık hem kiralık
+          if (!['satilikDaire', 'kiralikDaire', 'Daire'].includes(listing.emlak_tipi)) return false;
+        }
+      }
+
+      // Metin arama
+      if (filters.searchText) {
+        const searchText = filters.searchText.toLowerCase();
+        const searchableText = `${listing.baslik} ${listing.detay}`.toLowerCase();
+        if (!searchableText.includes(searchText)) return false;
+      }
+
+      // İlan no arama
+      if (filters.ilanNo) {
+        if (!listing.ilan_no.toString().includes(filters.ilanNo)) return false;
+      }
+
+      // Fiyat filtresi
+      if (filters.fiyatMin && listing.fiyat < parseInt(filters.fiyatMin)) return false;
+      if (filters.fiyatMax && listing.fiyat > parseInt(filters.fiyatMax)) return false;
+
+      // Alan filtresi
+      if (filters.alanMin && listing.m2 < parseInt(filters.alanMin)) return false;
+      if (filters.alanMax && listing.m2 > parseInt(filters.alanMax)) return false;
+
+      // Konum filtreleri
+      if (filters.il && !listing.il.toLowerCase().includes(filters.il.toLowerCase())) return false;
+      if (filters.ilce && !listing.ilce.toLowerCase().includes(filters.ilce.toLowerCase())) return false;
+      if (filters.mahalle && !listing.mahalle.toLowerCase().includes(filters.mahalle.toLowerCase())) return false;
+
+      // Konut özel filtreleri
+      if (filters.category === 'konut') {
+        // Bina yaşı filtresi
+        if (filters.binaYaslari.length > 0 && !filters.binaYaslari.includes(listing.bina_yasi)) return false;
+
+        // Oda sayısı filtresi
+        if (filters.odaSayilari.length > 0 && !filters.odaSayilari.includes(listing.oda_sayisi)) return false;
+
+        // Kat filtresi
+        if (filters.katlar.length > 0) {
+          const kat = listing.bulundugu_kat.toString();
+          const katStr = kat === '0' ? 'Zemin' : kat === '-1' ? 'Bodrum' : 
+                        parseInt(kat) >= 10 ? '10+' : kat;
+          if (!filters.katlar.includes(katStr)) return false;
+        }
+      }
+
+      return true;
+    });
+  }, [listings, filters]);
 
   return (
     <div className="container" style={{ paddingTop: 'var(--spacing-xl)', paddingBottom: 'var(--spacing-xl)' }}>
@@ -93,14 +185,32 @@ function ListingsPage() {
         )}
       </div>
 
-      {loading ? (
-        <div className="loading">
-          <div className="spinner"></div>
-          <span style={{ marginLeft: 'var(--spacing-sm)' }}>İlanlar yükleniyor...</span>
+      <div className="listings-layout">
+        {/* Sol taraf - Filtre Paneli */}
+        <div className="filter-sidebar">
+          <FilterPanel
+            filters={filters}
+            onFiltersChange={setFilters}
+            totalCount={filteredListings.length}
+          />
         </div>
-      ) : (
-        <ListingList listings={listings} isAdmin={isAdmin} onUpdate={() => window.location.reload()} />
-      )}
+
+        {/* Sağ taraf - İlan Listesi */}
+        <div className="listings-content">
+          {loading ? (
+            <div className="loading">
+              <div className="spinner"></div>
+              <span style={{ marginLeft: 'var(--spacing-sm)' }}>İlanlar yükleniyor...</span>
+            </div>
+          ) : (
+            <ListingList 
+              listings={filteredListings} 
+              isAdmin={isAdmin} 
+              onUpdate={() => window.location.reload()} 
+            />
+          )}
+        </div>
+      </div>
     </div>
   );
 }
