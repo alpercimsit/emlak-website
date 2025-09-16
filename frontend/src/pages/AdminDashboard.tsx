@@ -165,7 +165,7 @@ function AdminDashboard() {
                   Emlak Tipi
                 </label>
                 <select
-                  name="emlakTipi"
+                  name="emlak_tipi"
                   className="form-control"
                   value={form.emlak_tipi}
                   onChange={handleChange}
@@ -268,7 +268,7 @@ function AdminDashboard() {
                   Sahibi Adı
                 </label>
                 <input
-                  name="sahibiAd"
+                  name="sahibi_ad"
                   className="form-control"
                   placeholder="Ahmet Yılmaz"
                   value={form.sahibi_ad}
@@ -283,7 +283,7 @@ function AdminDashboard() {
                   Telefon
                 </label>
                 <input
-                  name="sahibiTel"
+                  name="sahibi_tel"
                   className="form-control"
                   placeholder="0532 123 45 67"
                   value={form.sahibi_tel}
@@ -301,7 +301,7 @@ function AdminDashboard() {
                   Oda Sayısı
                 </label>
                 <select
-                  name="odaSayisi"
+                  name="oda_sayisi"
                   className="form-control"
                   value={form.oda_sayisi}
                   onChange={handleChange}
@@ -323,7 +323,7 @@ function AdminDashboard() {
                   Bina Yaşı
                 </label>
                 <select
-                  name="binaYasi"
+                  name="bina_yasi"
                   className="form-control"
                   value={form.bina_yasi}
                   onChange={handleChange}
@@ -344,7 +344,7 @@ function AdminDashboard() {
                 </label>
                 <input
                   type="number"
-                  name="bulunduguKat"
+                  name="bulundugu_kat"
                   className="form-control"
                   placeholder="3"
                   value={form.bulundugu_kat}
@@ -361,7 +361,7 @@ function AdminDashboard() {
                 </label>
                 <input
                   type="number"
-                  name="katSayisi"
+                  name="kat_sayisi"
                   className="form-control"
                   placeholder="7"
                   value={form.kat_sayisi}
@@ -401,7 +401,7 @@ function AdminDashboard() {
                 </label>
                 <input
                   type="number"
-                  name="banyoSayisi"
+                  name="banyo_sayisi"
                   className="form-control"
                   placeholder="1"
                   value={form.banyo_sayisi}

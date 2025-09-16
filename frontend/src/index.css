@@ -510,6 +510,19 @@ textarea.form-control {
   }
 }
 
+/* Listing Number */
+.listing-number {
+  background: var(--bg-secondary);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-color);
+}
+
+.listing-number small {
+  font-weight: 500;
+  color: var(--text-secondary) !important;
+}
+
 /* Responsive Modal */
 @media (max-width: 768px) {
   .modal-overlay {

@@ -121,6 +121,9 @@ function EditListingModal({ listing, isOpen, onClose, onUpdate }: Props) {
           <h2 style={{ margin: 0, color: 'var(--text-primary)' }}>
             <i className="fas fa-edit" style={{ marginRight: 'var(--spacing-sm)' }}></i>
             İlanı Düzenle
+            <small style={{ marginLeft: 'var(--spacing-sm)', color: 'var(--text-muted)', fontWeight: 'normal' }}>
+              (İlan #{listing.ilan_no})
+            </small>
           </h2>
           <button 
             className="modal-close" 

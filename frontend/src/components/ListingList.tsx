@@ -61,7 +61,15 @@ function ListingList({ listings, isAdmin = false, onUpdate }: Props) {
       {listings.map((l) => (
         <div key={l.ilan_no} className="card listing-card">
           <div className="listing-content">
-            <div className="listing-title">{l.baslik}</div>
+            <div className="d-flex justify-between align-center mb-2">
+              <div className="listing-title">{l.baslik}</div>
+              <div className="listing-number">
+                <small className="text-muted">
+                  <i className="fas fa-hashtag" style={{ fontSize: '0.8em', marginRight: '2px' }}></i>
+                  {l.ilan_no}
+                </small>
+              </div>
+            </div>
             <div className="listing-description">{l.detay}</div>
             <div className="listing-price">
               {l.fiyat.toLocaleString('tr-TR')} TL
