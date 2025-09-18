@@ -1,6 +1,7 @@
 import React from 'react';
 import { Routes, Route, Link, Navigate } from 'react-router-dom';
 import ListingsPage from './pages/ListingsPage';
+import ListingDetailPage from './pages/ListingDetailPage';
 import ContactPage from './pages/ContactPage';
 import AdminLoginPage from './pages/AdminLoginPage';
 import AdminDashboard from './pages/AdminDashboard';
@@ -39,6 +40,7 @@ function App() {
       <main>
         <Routes>
           <Route path="/" element={<ListingsPage />} />
+          <Route path="/ilan/:id" element={<ListingDetailPage />} />
           <Route path="/iletisim" element={<ContactPage />} />
           <Route path="/admin/login" element={<AdminLoginPage />} />
           <Route

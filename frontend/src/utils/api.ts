@@ -87,6 +87,62 @@ export const api = {
     }
   },
 
+  async getListingById(id: number) {
+    // Check if user is admin to determine which view to use
+    const token = localStorage.getItem('adminToken');
+    const isAdmin = token && token.startsWith('admin-token-');
+    
+    if (isAdmin) {
+      // Admin can see all listing details including owner info
+      const { data, error } = await supabase
+        .from('ilan')
+        .select('*')
+        .eq('ilan_no', id)
+        .single();
+      
+      if (error) throw error;
+      return data;
+    } else {
+      // Regular users see limited info (no owner details) and only non-hidden listings
+      const { data, error } = await supabase
+        .from('ilan')
+        .select(`
+          ilan_no,
+          ilan_tarihi,
+          baslik,
+          emlak_tipi,
+          fiyat,
+          detay,
+          m2,
+          il,
+          ilce,
+          mahalle,
+          sahibinden_no,
+          sahibinden_tarih,
+          ada,
+          parsel,
+          oda_sayisi,
+          bina_yasi,
+          bulundugu_kat,
+          kat_sayisi,
+          isitma,
+          banyo_sayisi,
+          balkon,
+          asansor,
+          esyali,
+          aidat,
+          fotolar,
+          gizli
+        `)
+        .eq('ilan_no', id)
+        .eq('gizli', false) // Only show non-hidden listings to regular users
+        .single();
+      
+      if (error) throw error;
+      return data;
+    }
+  },
+
   async addListing(listing: any) {
     // Check if user is admin
     const token = localStorage.getItem('adminToken');

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Listing } from '../pages/ListingsPage';
 import api from '../utils/api';
 import EditListingModal from './EditListingModal';
@@ -10,6 +11,7 @@ interface Props {
 }
 
 function ListingList({ listings, isAdmin = false, onUpdate }: Props) {
+  const navigate = useNavigate();
   const [deletingId, setDeletingId] = useState<number | null>(null);
   const [editingListing, setEditingListing] = useState<Listing | null>(null);
 
@@ -62,6 +64,10 @@ function ListingList({ listings, isAdmin = false, onUpdate }: Props) {
     }
   };
 
+  const handleListingClick = (listingId: number) => {
+    navigate(`/ilan/${listingId}`);
+  };
+
   if (!listings.length) {
     return (
       <div className="empty-state">
@@ -75,7 +81,7 @@ function ListingList({ listings, isAdmin = false, onUpdate }: Props) {
   return (
     <div className="d-flex flex-column gap-3">
       {listings.map((l) => (
-        <div key={l.ilan_no} className="card listing-card">
+        <div key={l.ilan_no} className="card listing-card" onClick={() => handleListingClick(l.ilan_no)} style={{ cursor: 'pointer' }}>
           <div className="listing-content">
             <div className="d-flex justify-between align-center mb-2">
               <div className="listing-title">{l.baslik}</div>
@@ -129,7 +135,10 @@ function ListingList({ listings, isAdmin = false, onUpdate }: Props) {
               <div className="admin-actions" style={{ marginTop: 'var(--spacing-sm)', display: 'flex', gap: 'var(--spacing-sm)' }}>
                 <button
                   className="btn btn-sm btn-secondary"
-                  onClick={() => handleEdit(l)}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleEdit(l);
+                  }}
                   disabled={deletingId === l.ilan_no}
                 >
                   <i className="fas fa-edit"></i>
@@ -137,7 +146,10 @@ function ListingList({ listings, isAdmin = false, onUpdate }: Props) {
                 </button>
                 <button
                   className="btn btn-sm btn-danger"
-                  onClick={() => handleDelete(l.ilan_no)}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleDelete(l.ilan_no);
+                  }}
                   disabled={deletingId === l.ilan_no}
                 >
                   {deletingId === l.ilan_no ? (
