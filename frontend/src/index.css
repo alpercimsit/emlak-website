@@ -919,36 +919,38 @@ textarea.form-control {
 .listing-detail-title {
   color: var(--primary-color);
   margin: 0;
-  font-size: 2rem;
+  font-size: 1.5rem;
   font-weight: 600;
 }
 
 .listing-detail-layout {
   display: grid;
-  grid-template-columns: 2fr 1fr;
-  gap: var(--spacing-xl);
-  margin-bottom: var(--spacing-xl);
+  grid-template-columns: 1.5fr 1fr;
+  gap: var(--spacing-lg);
+  margin-bottom: var(--spacing-lg);
 }
 
 /* Fotoğraf Bölümü */
 .listing-detail-photos {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-md);
+  gap: var(--spacing-sm);
 }
 
 .main-photo {
   position: relative;
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-sm);
   overflow: hidden;
   background: var(--gray-100);
-  aspect-ratio: 16/10;
+  aspect-ratio: 4/3;
+  cursor: pointer;
 }
 
 .main-photo-img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
+  background: var(--gray-50);
 }
 
 .photo-nav {
@@ -984,14 +986,15 @@ textarea.form-control {
 }
 
 .thumbnail {
-  width: 80px;
-  height: 60px;
-  object-fit: cover;
+  width: 60px;
+  height: 45px;
+  object-fit: contain;
   border-radius: var(--radius-sm);
   cursor: pointer;
   opacity: 0.7;
   transition: all var(--transition-speed);
   border: 2px solid transparent;
+  background: var(--gray-50);
 }
 
 .thumbnail:hover {
@@ -1023,39 +1026,39 @@ textarea.form-control {
 .listing-detail-info {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-lg);
+  gap: var(--spacing-md);
 }
 
 .price-section {
   text-align: center;
-  padding: var(--spacing-lg);
+  padding: var(--spacing-md);
   background: var(--primary-color);
   color: white;
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-sm);
 }
 
 .price {
-  font-size: 2.5rem;
+  font-size: 1.8rem;
   font-weight: 700;
-  margin-bottom: var(--spacing-sm);
+  margin-bottom: var(--spacing-xs);
 }
 
 .property-type {
-  font-size: 1.2rem;
+  font-size: 1rem;
   opacity: 0.9;
 }
 
 .info-section {
   background: white;
-  padding: var(--spacing-lg);
-  border-radius: var(--radius-md);
+  padding: var(--spacing-md);
+  border-radius: var(--radius-sm);
   border: 1px solid var(--border-color);
 }
 
 .info-section h3 {
   color: var(--primary-color);
-  margin: 0 0 var(--spacing-md) 0;
-  font-size: 1.3rem;
+  margin: 0 0 var(--spacing-sm) 0;
+  font-size: 1.1rem;
   display: flex;
   align-items: center;
   gap: var(--spacing-sm);
@@ -1063,7 +1066,7 @@ textarea.form-control {
 
 .info-grid {
   display: grid;
-  gap: var(--spacing-md);
+  gap: var(--spacing-sm);
 }
 
 .info-item {
@@ -1081,7 +1084,8 @@ textarea.form-control {
 .info-item .label {
   font-weight: 500;
   color: var(--text-muted);
-  min-width: 100px;
+  min-width: 80px;
+  font-size: 0.9rem;
 }
 
 .info-item .value {
@@ -1204,6 +1208,81 @@ textarea.form-control {
   white-space: pre-line;
 }
 
+/* Tam Ekran Fotoğraf Modalı */
+.photo-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.95);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: var(--spacing-lg);
+}
+
+.photo-modal-content {
+  position: relative;
+  max-width: 90vw;
+  max-height: 90vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.photo-modal-img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  border-radius: var(--radius-sm);
+}
+
+.photo-modal-close {
+  position: absolute;
+  top: -50px;
+  right: 0;
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  border: none;
+  padding: var(--spacing-md);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-size: 1.2rem;
+  transition: all var(--transition-speed);
+}
+
+.photo-modal-close:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.photo-modal-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  border: none;
+  padding: var(--spacing-lg);
+  cursor: pointer;
+  font-size: 1.5rem;
+  border-radius: var(--radius-sm);
+  transition: all var(--transition-speed);
+}
+
+.photo-modal-nav:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.photo-modal-nav-prev {
+  left: -80px;
+}
+
+.photo-modal-nav-next {
+  right: -80px;
+}
+
 /* Responsive Tasarım */
 @media (max-width: 1024px) {
   .listing-detail-layout {
@@ -1214,21 +1293,34 @@ textarea.form-control {
   .listing-detail-info {
     order: -1;
   }
+
+  .photo-modal-nav {
+    padding: var(--spacing-md);
+    font-size: 1.2rem;
+  }
+
+  .photo-modal-nav-prev {
+    left: -60px;
+  }
+
+  .photo-modal-nav-next {
+    right: -60px;
+  }
 }
 
 @media (max-width: 768px) {
   .listing-detail-title {
-    font-size: 1.5rem;
+    font-size: 1.2rem;
   }
   
   .price {
-    font-size: 2rem;
+    font-size: 1.5rem;
   }
   
   .info-section,
   .contact-section,
   .description-section {
-    padding: var(--spacing-md);
+    padding: var(--spacing-sm);
   }
   
   .info-grid {
@@ -1240,8 +1332,21 @@ textarea.form-control {
   }
   
   .thumbnail {
-    width: 60px;
-    height: 45px;
+    width: 50px;
+    height: 38px;
+  }
+
+  .photo-modal-nav-prev {
+    left: var(--spacing-sm);
+  }
+
+  .photo-modal-nav-next {
+    right: var(--spacing-sm);
+  }
+
+  .photo-modal-close {
+    top: var(--spacing-sm);
+    right: var(--spacing-sm);
   }
 }
 

@@ -13,6 +13,7 @@ function ListingDetailPage() {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [editingListing, setEditingListing] = useState<Listing | null>(null);
   const [deletingId, setDeletingId] = useState<number | null>(null);
+  const [showPhotoModal, setShowPhotoModal] = useState(false);
 
   useEffect(() => {
     // Check if user is admin
@@ -85,6 +86,23 @@ function ListingDetailPage() {
           setListing(data);
         })
         .catch((err) => console.error('İlan güncellenirken hata:', err));
+    }
+  };
+
+  const handlePhotoClick = () => {
+    setShowPhotoModal(true);
+  };
+
+  const handleClosePhotoModal = () => {
+    setShowPhotoModal(false);
+  };
+
+  const handlePhotoModalNav = (direction: 'prev' | 'next') => {
+    const photos = listing?.fotolar ? listing.fotolar.split(',').filter(url => url.trim()) : [];
+    if (direction === 'prev') {
+      setCurrentImageIndex(prev => prev === 0 ? photos.length - 1 : prev - 1);
+    } else {
+      setCurrentImageIndex(prev => prev === photos.length - 1 ? 0 : prev + 1);
     }
   };
 
@@ -185,6 +203,7 @@ function ListingDetailPage() {
                   src={photos[currentImageIndex]} 
                   alt={listing.baslik}
                   className="main-photo-img"
+                  onClick={handlePhotoClick}
                 />
                 {photos.length > 1 && (
                   <>
@@ -211,7 +230,10 @@ function ListingDetailPage() {
                       src={photo}
                       alt={`${listing.baslik} - ${index + 1}`}
                       className={`thumbnail ${index === currentImageIndex ? 'active' : ''}`}
-                      onClick={() => setCurrentImageIndex(index)}
+                      onClick={() => {
+                        setCurrentImageIndex(index);
+                        handlePhotoClick();
+                      }}
                     />
                   ))}
                 </div>
@@ -237,10 +259,24 @@ function ListingDetailPage() {
             </div>
           </div>
 
-          {/* Temel Bilgiler */}
+          {/* Bilgiler */}
           <div className="info-section">
-            <h3>Temel Bilgiler</h3>
             <div className="info-grid">
+              <div className="info-item">
+                <i className="fas fa-hashtag"></i>
+                <span className="label">İlan No:</span>
+                <span className="value">{listing.ilan_no}</span>
+              </div>
+              <div className="info-item">
+                <i className="fas fa-home"></i>
+                <span className="label">Tip:</span>
+                <span className="value">{formatEmlakTipi(listing.emlak_tipi)}</span>
+              </div>
+              <div className="info-item">
+                <i className="fas fa-map-marker-alt"></i>
+                <span className="label">Konum:</span>
+                <span className="value">{listing.mahalle}, {listing.ilce}/{listing.il}</span>
+              </div>
               <div className="info-item">
                 <i className="fas fa-bed"></i>
                 <span className="label">Oda Sayısı:</span>
@@ -301,20 +337,28 @@ function ListingDetailPage() {
             </div>
           </div>
 
-          {/* Konum Bilgileri */}
-          <div className="info-section">
-            <h3>Konum</h3>
-            <div className="location-info">
-              <i className="fas fa-map-marker-alt"></i>
-              <span>{listing.mahalle}, {listing.ilce} / {listing.il}</span>
-            </div>
-            {(listing.ada || listing.parsel) && (
-              <div className="cadastral-info">
-                {listing.ada && <span>Ada: {listing.ada}</span>}
-                {listing.parsel && <span>Parsel: {listing.parsel}</span>}
+          {/* Kadastro Bilgileri */}
+          {(listing.ada || listing.parsel) && (
+            <div className="info-section">
+              <h3>Kadastro</h3>
+              <div className="info-grid">
+                {listing.ada && (
+                  <div className="info-item">
+                    <i className="fas fa-map"></i>
+                    <span className="label">Ada:</span>
+                    <span className="value">{listing.ada}</span>
+                  </div>
+                )}
+                {listing.parsel && (
+                  <div className="info-item">
+                    <i className="fas fa-map-pin"></i>
+                    <span className="label">Parsel:</span>
+                    <span className="value">{listing.parsel}</span>
+                  </div>
+                )}
               </div>
-            )}
-          </div>
+            </div>
+          )}
 
           {/* İletişim Bölümü */}
           <div className="contact-section">
@@ -389,6 +433,43 @@ function ListingDetailPage() {
           onClose={handleCloseEdit}
           onUpdate={handleUpdateSuccess}
         />
+      )}
+
+      {/* Photo Modal */}
+      {showPhotoModal && photos.length > 0 && (
+        <div className="photo-modal" onClick={handleClosePhotoModal}>
+          <div className="photo-modal-content" onClick={(e) => e.stopPropagation()}>
+            <button 
+              className="photo-modal-close"
+              onClick={handleClosePhotoModal}
+            >
+              <i className="fas fa-times"></i>
+            </button>
+            
+            <img 
+              src={photos[currentImageIndex]} 
+              alt={`${listing.baslik} - ${currentImageIndex + 1}`}
+              className="photo-modal-img"
+            />
+            
+            {photos.length > 1 && (
+              <>
+                <button 
+                  className="photo-modal-nav photo-modal-nav-prev"
+                  onClick={() => handlePhotoModalNav('prev')}
+                >
+                  <i className="fas fa-chevron-left"></i>
+                </button>
+                <button 
+                  className="photo-modal-nav photo-modal-nav-next"
+                  onClick={() => handlePhotoModalNav('next')}
+                >
+                  <i className="fas fa-chevron-right"></i>
+                </button>
+              </>
+            )}
+          </div>
+        </div>
       )}
     </div>
   );
