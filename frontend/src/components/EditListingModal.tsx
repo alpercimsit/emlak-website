@@ -531,7 +531,7 @@ function EditListingModal({ listing, isOpen, onClose, onUpdate }: Props) {
             <PhotoUpload
               photos={photos}
               onPhotosChange={setPhotos}
-              maxPhotos={10}
+              maxPhotos={30}
               listingId={listing.ilan_no}
             />
 

@@ -502,7 +502,7 @@ function AdminDashboard() {
             <PhotoUpload
               photos={photos}
               onPhotosChange={setPhotos}
-              maxPhotos={10}
+              maxPhotos={30}
             />
 
             <button

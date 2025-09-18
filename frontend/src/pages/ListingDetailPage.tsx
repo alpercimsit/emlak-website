@@ -14,6 +14,9 @@ function ListingDetailPage() {
   const [editingListing, setEditingListing] = useState<Listing | null>(null);
   const [deletingId, setDeletingId] = useState<number | null>(null);
   const [showPhotoModal, setShowPhotoModal] = useState(false);
+  const [showOwnerInfo, setShowOwnerInfo] = useState(false);
+  const [thumbnailStartIndex, setThumbnailStartIndex] = useState(0);
+  const thumbnailsPerPage = 5;
 
   useEffect(() => {
     // Check if user is admin
@@ -99,10 +102,19 @@ function ListingDetailPage() {
 
   const handlePhotoModalNav = (direction: 'prev' | 'next') => {
     const photos = listing?.fotolar ? listing.fotolar.split(',').filter(url => url.trim()) : [];
+    let newIndex;
     if (direction === 'prev') {
-      setCurrentImageIndex(prev => prev === 0 ? photos.length - 1 : prev - 1);
+      newIndex = currentImageIndex === 0 ? photos.length - 1 : currentImageIndex - 1;
     } else {
-      setCurrentImageIndex(prev => prev === photos.length - 1 ? 0 : prev + 1);
+      newIndex = currentImageIndex === photos.length - 1 ? 0 : currentImageIndex + 1;
+    }
+    setCurrentImageIndex(newIndex);
+    
+    // Update thumbnail page if needed
+    const pageIndex = Math.floor(newIndex / thumbnailsPerPage);
+    const newStartIndex = pageIndex * thumbnailsPerPage;
+    if (newStartIndex !== thumbnailStartIndex) {
+      setThumbnailStartIndex(newStartIndex);
     }
   };
 
@@ -139,27 +151,28 @@ function ListingDetailPage() {
   const photos = listing.fotolar ? listing.fotolar.split(',').filter(url => url.trim()) : [];
 
   return (
-    <div className="container" style={{ paddingTop: 'var(--spacing-xl)', paddingBottom: 'var(--spacing-xl)' }}>
-      {/* Geri Dönme Butonu */}
-      <div className="mb-4">
-        <button 
-          className="btn btn-secondary"
-          onClick={() => navigate('/')}
-          style={{ marginBottom: 'var(--spacing-md)' }}
-        >
-          <i className="fas fa-arrow-left" style={{ marginRight: 'var(--spacing-sm)' }}></i>
-          İlanlara Dön
-        </button>
-      </div>
+    <div style={{ paddingTop: 'var(--spacing-xl)', paddingBottom: 'var(--spacing-xl)', position: 'relative' }}>
+      {/* Geri Dönme Butonu - Sol boş alanda */}
+      <button 
+        className="btn btn-secondary"
+        onClick={() => navigate('/')}
+        style={{ 
+          position: 'absolute',
+          left: 'var(--spacing-md)',
+          top: 'var(--spacing-xl)',
+          zIndex: 10
+        }}
+      >
+        <i className="fas fa-arrow-left" style={{ marginRight: 'var(--spacing-sm)' }}></i>
+        İlanlara Dön
+      </button>
+      
+      <div className="container">
 
       {/* İlan Başlığı */}
-      <div className="d-flex justify-between align-center mb-4">
-        <h1 className="listing-detail-title">
+      <div className="d-flex justify-between align-center mb-4" style={{ marginTop: 'var(--spacing-lg)' }}>
+        <h1 style={{ color: 'var(--text-primary)', margin: 0, fontSize: '1.5rem', fontWeight: 600 }}>
           {listing.baslik}
-          <small className="text-muted" style={{ display: 'block', fontSize: '0.6em', marginTop: 'var(--spacing-xs)' }}>
-            <i className="fas fa-hashtag" style={{ fontSize: '0.8em', marginRight: '2px' }}></i>
-            İlan No: {listing.ilan_no}
-          </small>
         </h1>
         
         {isAdmin && (
@@ -194,7 +207,7 @@ function ListingDetailPage() {
       </div>
 
       <div className="listing-detail-layout">
-        {/* Sol Taraf - Fotoğraflar */}
+        {/* Sol Taraf - Fotoğraflar ve Açıklama */}
         <div className="listing-detail-photos">
           {photos.length > 0 ? (
             <>
@@ -209,13 +222,29 @@ function ListingDetailPage() {
                   <>
                     <button 
                       className="photo-nav photo-nav-prev"
-                      onClick={() => setCurrentImageIndex(prev => prev === 0 ? photos.length - 1 : prev - 1)}
+                      onClick={() => {
+                        const newIndex = currentImageIndex === 0 ? photos.length - 1 : currentImageIndex - 1;
+                        setCurrentImageIndex(newIndex);
+                        const pageIndex = Math.floor(newIndex / thumbnailsPerPage);
+                        const newStartIndex = pageIndex * thumbnailsPerPage;
+                        if (newStartIndex !== thumbnailStartIndex) {
+                          setThumbnailStartIndex(newStartIndex);
+                        }
+                      }}
                     >
                       <i className="fas fa-chevron-left"></i>
                     </button>
                     <button 
                       className="photo-nav photo-nav-next"
-                      onClick={() => setCurrentImageIndex(prev => prev === photos.length - 1 ? 0 : prev + 1)}
+                      onClick={() => {
+                        const newIndex = currentImageIndex === photos.length - 1 ? 0 : currentImageIndex + 1;
+                        setCurrentImageIndex(newIndex);
+                        const pageIndex = Math.floor(newIndex / thumbnailsPerPage);
+                        const newStartIndex = pageIndex * thumbnailsPerPage;
+                        if (newStartIndex !== thumbnailStartIndex) {
+                          setThumbnailStartIndex(newStartIndex);
+                        }
+                      }}
                     >
                       <i className="fas fa-chevron-right"></i>
                     </button>
@@ -223,19 +252,46 @@ function ListingDetailPage() {
                 )}
               </div>
               {photos.length > 1 && (
-                <div className="photo-thumbnails">
-                  {photos.map((photo, index) => (
-                    <img
-                      key={index}
-                      src={photo}
-                      alt={`${listing.baslik} - ${index + 1}`}
-                      className={`thumbnail ${index === currentImageIndex ? 'active' : ''}`}
-                      onClick={() => {
-                        setCurrentImageIndex(index);
-                        handlePhotoClick();
-                      }}
-                    />
-                  ))}
+                <div className="photo-thumbnails-container">
+                  <div className="photo-thumbnails-header">
+                    <span className="photo-counter">
+                      {currentImageIndex + 1} / {photos.length} fotoğraf
+                    </span>
+                  </div>
+                  <div className="photo-thumbnails-wrapper">
+                    {photos.length > thumbnailsPerPage && thumbnailStartIndex > 0 && (
+                      <button 
+                        className="thumbnail-nav thumbnail-nav-prev"
+                        onClick={() => setThumbnailStartIndex(Math.max(0, thumbnailStartIndex - thumbnailsPerPage))}
+                      >
+                        <i className="fas fa-chevron-left"></i>
+                      </button>
+                    )}
+                    <div className="photo-thumbnails">
+                      {photos
+                        .slice(thumbnailStartIndex, thumbnailStartIndex + thumbnailsPerPage)
+                        .map((photo, displayIndex) => {
+                          const actualIndex = thumbnailStartIndex + displayIndex;
+                          return (
+                            <img
+                              key={actualIndex}
+                              src={photo}
+                              alt={`${listing.baslik} - ${actualIndex + 1}`}
+                              className={`thumbnail ${actualIndex === currentImageIndex ? 'active' : ''}`}
+                              onClick={() => setCurrentImageIndex(actualIndex)}
+                            />
+                          );
+                        })}
+                    </div>
+                    {photos.length > thumbnailsPerPage && thumbnailStartIndex + thumbnailsPerPage < photos.length && (
+                      <button 
+                        className="thumbnail-nav thumbnail-nav-next"
+                        onClick={() => setThumbnailStartIndex(Math.min(photos.length - thumbnailsPerPage, thumbnailStartIndex + thumbnailsPerPage))}
+                      >
+                        <i className="fas fa-chevron-right"></i>
+                      </button>
+                    )}
+                  </div>
                 </div>
               )}
             </>
@@ -245,17 +301,50 @@ function ListingDetailPage() {
               <p>Bu ilan için fotoğraf bulunmuyor</p>
             </div>
           )}
+          
+          {/* İlan Açıklaması - Fotoğrafların altında */}
+          {listing.detay && (
+            <div className="description-section" style={{ marginTop: 'var(--spacing-lg)' }}>
+              <h3>İlan Açıklaması</h3>
+              <div className="description-content">
+                {listing.detay}
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Sağ Taraf - Bilgiler ve İletişim */}
         <div className="listing-detail-info">
-          {/* Fiyat */}
-          <div className="price-section">
-            <div className="price">
+          {/* Fiyat - Küçültülmüş */}
+          <div style={{ textAlign: 'center', padding: 'var(--spacing-sm)', background: 'var(--bg-tertiary)', borderRadius: 'var(--radius-sm)', marginBottom: 'var(--spacing-sm)' }}>
+            <div style={{ fontSize: '1.4rem', fontWeight: 700, color: 'var(--primary-color)' }}>
               {listing.fiyat.toLocaleString('tr-TR')} TL
             </div>
-            <div className="property-type">
-              {formatEmlakTipi(listing.emlak_tipi)}
+          </div>
+
+          {/* Konum - Fiyatın altında */}
+          <div style={{ textAlign: 'center', padding: 'var(--spacing-sm)', background: 'var(--bg-secondary)', borderRadius: 'var(--radius-sm)', marginBottom: 'var(--spacing-md)' }}>
+            <div style={{ fontSize: '1rem', color: 'var(--text-primary)', fontWeight: 500 }}>
+              {listing.il} / {listing.ilce} / {listing.mahalle}
+            </div>
+          </div>
+
+          {/* İletişim Bölümü - Özelliklerin üstüne taşındı */}
+          <div className="contact-section" style={{ marginBottom: 'var(--spacing-md)' }}>
+            <h3>Bizimle İletişime Geçin</h3>
+            <div className="contact-info">
+              <div className="contact-item">
+                <i className="fas fa-phone"></i>
+                <span>+90 555 123 45 67</span>
+              </div>
+              <div className="contact-item">
+                <i className="fas fa-envelope"></i>
+                <span>info@ozkafkasemlak.com</span>
+              </div>
+              <div className="contact-item">
+                <i className="fas fa-map-marker-alt"></i>
+                <span>Kars Merkez</span>
+              </div>
             </div>
           </div>
 
@@ -271,11 +360,6 @@ function ListingDetailPage() {
                 <i className="fas fa-home"></i>
                 <span className="label">Tip:</span>
                 <span className="value">{formatEmlakTipi(listing.emlak_tipi)}</span>
-              </div>
-              <div className="info-item">
-                <i className="fas fa-map-marker-alt"></i>
-                <span className="label">Konum:</span>
-                <span className="value">{listing.mahalle}, {listing.ilce}/{listing.il}</span>
               </div>
               <div className="info-item">
                 <i className="fas fa-bed"></i>
@@ -360,70 +444,90 @@ function ListingDetailPage() {
             </div>
           )}
 
-          {/* İletişim Bölümü */}
-          <div className="contact-section">
-            <h3>Bizimle İletişime Geçin</h3>
-            <div className="contact-info">
-              <div className="contact-item">
-                <i className="fas fa-phone"></i>
-                <span>+90 555 123 45 67</span>
-              </div>
-              <div className="contact-item">
-                <i className="fas fa-envelope"></i>
-                <span>info@ozkafkasemlak.com</span>
-              </div>
-              <div className="contact-item">
-                <i className="fas fa-map-marker-alt"></i>
-                <span>Kars Merkez</span>
-              </div>
-            </div>
-            <button className="btn btn-primary contact-btn">
-              <i className="fas fa-phone" style={{ marginRight: 'var(--spacing-sm)' }}></i>
-              Hemen Ara
-            </button>
-          </div>
 
-          {/* Admin Bilgileri (Sadece Admin Modunda) */}
+          {/* İlan Sahibi Bilgileri - Dönen Kart */}
           {isAdmin && (listing.sahibi_ad || listing.sahibi_tel) && (
-            <div className="info-section admin-only">
-              <h3>İlan Sahibi Bilgileri</h3>
-              <div className="owner-info">
-                {listing.sahibi_ad && (
-                  <div className="info-item">
-                    <i className="fas fa-user"></i>
-                    <span className="label">Ad Soyad:</span>
-                    <span className="value">{listing.sahibi_ad}</span>
+            <div className="owner-card-container" style={{ marginBottom: 'var(--spacing-md)' }}>
+              <div 
+                className={`owner-flip-card ${showOwnerInfo ? 'flipped' : ''}`}
+                onClick={() => setShowOwnerInfo(!showOwnerInfo)}
+                style={{
+                  width: '100%',
+                  height: '120px',
+                  perspective: '1000px',
+                  cursor: 'pointer'
+                }}
+              >
+                <div style={{
+                  position: 'relative',
+                  width: '100%',
+                  height: '100%',
+                  textAlign: 'center',
+                  transition: 'transform 0.6s',
+                  transformStyle: 'preserve-3d',
+                  transform: showOwnerInfo ? 'rotateY(180deg)' : 'rotateY(0deg)'
+                }}>
+                  {/* Ön Yüz */}
+                  <div style={{
+                    position: 'absolute',
+                    width: '100%',
+                    height: '100%',
+                    backfaceVisibility: 'hidden',
+                    background: 'var(--primary-color)',
+                    color: 'white',
+                    borderRadius: 'var(--radius-md)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    flexDirection: 'column',
+                    gap: 'var(--spacing-sm)'
+                  }}>
+                    <i className="fas fa-user" style={{ fontSize: '2rem' }}></i>
+                    <span style={{ fontWeight: 600 }}>İlan sahibi bilgileri için tıklayın</span>
                   </div>
-                )}
-                {listing.sahibi_tel && (
-                  <div className="info-item">
-                    <i className="fas fa-phone"></i>
-                    <span className="label">Telefon:</span>
-                    <span className="value">{listing.sahibi_tel}</span>
+                  
+                  {/* Arka Yüz */}
+                  <div style={{
+                    position: 'absolute',
+                    width: '100%',
+                    height: '100%',
+                    backfaceVisibility: 'hidden',
+                    background: 'var(--bg-primary)',
+                    border: '2px solid var(--primary-color)',
+                    borderRadius: 'var(--radius-md)',
+                    transform: 'rotateY(180deg)',
+                    padding: 'var(--spacing-md)',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'center',
+                    gap: 'var(--spacing-xs)'
+                  }}>
+                    {listing.sahibi_ad && (
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-sm)', fontSize: '0.9rem' }}>
+                        <i className="fas fa-user" style={{ color: 'var(--primary-color)', width: '16px' }}></i>
+                        <span>{listing.sahibi_ad}</span>
+                      </div>
+                    )}
+                    {listing.sahibi_tel && (
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-sm)', fontSize: '0.9rem' }}>
+                        <i className="fas fa-phone" style={{ color: 'var(--primary-color)', width: '16px' }}></i>
+                        <span>{listing.sahibi_tel}</span>
+                      </div>
+                    )}
+                    {listing.sahibinden_no && (
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-sm)', fontSize: '0.9rem' }}>
+                        <i className="fas fa-hashtag" style={{ color: 'var(--primary-color)', width: '16px' }}></i>
+                        <span>{listing.sahibinden_no}</span>
+                      </div>
+                    )}
                   </div>
-                )}
-                {listing.sahibinden_no && (
-                  <div className="info-item">
-                    <i className="fas fa-hashtag"></i>
-                    <span className="label">Sahibinden No:</span>
-                    <span className="value">{listing.sahibinden_no}</span>
-                  </div>
-                )}
+                </div>
               </div>
             </div>
           )}
         </div>
       </div>
-
-      {/* İlan Açıklaması */}
-      {listing.detay && (
-        <div className="description-section">
-          <h3>İlan Açıklaması</h3>
-          <div className="description-content">
-            {listing.detay}
-          </div>
-        </div>
-      )}
+      </div>
 
       {/* Edit Modal */}
       {editingListing && (

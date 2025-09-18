@@ -15,11 +15,69 @@ interface Props {
   listingId?: number; // For organizing photos in storage
 }
 
-function PhotoUpload({ photos, onPhotosChange, maxPhotos = 10, listingId }: Props) {
+function PhotoUpload({ photos, onPhotosChange, maxPhotos = 30, listingId }: Props) {
   const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const generatePhotoId = () => `photo_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+
+  // WhatsApp tarzı fotoğraf sıkıştırma fonksiyonu
+  const compressImage = (file: File, maxWidth = 900, maxHeight = 900, quality = 0.5): Promise<File> => {
+    return new Promise((resolve) => {
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      const img = new Image();
+      
+      img.onload = () => {
+        // Orijinal boyutları al
+        let { width, height } = img;
+        
+        // Boyutları optimize et (WhatsApp mantığı)
+        if (width > height) {
+          // Yatay fotoğraf
+          if (width > maxWidth) {
+            height = (height * maxWidth) / width;
+            width = maxWidth;
+          }
+        } else {
+          // Dikey fotoğraf
+          if (height > maxHeight) {
+            width = (width * maxHeight) / height;
+            height = maxHeight;
+          }
+        }
+        
+        // Canvas boyutlarını ayarla
+        canvas.width = width;
+        canvas.height = height;
+        
+        // Fotoğrafı çiz (yüksek kalite için imageSmoothingEnabled)
+        if (ctx) {
+          ctx.imageSmoothingEnabled = true;
+          ctx.imageSmoothingQuality = 'high';
+          ctx.drawImage(img, 0, 0, width, height);
+          
+          // Blob'a dönüştür
+          canvas.toBlob((blob) => {
+            if (blob) {
+              const compressedFile = new File([blob], file.name, {
+                type: 'image/jpeg',
+                lastModified: Date.now()
+              });
+              resolve(compressedFile);
+            } else {
+              resolve(file); // Hata durumunda orijinal dosyayı döndür
+            }
+          }, 'image/jpeg', quality);
+        } else {
+          resolve(file);
+        }
+      };
+      
+      img.onerror = () => resolve(file); // Hata durumunda orijinal dosyayı döndür
+      img.src = URL.createObjectURL(file);
+    });
+  };
 
   const uploadToSupabase = async (file: File, photoId: string): Promise<string> => {
     // Use the centralized upload function from API
@@ -27,33 +85,46 @@ function PhotoUpload({ photos, onPhotosChange, maxPhotos = 10, listingId }: Prop
   };
 
   const handleFiles = useCallback(async (files: FileList) => {
-    const newFiles = Array.from(files).filter(file => {
+    const validFiles = Array.from(files).filter(file => {
       // Only accept image files
       if (!file.type.startsWith('image/')) {
         alert(`"${file.name}" geçerli bir resim dosyası değil.`);
         return false;
       }
       
-      // Check file size (max 10MB)
-      const maxSize = 10 * 1024 * 1024; // 10MB
+      // Check file size (max 50MB before compression)
+      const maxSize = 50 * 1024 * 1024; // 50MB
       if (file.size > maxSize) {
-        alert(`"${file.name}" çok büyük. Maksimum 10MB olmalı.`);
+        alert(`"${file.name}" çok büyük. Maksimum 50MB olmalı.`);
         return false;
       }
       
       return true;
     });
 
-    if (newFiles.length === 0) return;
+    if (validFiles.length === 0) return;
 
     // Check if we exceed max photos
-    if (photos.length + newFiles.length > maxPhotos) {
+    if (photos.length + validFiles.length > maxPhotos) {
       alert(`En fazla ${maxPhotos} fotoğraf yükleyebilirsiniz.`);
       return;
     }
 
+    // Compress images first (WhatsApp style)
+    const compressedFiles: File[] = [];
+    for (const file of validFiles) {
+      try {
+        const compressedFile = await compressImage(file);
+        compressedFiles.push(compressedFile);
+        console.log(`${file.name}: ${(file.size / 1024 / 1024).toFixed(2)}MB → ${(compressedFile.size / 1024 / 1024).toFixed(2)}MB`);
+      } catch (error) {
+        console.error('Compression failed for:', file.name, error);
+        compressedFiles.push(file); // Use original if compression fails
+      }
+    }
+
     // Create photo objects with temporary IDs
-    const newPhotos: Photo[] = newFiles.map(file => ({
+    const newPhotos: Photo[] = compressedFiles.map(file => ({
       id: generatePhotoId(),
       url: URL.createObjectURL(file),
       file,
@@ -165,7 +236,7 @@ function PhotoUpload({ photos, onPhotosChange, maxPhotos = 10, listingId }: Prop
             Fotoğrafları buraya sürükleyin veya <strong>tıklayın</strong>
           </p>
           <small className="text-muted">
-            PNG, JPG, GIF desteklenir • En fazla {maxPhotos} fotoğraf
+            PNG, JPG, JPEG desteklenir • En fazla {maxPhotos} fotoğraf • Otomatik sıkıştırma
           </small>
         </div>
       </div>
