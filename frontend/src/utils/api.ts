@@ -226,9 +226,26 @@ export const api = {
   },
 
   async uploadPhoto(file: File, listingId?: number): Promise<string> {
+    console.log('Starting photo upload:', { fileName: file.name, fileSize: file.size, fileType: file.type });
+    
     const fileExt = file.name.split('.').pop();
     const fileName = `${listingId || 'temp'}_${Date.now()}_${Math.random().toString(36).substr(2, 9)}.${fileExt}`;
     const filePath = fileName;
+
+    console.log('Upload path:', filePath);
+
+    // First, test if we can access the storage bucket
+    try {
+      const { data: buckets, error: listError } = await supabase.storage.listBuckets();
+      console.log('Available buckets:', buckets);
+      if (listError) {
+        console.error('Cannot list buckets:', listError);
+        throw new Error(`Storage erişim hatası: ${listError.message}`);
+      }
+    } catch (e) {
+      console.error('Storage access test failed:', e);
+      throw new Error('Supabase Storage erişilemez. Bağlantıyı kontrol edin.');
+    }
 
     const { data, error } = await supabase.storage
       .from('ilan_fotolari')
@@ -239,14 +256,29 @@ export const api = {
 
     if (error) {
       console.error('Upload error:', error);
-      throw error;
+      console.error('Error message:', error.message);
+      
+      if (error.message?.includes('already exists')) {
+        throw new Error('Bu dosya zaten mevcut. Farklı bir dosya deneyin.');
+      } else if (error.message?.includes('too large') || error.message?.includes('413')) {
+        throw new Error('Dosya boyutu çok büyük. Maksimum 10MB olmalı.');
+      } else if (error.message?.includes('Invalid MIME type')) {
+        throw new Error('Geçersiz dosya türü. Sadece resim dosyaları yükleyebilirsiniz.');
+      } else if (error.message?.includes('row-level security policy')) {
+        throw new Error('Yetkilendirme hatası: Storage bucket ayarları kontrol edilmeli.');
+      } else {
+        throw new Error(`Yükleme hatası: ${error.message}`);
+      }
     }
+
+    console.log('Upload successful:', data);
 
     // Get public URL
     const { data: { publicUrl } } = supabase.storage
       .from('ilan_fotolari')
       .getPublicUrl(filePath);
 
+    console.log('Generated public URL:', publicUrl);
     return publicUrl;
   },
 

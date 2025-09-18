@@ -1,5 +1,5 @@
 import { useState, useRef, useCallback } from 'react';
-import { supabase } from '../utils/api';
+import api from '../utils/api';
 
 interface Photo {
   id: string;
@@ -22,34 +22,26 @@ function PhotoUpload({ photos, onPhotosChange, maxPhotos = 10, listingId }: Prop
   const generatePhotoId = () => `photo_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 
   const uploadToSupabase = async (file: File, photoId: string): Promise<string> => {
-    const fileExt = file.name.split('.').pop();
-    const fileName = `${listingId || 'temp'}_${photoId}.${fileExt}`;
-    const filePath = `${fileName}`;
-
-    const { data, error } = await supabase.storage
-      .from('ilan_fotolari')
-      .upload(filePath, file, {
-        cacheControl: '3600',
-        upsert: false
-      });
-
-    if (error) {
-      console.error('Upload error:', error);
-      throw error;
-    }
-
-    // Get public URL
-    const { data: { publicUrl } } = supabase.storage
-      .from('ilan_fotolari')
-      .getPublicUrl(filePath);
-
-    return publicUrl;
+    // Use the centralized upload function from API
+    return await api.uploadPhoto(file, listingId);
   };
 
   const handleFiles = useCallback(async (files: FileList) => {
     const newFiles = Array.from(files).filter(file => {
       // Only accept image files
-      return file.type.startsWith('image/');
+      if (!file.type.startsWith('image/')) {
+        alert(`"${file.name}" geçerli bir resim dosyası değil.`);
+        return false;
+      }
+      
+      // Check file size (max 10MB)
+      const maxSize = 10 * 1024 * 1024; // 10MB
+      if (file.size > maxSize) {
+        alert(`"${file.name}" çok büyük. Maksimum 10MB olmalı.`);
+        return false;
+      }
+      
+      return true;
     });
 
     if (newFiles.length === 0) return;
@@ -91,10 +83,12 @@ function PhotoUpload({ photos, onPhotosChange, maxPhotos = 10, listingId }: Prop
         }
       } catch (error) {
         console.error('Upload failed for photo:', photo.id, error);
+        console.error('Error details:', error);
         // Remove failed photo
         const filteredPhotos = updatedPhotos.filter(p => p.id !== photo.id);
         onPhotosChange(filteredPhotos);
-        alert('Fotoğraf yükleme başarısız oldu. Lütfen tekrar deneyin.');
+        const errorMessage = error instanceof Error ? error.message : 'Bilinmeyen hata';
+        alert(`Fotoğraf yükleme başarısız oldu: ${errorMessage}. Lütfen tekrar deneyin.`);
       }
     }
   }, [photos, onPhotosChange, maxPhotos, listingId]);
@@ -135,13 +129,7 @@ function PhotoUpload({ photos, onPhotosChange, maxPhotos = 10, listingId }: Prop
     // If photo is uploaded to Supabase, delete it
     if (photo.url && photo.url.includes('supabase')) {
       try {
-        // Extract file path from URL
-        const urlParts = photo.url.split('/');
-        const fileName = urlParts[urlParts.length - 1];
-        
-        await supabase.storage
-          .from('ilan_fotolari')
-          .remove([fileName]);
+        await api.deletePhoto(photo.url);
       } catch (error) {
         console.error('Failed to delete photo from storage:', error);
       }
