@@ -169,6 +169,20 @@ export const api = {
       throw new Error('Unauthorized');
     }
 
+    // First, get the listing to access its photos
+    const { data: listing, error: getError } = await supabase
+      .from('ilan')
+      .select('fotolar')
+      .eq('ilan_no', id)
+      .single();
+
+    if (getError) throw getError;
+
+    // Delete associated photos from storage
+    if (listing?.fotolar) {
+      await this.deletePhotosFromStorage(listing.fotolar);
+    }
+
     const { error } = await supabase
       .from('ilan')
       .delete()
@@ -176,6 +190,100 @@ export const api = {
     
     if (error) throw error;
     return true;
+  },
+
+  // Photo management functions
+  async deletePhotosFromStorage(photoUrls: string) {
+    if (!photoUrls) return;
+
+    const urls = photoUrls.split(',').filter(url => url.trim());
+    const filesToDelete: string[] = [];
+
+    for (const url of urls) {
+      if (url.includes('supabase')) {
+        // Extract filename from URL
+        const urlParts = url.split('/');
+        const fileName = urlParts[urlParts.length - 1];
+        if (fileName) {
+          filesToDelete.push(fileName);
+        }
+      }
+    }
+
+    if (filesToDelete.length > 0) {
+      try {
+        const { error } = await supabase.storage
+          .from('ilan_fotolari')
+          .remove(filesToDelete);
+        
+        if (error) {
+          console.error('Error deleting photos from storage:', error);
+        }
+      } catch (error) {
+        console.error('Error deleting photos from storage:', error);
+      }
+    }
+  },
+
+  async uploadPhoto(file: File, listingId?: number): Promise<string> {
+    const fileExt = file.name.split('.').pop();
+    const fileName = `${listingId || 'temp'}_${Date.now()}_${Math.random().toString(36).substr(2, 9)}.${fileExt}`;
+    const filePath = fileName;
+
+    const { data, error } = await supabase.storage
+      .from('ilan_fotolari')
+      .upload(filePath, file, {
+        cacheControl: '3600',
+        upsert: false
+      });
+
+    if (error) {
+      console.error('Upload error:', error);
+      throw error;
+    }
+
+    // Get public URL
+    const { data: { publicUrl } } = supabase.storage
+      .from('ilan_fotolari')
+      .getPublicUrl(filePath);
+
+    return publicUrl;
+  },
+
+  async deletePhoto(photoUrl: string): Promise<void> {
+    if (!photoUrl || !photoUrl.includes('supabase')) return;
+
+    // Extract filename from URL
+    const urlParts = photoUrl.split('/');
+    const fileName = urlParts[urlParts.length - 1];
+    
+    if (fileName) {
+      const { error } = await supabase.storage
+        .from('ilan_fotolari')
+        .remove([fileName]);
+      
+      if (error) {
+        console.error('Error deleting photo:', error);
+        throw error;
+      }
+    }
+  },
+
+  // Helper function to convert photo objects to URL string for database
+  photosToUrlString(photos: Array<{url: string}>): string {
+    return photos.map(photo => photo.url).filter(url => url).join(',');
+  },
+
+  // Helper function to convert URL string to photo objects
+  urlStringToPhotos(urlString: string): Array<{id: string, url: string}> {
+    if (!urlString) return [];
+    
+    return urlString.split(',')
+      .filter(url => url.trim())
+      .map((url, index) => ({
+        id: `existing_${index}_${Date.now()}`,
+        url: url.trim()
+      }));
   }
 };
 

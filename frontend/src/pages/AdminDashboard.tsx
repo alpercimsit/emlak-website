@@ -2,11 +2,13 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../utils/api';
 import { Listing } from './ListingsPage';
+import PhotoUpload from '../components/PhotoUpload';
 
 function AdminDashboard() {
   const [feedback, setFeedback] = useState('');
   const [feedbackType, setFeedbackType] = useState<'success' | 'error' | ''>('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [photos, setPhotos] = useState<Array<{id: string, url: string}>>([]);
   const [form, setForm] = useState<Partial<Listing>>({
     baslik: '',
     detay: '',
@@ -52,10 +54,18 @@ function AdminDashboard() {
     setFeedback('');
 
     try {
-      await api.addListing(form);
+      // Convert photos to URL string for database
+      const formWithPhotos = {
+        ...form,
+        fotolar: api.photosToUrlString(photos)
+      };
+      
+      await api.addListing(formWithPhotos);
       setFeedback('İlan başarıyla eklendi! ✅');
       setFeedbackType('success');
-      // Reset form
+      
+      // Reset form and photos
+      setPhotos([]);
       setForm({
         baslik: '',
         detay: '',
@@ -73,12 +83,12 @@ function AdminDashboard() {
         kat_sayisi: 5,
         isitma: 'Kombi', // Will be mapped to 'isitma' in database
         banyo_sayisi: 1,
-      balkon: false,
-      asansor: false,
-      esyali: false,
-      aidat: 0,
-      fotolar: '',
-      gizli: false
+        balkon: false,
+        asansor: false,
+        esyali: false,
+        aidat: 0,
+        fotolar: '',
+        gizli: false
       });
     } catch (err: any) {
       console.error('Error adding listing:', err);
@@ -489,19 +499,11 @@ function AdminDashboard() {
             </div>
 
             {/* Fotoğraflar */}
-            <div className="form-group">
-              <label className="form-label">
-                <i className="fas fa-images" style={{ marginRight: 'var(--spacing-sm)' }}></i>
-                Fotoğraf URL'leri (virgülle ayırın)
-              </label>
-              <input
-                name="fotolar"
-                className="form-control"
-                placeholder="https://example.com/foto1.jpg,https://example.com/foto2.jpg"
-                value={form.fotolar}
-                onChange={handleChange}
-              />
-            </div>
+            <PhotoUpload
+              photos={photos}
+              onPhotosChange={setPhotos}
+              maxPhotos={10}
+            />
 
             <button
               type="submit"

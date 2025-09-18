@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Listing } from '../pages/ListingsPage';
 import api from '../utils/api';
+import PhotoUpload from './PhotoUpload';
 
 interface Props {
   listing: Listing;
@@ -13,6 +14,7 @@ function EditListingModal({ listing, isOpen, onClose, onUpdate }: Props) {
   const [feedback, setFeedback] = useState('');
   const [feedbackType, setFeedbackType] = useState<'success' | 'error' | ''>('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [photos, setPhotos] = useState<Array<{id: string, url: string}>>([]);
   const [form, setForm] = useState<Partial<Listing>>({
     baslik: '',
     detay: '',
@@ -65,6 +67,10 @@ function EditListingModal({ listing, isOpen, onClose, onUpdate }: Props) {
         fotolar: listing.fotolar || '',
         gizli: listing.gizli || false
       });
+      
+      // Convert existing photos from URL string to photo objects
+      setPhotos(api.urlStringToPhotos(listing.fotolar || ''));
+      
       setFeedback('');
       setFeedbackType('');
     }
@@ -89,7 +95,29 @@ function EditListingModal({ listing, isOpen, onClose, onUpdate }: Props) {
     setFeedback('');
 
     try {
-      await api.updateListing(listing.ilan_no, form);
+      // Delete old photos that are no longer in the current photos array
+      const oldPhotos = api.urlStringToPhotos(listing.fotolar || '');
+      const currentPhotoUrls = photos.map(p => p.url);
+      const photosToDelete = oldPhotos.filter(oldPhoto => 
+        !currentPhotoUrls.includes(oldPhoto.url)
+      );
+      
+      // Delete removed photos from storage
+      for (const photoToDelete of photosToDelete) {
+        try {
+          await api.deletePhoto(photoToDelete.url);
+        } catch (error) {
+          console.error('Failed to delete old photo:', error);
+        }
+      }
+
+      // Convert photos to URL string for database
+      const formWithPhotos = {
+        ...form,
+        fotolar: api.photosToUrlString(photos)
+      };
+      
+      await api.updateListing(listing.ilan_no, formWithPhotos);
       setFeedback('İlan başarıyla güncellendi! ✅');
       setFeedbackType('success');
       
@@ -500,19 +528,12 @@ function EditListingModal({ listing, isOpen, onClose, onUpdate }: Props) {
             </div>
 
             {/* Fotoğraflar */}
-            <div className="form-group">
-              <label className="form-label">
-                <i className="fas fa-images" style={{ marginRight: 'var(--spacing-sm)' }}></i>
-                Fotoğraf URL'leri (virgülle ayırın)
-              </label>
-              <input
-                name="fotolar"
-                className="form-control"
-                placeholder="https://example.com/foto1.jpg,https://example.com/foto2.jpg"
-                value={form.fotolar}
-                onChange={handleChange}
-              />
-            </div>
+            <PhotoUpload
+              photos={photos}
+              onPhotosChange={setPhotos}
+              maxPhotos={10}
+              listingId={listing.ilan_no}
+            />
 
             {feedback && (
               <div className={`mb-3 ${feedbackType === 'success' ? 'text-success' : 'text-error'}`}>
