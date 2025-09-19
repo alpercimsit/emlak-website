@@ -583,6 +583,10 @@ textarea.form-control {
 .category-buttons {
   display: flex;
   gap: var(--spacing-sm);
+  position: relative;
+  background: var(--bg-tertiary);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-xs);
 }
 
 .category-button-wrapper {
@@ -593,42 +597,95 @@ textarea.form-control {
 .category-btn {
   width: 100%;
   padding: var(--spacing-md);
-  border: 2px solid var(--border-color);
-  background: var(--bg-primary);
+  border: none;
+  background: transparent;
   color: var(--text-secondary);
   border-radius: var(--radius-md);
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   display: flex;
   align-items: center;
   justify-content: center;
   gap: var(--spacing-sm);
   font-weight: 500;
+  position: relative;
+  z-index: 2;
+  transform: scale(1);
 }
 
 .category-btn:hover {
-  border-color: var(--primary-color);
   color: var(--primary-color);
-  background: var(--bg-secondary);
+  transform: scale(1.02);
 }
 
 .category-btn.active {
-  border-color: var(--primary-color);
   background: var(--primary-color);
   color: white;
+  transform: scale(1.05);
+  box-shadow: var(--shadow-md);
+}
+
+/* Animasyonlu genişleme efekti */
+.category-btn.active::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--primary-color);
+  border-radius: var(--radius-md);
+  z-index: -1;
+  animation: expandButton 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes expandButton {
+  0% {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
 }
 
 .submenu {
   position: absolute;
-  top: 100%;
+  top: calc(100% + var(--spacing-xs));
   left: 0;
   right: 0;
   background: var(--bg-primary);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-md);
-  box-shadow: var(--shadow-md);
-  z-index: 10;
-  margin-top: var(--spacing-xs);
+  box-shadow: var(--shadow-lg);
+  z-index: 20;
+  opacity: 0;
+  transform: translateY(-10px) scale(0.95);
+  animation: slideInSubmenu 0.2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  overflow: hidden;
+}
+
+@keyframes slideInSubmenu {
+  0% {
+    opacity: 0;
+    transform: translateY(-10px) scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Hover boşluk problemi çözümü */
+.category-button-wrapper::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  height: var(--spacing-xs);
+  z-index: 15;
 }
 
 .submenu-btn {
@@ -640,16 +697,48 @@ textarea.form-control {
   cursor: pointer;
   transition: all 0.2s ease;
   text-align: left;
+  position: relative;
+  overflow: hidden;
+}
+
+.submenu-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(37, 99, 235, 0.1), transparent);
+  transition: left 0.5s ease;
+}
+
+.submenu-btn:hover::before {
+  left: 100%;
 }
 
 .submenu-btn:hover {
   background: var(--bg-secondary);
   color: var(--text-primary);
+  transform: translateX(4px);
 }
 
 .submenu-btn.active {
   background: var(--primary-color);
   color: white;
+  transform: translateX(4px);
+}
+
+.submenu-btn.active::after {
+  content: '';
+  position: absolute;
+  right: var(--spacing-sm);
+  top: 50%;
+  transform: translateY(-50%);
+  width: 4px;
+  height: 4px;
+  background: white;
+  border-radius: 50%;
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.8);
 }
 
 .submenu-btn:first-child {

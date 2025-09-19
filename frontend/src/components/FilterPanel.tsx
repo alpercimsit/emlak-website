@@ -43,7 +43,7 @@ function FilterPanel({ filters, onFiltersChange, totalCount }: Props) {
 
   const clearFilters = () => {
     onFiltersChange({
-      category: 'konut',
+      category: 'arsa',
       subCategory: 'all',
       searchText: '',
       ilanNo: '',
@@ -79,6 +79,16 @@ function FilterPanel({ filters, onFiltersChange, totalCount }: Props) {
       {/* Kategori Seçimi */}
       <div className="filter-section">
         <div className="category-buttons">
+          <button
+            className={`category-btn ${filters.category === 'arsa' ? 'active' : ''}`}
+            onClick={() => {
+              onFiltersChange({ ...filters, category: 'arsa', subCategory: 'all' });
+            }}
+          >
+            <i className="fas fa-map"></i>
+            Arsa
+          </button>
+          
           <div 
             className="category-button-wrapper"
             onMouseEnter={() => setShowKonutSubmenu(true)}
@@ -114,16 +124,6 @@ function FilterPanel({ filters, onFiltersChange, totalCount }: Props) {
               </div>
             )}
           </div>
-          
-          <button
-            className={`category-btn ${filters.category === 'arsa' ? 'active' : ''}`}
-            onClick={() => {
-              onFiltersChange({ ...filters, category: 'arsa', subCategory: 'all' });
-            }}
-          >
-            <i className="fas fa-map"></i>
-            Arsa
-          </button>
         </div>
       </div>
 

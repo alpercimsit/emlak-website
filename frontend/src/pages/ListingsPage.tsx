@@ -41,9 +41,9 @@ function ListingsPage() {
   const [isAdmin, setIsAdmin] = useState(false);
   const navigate = useNavigate();
   
-  // Filtre state'i - default olarak konut seçili (çünkü database'de daha çok konut var)
+  // Filtre state'i - default olarak arsa seçili
   const [filters, setFilters] = useState<FilterState>({
-    category: 'konut',
+    category: 'arsa',
     subCategory: 'all',
     searchText: '',
     ilanNo: '',

@@ -362,63 +362,71 @@ function ListingDetailPage() {
                 <span className="value">{formatEmlakTipi(listing.emlak_tipi)}</span>
               </div>
               <div className="info-item">
-                <i className="fas fa-bed"></i>
-                <span className="label">Oda Sayısı:</span>
-                <span className="value">{listing.oda_sayisi}</span>
-              </div>
-              <div className="info-item">
                 <i className="fas fa-expand"></i>
                 <span className="label">Alan:</span>
                 <span className="value">{listing.m2} m²</span>
               </div>
-              <div className="info-item">
-                <i className="fas fa-building"></i>
-                <span className="label">Bina Yaşı:</span>
-                <span className="value">{listing.bina_yasi}</span>
-              </div>
-              <div className="info-item">
-                <i className="fas fa-layer-group"></i>
-                <span className="label">Kat:</span>
-                <span className="value">{listing.bulundugu_kat} / {listing.kat_sayisi}</span>
-              </div>
-              <div className="info-item">
-                <i className="fas fa-fire"></i>
-                <span className="label">Isıtma:</span>
-                <span className="value">{listing.isitma}</span>
-              </div>
-              <div className="info-item">
-                <i className="fas fa-bath"></i>
-                <span className="label">Banyo:</span>
-                <span className="value">{listing.banyo_sayisi}</span>
-              </div>
-              <div className="info-item">
-                <i className="fas fa-money-bill-wave"></i>
-                <span className="label">Aidat:</span>
-                <span className="value">{listing.aidat > 0 ? `${listing.aidat} TL` : 'Yok'}</span>
-              </div>
+              
+              {/* Sadece konut tiplerinde göster */}
+              {listing.emlak_tipi !== 'Arsa' && (
+                <>
+                  <div className="info-item">
+                    <i className="fas fa-bed"></i>
+                    <span className="label">Oda Sayısı:</span>
+                    <span className="value">{listing.oda_sayisi}</span>
+                  </div>
+                  <div className="info-item">
+                    <i className="fas fa-building"></i>
+                    <span className="label">Bina Yaşı:</span>
+                    <span className="value">{listing.bina_yasi}</span>
+                  </div>
+                  <div className="info-item">
+                    <i className="fas fa-layer-group"></i>
+                    <span className="label">Kat:</span>
+                    <span className="value">{listing.bulundugu_kat} / {listing.kat_sayisi}</span>
+                  </div>
+                  <div className="info-item">
+                    <i className="fas fa-fire"></i>
+                    <span className="label">Isıtma:</span>
+                    <span className="value">{listing.isitma}</span>
+                  </div>
+                  <div className="info-item">
+                    <i className="fas fa-bath"></i>
+                    <span className="label">Banyo:</span>
+                    <span className="value">{listing.banyo_sayisi}</span>
+                  </div>
+                  <div className="info-item">
+                    <i className="fas fa-money-bill-wave"></i>
+                    <span className="label">Aidat:</span>
+                    <span className="value">{listing.aidat > 0 ? `${listing.aidat} TL` : 'Yok'}</span>
+                  </div>
+                </>
+              )}
             </div>
 
-            {/* Özellikler */}
-            <div className="features">
-              {listing.balkon && (
-                <span className="feature">
-                  <i className="fas fa-check"></i>
-                  Balkon
-                </span>
-              )}
-              {listing.asansor && (
-                <span className="feature">
-                  <i className="fas fa-check"></i>
-                  Asansör
-                </span>
-              )}
-              {listing.esyali && (
-                <span className="feature">
-                  <i className="fas fa-check"></i>
-                  Eşyalı
-                </span>
-              )}
-            </div>
+            {/* Özellikler - Sadece konut tiplerinde göster */}
+            {listing.emlak_tipi !== 'Arsa' && (
+              <div className="features">
+                {listing.balkon && (
+                  <span className="feature">
+                    <i className="fas fa-check"></i>
+                    Balkon
+                  </span>
+                )}
+                {listing.asansor && (
+                  <span className="feature">
+                    <i className="fas fa-check"></i>
+                    Asansör
+                  </span>
+                )}
+                {listing.esyali && (
+                  <span className="feature">
+                    <i className="fas fa-check"></i>
+                    Eşyalı
+                  </span>
+                )}
+              </div>
+            )}
           </div>
 
           {/* Kadastro Bilgileri */}
