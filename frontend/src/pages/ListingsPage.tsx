@@ -41,22 +41,32 @@ function ListingsPage() {
   const [isAdmin, setIsAdmin] = useState(false);
   const navigate = useNavigate();
   
-  // Filtre state'i - default olarak arsa seçili
-  const [filters, setFilters] = useState<FilterState>({
-    category: 'arsa',
-    subCategory: 'all',
-    searchText: '',
-    ilanNo: '',
-    fiyatMin: '',
-    fiyatMax: '',
-    alanMin: '',
-    alanMax: '',
-    il: '',
-    ilce: '',
-    mahalle: '',
-    binaYaslari: [],
-    odaSayilari: [],
-    katlar: []
+  // Filtre state'i - localStorage'dan yükle veya default olarak arsa seçili
+  const [filters, setFilters] = useState<FilterState>(() => {
+    const savedFilters = localStorage.getItem('listingFilters');
+    if (savedFilters) {
+      try {
+        return JSON.parse(savedFilters);
+      } catch (error) {
+        console.error('Kaydedilmiş filtreler yüklenirken hata:', error);
+      }
+    }
+    return {
+      category: 'arsa',
+      subCategory: 'all',
+      searchText: '',
+      ilanNo: '',
+      fiyatMin: '',
+      fiyatMax: '',
+      alanMin: '',
+      alanMax: '',
+      il: '',
+      ilce: '',
+      mahalle: '',
+      binaYaslari: [],
+      odaSayilari: [],
+      katlar: []
+    };
   });
 
   useEffect(() => {
@@ -70,6 +80,11 @@ function ListingsPage() {
       .catch((err) => console.error('İlanlar yüklenirken hata:', err))
       .finally(() => setLoading(false));
   }, []);
+
+  // Filtreleri localStorage'a kaydet
+  useEffect(() => {
+    localStorage.setItem('listingFilters', JSON.stringify(filters));
+  }, [filters]);
 
 
   // Filtrelenmiş ilanları hesapla

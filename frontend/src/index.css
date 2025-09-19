@@ -789,12 +789,13 @@ textarea.form-control {
   background: var(--bg-tertiary);
   border-radius: var(--radius-lg);
   padding: var(--spacing-xs);
-  overflow: hidden;
+  overflow: visible;
 }
 
 .category-button-wrapper {
   position: relative;
   flex: 1;
+  overflow: visible;
 }
 
 .category-btn {
@@ -862,7 +863,7 @@ textarea.form-control {
   border: 1px solid var(--border-color);
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-lg);
-  z-index: 20;
+  z-index: 100;
   opacity: 0;
   transform: translateY(-10px) scale(0.95);
   animation: slideInSubmenu 0.2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
