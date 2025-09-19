@@ -105,26 +105,26 @@ function ListingList({ listings, isAdmin = false, onUpdate }: Props) {
             <div className="listing-meta-compact">
               <div className="meta-row">
                 <span>
-                  <i className="fas fa-home"></i>
-                  {formatEmlakTipi(l.emlak_tipi)}
-                </span>
-                <span>
                   <i className="fas fa-expand"></i>
                   {l.m2} m²
                 </span>
-              </div>
-              {l.emlak_tipi !== 'Arsa' && (
-                <div className="meta-row">
+                {l.emlak_tipi !== 'Arsa' && (
                   <span>
                     <i className="fas fa-bed"></i>
                     {l.oda_sayisi}
                   </span>
-                </div>
-              )}
+                )}
+                {l.emlak_tipi !== 'Arsa' && (
+                  <span>
+                    <i className="fas fa-layer-group"></i>
+                    {l.bulundugu_kat}. kat
+                  </span>
+                )}
+              </div>
               <div className="meta-row location">
                 <span>
                   <i className="fas fa-map-marker-alt"></i>
-                  {l.mahalle}, {l.ilce}
+                  {l.il} / {l.ilce} / {l.mahalle}
                 </span>
               </div>
             </div>
