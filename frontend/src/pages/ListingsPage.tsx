@@ -71,16 +71,6 @@ function ListingsPage() {
       .finally(() => setLoading(false));
   }, []);
 
-  const handleNewListing = () => {
-    navigate('/admin/dashboard');
-  };
-
-  const handleLogout = () => {
-    localStorage.removeItem('adminToken');
-    setIsAdmin(false);
-    // Refresh the page to reload listings without admin privileges
-    window.location.reload();
-  };
 
   // Filtrelenmiş ilanları hesapla
   const filteredListings = useMemo(() => {
@@ -157,33 +147,10 @@ function ListingsPage() {
 
   return (
     <div className="container" style={{ paddingTop: 'var(--spacing-xl)', paddingBottom: 'var(--spacing-xl)' }}>
-      <div className="d-flex justify-between align-center mb-4">
-        <h1 className="text-center mb-4">
-          <i className="fas fa-home" style={{ marginRight: 'var(--spacing-sm)', color: 'var(--primary-color)' }}></i>
-          Emlak İlanları {isAdmin && <span style={{ fontSize: '0.7em', color: 'var(--success-color)' }}>(Admin Modu)</span>}
-        </h1>
-        
-        {isAdmin && (
-          <div className="d-flex gap-2">
-            <button
-              onClick={handleNewListing}
-              className="btn btn-primary"
-              style={{ marginTop: '0' }}
-            >
-              <i className="fas fa-plus" style={{ marginRight: 'var(--spacing-sm)' }}></i>
-              Yeni İlan Ekle
-            </button>
-            <button
-              onClick={handleLogout}
-              className="btn btn-secondary"
-              style={{ marginTop: '0' }}
-            >
-              <i className="fas fa-sign-out-alt" style={{ marginRight: 'var(--spacing-sm)' }}></i>
-              Admin Çıkış
-            </button>
-          </div>
-        )}
-      </div>
+      <h1 className="text-center mb-4">
+        <i className="fas fa-home" style={{ marginRight: 'var(--spacing-sm)', color: 'var(--primary-color)' }}></i>
+        Emlak İlanları {isAdmin && <span style={{ fontSize: '0.7em', color: 'var(--success-color)' }}>(Admin Modu)</span>}
+      </h1>
 
       <div className="listings-layout">
         {/* Sol taraf - Filtre Paneli */}

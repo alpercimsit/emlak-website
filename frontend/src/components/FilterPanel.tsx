@@ -78,16 +78,18 @@ function FilterPanel({ filters, onFiltersChange, totalCount }: Props) {
 
       {/* Kategori Seçimi */}
       <div className="filter-section">
-        <div className="category-buttons">
-          <button
-            className={`category-btn ${filters.category === 'arsa' ? 'active' : ''}`}
-            onClick={() => {
-              onFiltersChange({ ...filters, category: 'arsa', subCategory: 'all' });
-            }}
-          >
-            <i className="fas fa-map"></i>
-            Arsa
-          </button>
+        <div className={`category-buttons ${filters.category === 'konut' ? 'konut-active' : ''}`}>
+          <div className="category-button-wrapper">
+            <button
+              className={`category-btn ${filters.category === 'arsa' ? 'active' : ''}`}
+              onClick={() => {
+                onFiltersChange({ ...filters, category: 'arsa', subCategory: 'all' });
+              }}
+            >
+              <i className="fas fa-map"></i>
+              Arsa
+            </button>
+          </div>
           
           <div 
             className="category-button-wrapper"

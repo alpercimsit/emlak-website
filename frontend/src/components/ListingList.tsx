@@ -79,60 +79,58 @@ function ListingList({ listings, isAdmin = false, onUpdate }: Props) {
   }
 
   return (
-    <div className="d-flex flex-column gap-3">
+    <div className="listings-grid">
       {listings.map((l) => (
-        <div key={l.ilan_no} className="card listing-card" onClick={() => handleListingClick(l.ilan_no)} style={{ cursor: 'pointer' }}>
-          <div className="listing-content">
-            <div className="d-flex justify-between align-center mb-2">
-              <div className="listing-title">{l.baslik}</div>
-              <div className="listing-number">
-                <small className="text-muted">
-                  <i className="fas fa-hashtag" style={{ fontSize: '0.8em', marginRight: '2px' }}></i>
-                  {l.ilan_no}
-                </small>
-              </div>
-            </div>
-            <div className="listing-description">{l.detay}</div>
-            <div className="listing-price">
-              {l.fiyat.toLocaleString('tr-TR')} TL
-            </div>
-            <div className="listing-meta">
-              <span>
-                <i className="fas fa-bed"></i>
-                {l.oda_sayisi}
-              </span>
-              <span>
-                <i className="fas fa-expand"></i>
-                {l.m2} m²
-              </span>
-              <span>
-                <i className="fas fa-map-marker-alt"></i>
-                {l.mahalle}, {l.ilce}/{l.il}
-              </span>
-              <span>
-                <i className="fas fa-home"></i>
-                {formatEmlakTipi(l.emlak_tipi)}
-              </span>
-            </div>
-            {(isAdmin || (l.sahibi_ad && l.sahibi_tel)) && (
-              <div className="listing-details">
-                <small className="text-muted">
-                  {l.sahibi_ad && (
-                    <>
-                      <i className="fas fa-user"></i> {l.sahibi_ad}
-                      {l.sahibi_tel && ' • '}
-                    </>
-                  )}
-                  {l.sahibi_tel && (
-                    <>
-                      <i className="fas fa-phone"></i> {l.sahibi_tel}
-                    </>
-                  )}
-                </small>
+        <div key={l.ilan_no} className="card listing-card-compact" onClick={() => handleListingClick(l.ilan_no)} style={{ cursor: 'pointer' }}>
+          {/* Sol taraf - Kare fotoğraf */}
+          <div className="listing-image-container">
+            {l.fotolar ? (
+              <img src={l.fotolar.split(',')[0]} alt={l.baslik} className="listing-image-square" />
+            ) : (
+              <div className="listing-no-image">
+                <i className="fas fa-image"></i>
               </div>
             )}
+          </div>
+          
+          {/* Sağ taraf - İlan bilgileri */}
+          <div className="listing-info">
+            <div className="listing-header">
+              <div className="listing-title-compact">{l.baslik}</div>
+              <div className="listing-price-compact">
+                {l.fiyat.toLocaleString('tr-TR')} TL
+              </div>
+            </div>
+            
+            <div className="listing-meta-compact">
+              <div className="meta-row">
+                <span>
+                  <i className="fas fa-home"></i>
+                  {formatEmlakTipi(l.emlak_tipi)}
+                </span>
+                <span>
+                  <i className="fas fa-expand"></i>
+                  {l.m2} m²
+                </span>
+              </div>
+              {l.emlak_tipi !== 'Arsa' && (
+                <div className="meta-row">
+                  <span>
+                    <i className="fas fa-bed"></i>
+                    {l.oda_sayisi}
+                  </span>
+                </div>
+              )}
+              <div className="meta-row location">
+                <span>
+                  <i className="fas fa-map-marker-alt"></i>
+                  {l.mahalle}, {l.ilce}
+                </span>
+              </div>
+            </div>
+            
             {isAdmin && (
-              <div className="admin-actions" style={{ marginTop: 'var(--spacing-sm)', display: 'flex', gap: 'var(--spacing-sm)' }}>
+              <div className="admin-actions-compact">
                 <button
                   className="btn btn-sm btn-secondary"
                   onClick={(e) => {
@@ -140,9 +138,9 @@ function ListingList({ listings, isAdmin = false, onUpdate }: Props) {
                     handleEdit(l);
                   }}
                   disabled={deletingId === l.ilan_no}
+                  title="Düzenle"
                 >
                   <i className="fas fa-edit"></i>
-                  Düzenle
                 </button>
                 <button
                   className="btn btn-sm btn-danger"
@@ -151,25 +149,17 @@ function ListingList({ listings, isAdmin = false, onUpdate }: Props) {
                     handleDelete(l.ilan_no);
                   }}
                   disabled={deletingId === l.ilan_no}
+                  title="Sil"
                 >
                   {deletingId === l.ilan_no ? (
-                    <>
-                      <div className="spinner" style={{ width: '12px', height: '12px', marginRight: 'var(--spacing-xs)' }}></div>
-                      Siliniyor...
-                    </>
+                    <div className="spinner" style={{ width: '12px', height: '12px' }}></div>
                   ) : (
-                    <>
-                      <i className="fas fa-trash"></i>
-                      Sil
-                    </>
+                    <i className="fas fa-trash"></i>
                   )}
                 </button>
               </div>
             )}
           </div>
-          {l.fotolar && (
-            <img src={l.fotolar.split(',')[0]} alt={l.baslik} className="listing-image" />
-          )}
         </div>
       ))}
       
