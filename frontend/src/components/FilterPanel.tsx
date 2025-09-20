@@ -52,7 +52,6 @@ interface ComboboxProps {
   label: string;
   disabled?: boolean;
   loading?: boolean;
-  maxDisplayItems?: number;
 }
 
 // Combobox component for searchable dropdown
@@ -63,8 +62,7 @@ function Combobox({
   placeholder,
   label,
   disabled = false,
-  loading = false,
-  maxDisplayItems = 11
+  loading = false
 }: ComboboxProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
@@ -76,11 +74,11 @@ function Combobox({
       const filtered = options.filter(option =>
         option.name.toLowerCase().includes(searchTerm.toLowerCase())
       );
-      setFilteredOptions(filtered.slice(0, maxDisplayItems));
+      setFilteredOptions(filtered);
     } else {
-      setFilteredOptions(options.slice(0, maxDisplayItems));
+      setFilteredOptions(options);
     }
-  }, [searchTerm, options, maxDisplayItems]);
+  }, [searchTerm, options]);
 
   // Set initial search term when value changes
   useEffect(() => {
@@ -128,7 +126,7 @@ function Combobox({
   return (
     <div className="combobox-container" style={{ position: 'relative' }}>
       <label className="filter-label">
-        <i className="fas fa-map-marker-alt"></i>
+        
         {label}
       </label>
       <div className="combobox-input-wrapper" style={{ position: 'relative' }}>
@@ -196,7 +194,7 @@ function Combobox({
             border: '1px solid var(--border-color, #dee2e6)',
             borderRadius: '4px',
             boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-            maxHeight: '200px',
+            maxHeight: '300px',
             overflowY: 'auto',
             zIndex: 1000
           }}
@@ -208,11 +206,12 @@ function Combobox({
                 className="combobox-option"
                 onClick={() => handleOptionSelect(option)}
                 style={{
-                  padding: '8px 12px',
+                  padding: '6px 10px',
                   cursor: 'pointer',
                   borderBottom: '1px solid var(--border-color, #f1f3f4)',
                   backgroundColor: value?.id === option.id ? 'var(--primary-color, #007bff)' : 'white',
-                  color: value?.id === option.id ? 'white' : 'inherit'
+                  color: value?.id === option.id ? 'white' : 'inherit',
+                  fontSize: '14px'
                 }}
                 onMouseEnter={(e) => {
                   if (value?.id !== option.id) {
@@ -508,7 +507,7 @@ function FilterPanel({ filters, onFiltersChange, totalCount }: Props) {
         <div className="filter-group">
           <label className="filter-label">
             <i className="fas fa-map-marker-alt"></i>
-            İl, İlçe, Mahalle
+            Adres
           </label>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
@@ -516,33 +515,30 @@ function FilterPanel({ filters, onFiltersChange, totalCount }: Props) {
               options={provinces}
               value={filters.il}
               onChange={(value) => handleFilterChange('il', value)}
-              placeholder="İl seçiniz"
+              placeholder="İl"
               label=""
               disabled={loading.provinces}
               loading={loading.provinces}
-              maxDisplayItems={11}
             />
 
             <Combobox
               options={districts}
               value={filters.ilce}
               onChange={(value) => handleFilterChange('ilce', value)}
-              placeholder={!filters.il ? 'Önce il seçiniz' : 'İlçe seçiniz'}
+              placeholder="İlçe"
               label=""
               disabled={!filters.il || loading.districts || districts.length === 0}
               loading={loading.districts}
-              maxDisplayItems={11}
             />
 
             <Combobox
               options={neighborhoods}
               value={filters.mahalle}
               onChange={(value) => handleFilterChange('mahalle', value)}
-              placeholder={!filters.ilce ? 'Önce ilçe seçiniz' : 'Mahalle seçiniz'}
+              placeholder="Mahalle"
               label=""
               disabled={!filters.ilce || loading.neighborhoods || neighborhoods.length === 0}
               loading={loading.neighborhoods}
-              maxDisplayItems={11}
             />
           </div>
         </div>

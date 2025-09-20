@@ -425,10 +425,28 @@ export const api = {
           name: province.name
         }));
 
-        // Cache the result
-        ApiCache.set(cacheKey, provinces);
+        // Özel sıralama: Tekirdağ, İstanbul, Ankara en üstte
+        const priorityCities = ['Tekirdağ', 'İstanbul', 'Ankara'];
 
-        return provinces;
+        // Öncelikli şehirleri kendi aralarında doğru sırayla al
+        const priorityProvinces: Array<{id: number, name: string}> = [];
+        priorityCities.forEach(cityName => {
+          const city = provinces.find((p: {id: number, name: string}) => p.name === cityName);
+          if (city) {
+            priorityProvinces.push(city);
+          }
+        });
+
+        const otherProvinces = provinces
+          .filter((p: {id: number, name: string}) => !priorityCities.includes(p.name))
+          .sort((a: {id: number, name: string}, b: {id: number, name: string}) => a.name.localeCompare(b.name, 'tr'));
+
+        const sortedProvinces = [...priorityProvinces, ...otherProvinces];
+
+        // Cache the result
+        ApiCache.set(cacheKey, sortedProvinces);
+
+        return sortedProvinces;
       } else {
         throw new Error('Failed to fetch provinces');
       }

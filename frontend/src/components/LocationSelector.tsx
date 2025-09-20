@@ -36,7 +36,6 @@ interface ComboboxProps {
   label: string;
   disabled?: boolean;
   loading?: boolean;
-  maxDisplayItems?: number;
 }
 
 // Combobox component for searchable dropdown
@@ -47,8 +46,7 @@ function Combobox({
   placeholder,
   label,
   disabled = false,
-  loading = false,
-  maxDisplayItems = 11
+  loading = false
 }: ComboboxProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
@@ -60,11 +58,11 @@ function Combobox({
       const filtered = options.filter(option =>
         option.name.toLowerCase().includes(searchTerm.toLowerCase())
       );
-      setFilteredOptions(filtered.slice(0, maxDisplayItems));
+      setFilteredOptions(filtered);
     } else {
-      setFilteredOptions(options.slice(0, maxDisplayItems));
+      setFilteredOptions(options);
     }
-  }, [searchTerm, options, maxDisplayItems]);
+  }, [searchTerm, options]);
 
   // Set initial search term when value changes
   useEffect(() => {
@@ -180,7 +178,7 @@ function Combobox({
             border: '1px solid var(--border-color, #dee2e6)',
             borderRadius: '4px',
             boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-            maxHeight: '200px',
+            maxHeight: '300px',
             overflowY: 'auto',
             zIndex: 1000
           }}
@@ -192,11 +190,12 @@ function Combobox({
                 className="combobox-option"
                 onClick={() => handleOptionSelect(option)}
                 style={{
-                  padding: '8px 12px',
+                  padding: '6px 10px',
                   cursor: 'pointer',
                   borderBottom: '1px solid var(--border-color, #f1f3f4)',
                   backgroundColor: value?.id === option.id ? 'var(--primary-color, #007bff)' : 'white',
-                  color: value?.id === option.id ? 'white' : 'inherit'
+                  color: value?.id === option.id ? 'white' : 'inherit',
+                  fontSize: '14px'
                 }}
                 onMouseEnter={(e) => {
                   if (value?.id !== option.id) {
@@ -330,11 +329,10 @@ function LocationSelector({ onLocationChange, initialLocation, className = '' }:
             options={provinces}
             value={selectedProvince}
             onChange={setSelectedProvince}
-            placeholder="İl seçiniz"
+            placeholder="İl"
             label="İl"
             disabled={loading.provinces}
             loading={loading.provinces}
-            maxDisplayItems={11}
           />
         </div>
 
@@ -344,11 +342,10 @@ function LocationSelector({ onLocationChange, initialLocation, className = '' }:
             options={districts}
             value={selectedDistrict}
             onChange={setSelectedDistrict}
-            placeholder={!selectedProvince ? 'Önce il seçiniz' : 'İlçe seçiniz'}
+            placeholder="İlçe"
             label="İlçe"
             disabled={!selectedProvince || loading.districts || districts.length === 0}
             loading={loading.districts}
-            maxDisplayItems={11}
           />
         </div>
 
@@ -358,11 +355,10 @@ function LocationSelector({ onLocationChange, initialLocation, className = '' }:
             options={neighborhoods}
             value={selectedNeighborhood}
             onChange={setSelectedNeighborhood}
-            placeholder={!selectedDistrict ? 'Önce ilçe seçiniz' : 'Mahalle seçiniz'}
+            placeholder="Mahalle"
             label="Mahalle"
             disabled={!selectedDistrict || loading.neighborhoods || neighborhoods.length === 0}
             loading={loading.neighborhoods}
-            maxDisplayItems={11}
           />
         </div>
       </div>
