@@ -12,7 +12,7 @@ function AdminDashboard() {
   const [form, setForm] = useState<Partial<Listing>>({
     baslik: '',
     detay: '',
-    emlak_tipi: 'Daire',
+        emlak_tipi: 'Arsa',
     fiyat: 0,
     m2: 0,
     il: '',
@@ -112,28 +112,8 @@ function AdminDashboard() {
 
   return (
     <div className="container" style={{ paddingTop: 'var(--spacing-xl)', paddingBottom: 'var(--spacing-xl)' }}>
-      <div className="d-flex justify-between align-center mb-4">
-        <h1 className="text-center mb-4">
-          <i className="fas fa-cog" style={{ marginRight: 'var(--spacing-sm)', color: 'var(--primary-color)' }}></i>
-          Admin Panel
-        </h1>
-        <button
-          onClick={logout}
-          className="btn btn-secondary"
-          style={{ marginTop: '0' }}
-        >
-          <i className="fas fa-sign-out-alt" style={{ marginRight: 'var(--spacing-sm)' }}></i>
-          Çıkış Yap
-        </button>
-      </div>
 
       <div className="card" style={{ maxWidth: '600px', margin: '0 auto' }}>
-        <div className="card-header">
-          <h3 style={{ margin: 0, color: 'var(--text-primary)' }}>
-            <i className="fas fa-plus-circle" style={{ marginRight: 'var(--spacing-sm)' }}></i>
-            Yeni İlan Ekle
-          </h3>
-        </div>
         <div className="card-body">
           <form onSubmit={submit}>
             {/* Emlak Tipi - En üstte */}
@@ -305,7 +285,7 @@ function AdminDashboard() {
             </div>
 
             {/* Emlak Özellikleri - Sadece konut tiplerinde göster */}
-            {form.emlak_tipi !== 'Arsa' && (
+            {(form.emlak_tipi === 'kiralikDaire' || form.emlak_tipi === 'satilikDaire') && (
               <>
                 <div className="d-flex gap-3" style={{ flexWrap: 'wrap' }}>
                   <div className="form-group" style={{ flex: 1, minWidth: '150px' }}>
