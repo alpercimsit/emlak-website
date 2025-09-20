@@ -7,32 +7,33 @@ import FilterPanel, { FilterState } from '../components/FilterPanel';
 export interface Listing {
   ilan_no: number;              // ilan_no int8 primary key
   ilan_tarihi: string;          // ilan_tarihi timestamp
-  baslik: string;              // baslik text
-  emlak_tipi: string;           // emlak_tipi text
-  fiyat: number;               // fiyat int8
-  detay: string;               // detay text
-  m2: number;                  // m2 int8
-  il: string;                  // il text
-  ilce: string;                // ilce text
-  mahalle: string;             // mahalle text
-  sahibinden_no: number;        // sahibinden_no int8
-  sahibi_ad?: string;          // sahibi_ad text (optional for non-admin users)
-  sahibi_tel?: string;         // sahibi_tel text (optional for non-admin users)
-  sahibinden_tarih?: string;     // sahibinden_tarih date
-  ada: number;                 // ada int8
-  parsel: number;              // parsel int8
-  oda_sayisi: string;           // oda_sayisi text
-  bina_yasi: string;            // bina_yasi text
-  bulundugu_kat: number;        // bulundugu_kat int8
-  kat_sayisi: number;           // kat_sayisi int8
-  isitma: string;              // isitma text
-  banyo_sayisi: number;         // banyo_sayisi int8
-  balkon: boolean;             // balkon bool
-  asansor: boolean;            // asansor bool
-  esyali: boolean;             // esyali bool
-  aidat: number;               // aidat int8
-  fotolar: string;             // fotolar text
-  gizli: boolean;              // gizli bool - admin can hide listings
+  baslik?: string;              // baslik text (nullable)
+  emlak_tipi: string;           // emlak_tipi text (required)
+  fiyat: number;               // fiyat int8 (required)
+  detay?: string;               // detay text (nullable)
+  m2?: number;                  // m2 int8 (nullable)
+  il?: string;                  // il text (nullable)
+  ilce?: string;                // ilce text (nullable)
+  mahalle?: string;             // mahalle text (nullable)
+  sahibinden_no?: number;        // sahibinden_no int8 (nullable)
+  sahibi_ad?: string;          // sahibi_ad text (nullable)
+  sahibi_tel?: string;         // sahibi_tel text (nullable)
+  sahibinden_tarih?: string;     // sahibinden_tarih date (nullable)
+  ada?: number;                 // ada int8 (nullable)
+  parsel?: number;              // parsel int8 (nullable)
+  oda_sayisi?: string;           // oda_sayisi text (nullable)
+  bina_yasi?: string;            // bina_yasi text (nullable)
+  bulundugu_kat?: number;        // bulundugu_kat int8 (nullable)
+  kat_sayisi?: number;           // kat_sayisi int8 (nullable)
+  isitma?: string;              // isitma text (nullable)
+  banyo_sayisi?: number;         // banyo_sayisi int8 (nullable)
+  balkon?: boolean;             // balkon bool (nullable)
+  asansor?: boolean;            // asansor bool (nullable)
+  esyali?: boolean;             // esyali bool (nullable)
+  aidat?: number;               // aidat int8 (nullable)
+  fotolar?: string;             // fotolar text (nullable)
+  gizli?: boolean;              // gizli bool - admin can hide listings (nullable)
+  not?: string;                 // not text - admin only field (nullable)
 }
 
 function ListingsPage() {
@@ -133,13 +134,13 @@ function ListingsPage() {
       if (filters.fiyatMax && listing.fiyat > parseInt(filters.fiyatMax)) return false;
 
       // Alan filtresi
-      if (filters.alanMin && listing.m2 < parseInt(filters.alanMin)) return false;
-      if (filters.alanMax && listing.m2 > parseInt(filters.alanMax)) return false;
+      if (filters.alanMin && listing.m2 && listing.m2 < parseInt(filters.alanMin)) return false;
+      if (filters.alanMax && listing.m2 && listing.m2 > parseInt(filters.alanMax)) return false;
 
       // Konum filtreleri
-      if (filters.il && !listing.il.toLowerCase().includes(filters.il.toLowerCase())) return false;
-      if (filters.ilce && !listing.ilce.toLowerCase().includes(filters.ilce.toLowerCase())) return false;
-      if (filters.mahalle && !listing.mahalle.toLowerCase().includes(filters.mahalle.toLowerCase())) return false;
+      if (filters.il && listing.il && !listing.il.toLowerCase().includes(filters.il.toLowerCase())) return false;
+      if (filters.ilce && listing.ilce && !listing.ilce.toLowerCase().includes(filters.ilce.toLowerCase())) return false;
+      if (filters.mahalle && listing.mahalle && !listing.mahalle.toLowerCase().includes(filters.mahalle.toLowerCase())) return false;
 
       // Arsa özel filtreleri
       if (filters.category === 'arsa') {
@@ -150,13 +151,13 @@ function ListingsPage() {
       // Konut özel filtreleri
       if (filters.category === 'konut') {
         // Bina yaşı filtresi
-        if (filters.binaYaslari.length > 0 && !filters.binaYaslari.includes(listing.bina_yasi)) return false;
+        if (filters.binaYaslari.length > 0 && listing.bina_yasi && !filters.binaYaslari.includes(listing.bina_yasi)) return false;
 
         // Oda sayısı filtresi
-        if (filters.odaSayilari.length > 0 && !filters.odaSayilari.includes(listing.oda_sayisi)) return false;
+        if (filters.odaSayilari.length > 0 && listing.oda_sayisi && !filters.odaSayilari.includes(listing.oda_sayisi)) return false;
 
         // Kat filtresi
-        if (filters.katlar.length > 0) {
+        if (filters.katlar.length > 0 && listing.bulundugu_kat != null) {
           const kat = listing.bulundugu_kat.toString();
           const katStr = kat === '0' ? 'Zemin' : kat === '-1' ? 'Bodrum' : 
                         parseInt(kat) >= 10 ? '10+' : kat;

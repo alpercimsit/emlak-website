@@ -96,7 +96,7 @@ function ListingList({ listings, isAdmin = false, onUpdate }: Props) {
           {/* Sağ taraf - İlan bilgileri */}
           <div className="listing-info">
             <div className="listing-header">
-              <div className="listing-title-compact">{l.baslik}</div>
+              <div className="listing-title-compact">{l.baslik || 'Başlık belirtilmemiş'}</div>
               <div className="listing-price-compact">
                 {l.fiyat.toLocaleString('tr-TR')} TL
               </div>
@@ -106,43 +106,43 @@ function ListingList({ listings, isAdmin = false, onUpdate }: Props) {
               <div className="meta-row">
                 <span>
                   <i className="fas fa-expand"></i>
-                  {l.m2} m²
+                  {l.m2 ? `${l.m2} m²` : 'Belirtilmemiş'}
                 </span>
-                {l.emlak_tipi === 'Arsa' && l.m2 > 0 && (
+                {l.emlak_tipi === 'Arsa' && l.m2 && l.m2 > 0 && (
                   <span>
                     <i className="fas fa-calculator"></i>
                     {Math.floor(l.fiyat / l.m2).toLocaleString('tr-TR')} TL/m²
                   </span>
                 )}
-                {l.emlak_tipi === 'Arsa' && l.ada && (
+                {l.emlak_tipi === 'Arsa' && (
                   <span>
                     <i className="fas fa-map"></i>
-                    Ada: {l.ada}
+                    Ada: {l.ada || 'Belirtilmemiş'}
                   </span>
                 )}
-                {l.emlak_tipi === 'Arsa' && l.parsel && (
+                {l.emlak_tipi === 'Arsa' && (
                   <span>
                     <i className="fas fa-map-pin"></i>
-                    Parsel: {l.parsel}
+                    Parsel: {l.parsel || 'Belirtilmemiş'}
                   </span>
                 )}
                 {l.emlak_tipi !== 'Arsa' && (
                   <span>
                     <i className="fas fa-bed"></i>
-                    {l.oda_sayisi}
+                    {l.oda_sayisi || 'Belirtilmemiş'}
                   </span>
                 )}
                 {l.emlak_tipi !== 'Arsa' && (
                   <span>
                     <i className="fas fa-layer-group"></i>
-                    {l.bulundugu_kat}. kat
+                    {l.bulundugu_kat != null ? `${l.bulundugu_kat}. kat` : 'Belirtilmemiş'}
                   </span>
                 )}
               </div>
               <div className="meta-row location">
                 <span>
                   <i className="fas fa-map-marker-alt"></i>
-                  {l.il} / {l.ilce} / {l.mahalle}
+                  {[l.il, l.ilce, l.mahalle].filter(Boolean).join(' / ') || 'Konum belirtilmemiş'}
                 </span>
               </div>
             </div>

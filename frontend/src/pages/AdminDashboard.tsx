@@ -35,7 +35,8 @@ function AdminDashboard() {
       esyali: false,
       aidat: 0,
       fotolar: '',
-      gizli: false
+      gizli: false,
+      not: ''
   });
   const navigate = useNavigate();
 
@@ -96,7 +97,8 @@ function AdminDashboard() {
         esyali: false,
         aidat: 0,
         fotolar: '',
-        gizli: false
+        gizli: false,
+        not: ''
       });
     } catch (err: any) {
       console.error('Error adding listing:', err);
@@ -155,7 +157,6 @@ function AdminDashboard() {
                 placeholder="Örn: Merkezi Konumda 2+1 Daire"
                 value={form.baslik}
                 onChange={handleChange}
-                required
               />
             </div>
 
@@ -170,7 +171,6 @@ function AdminDashboard() {
                 placeholder="İlan detaylarını yazın..."
                 value={form.detay}
                 onChange={handleChange}
-                required
               />
             </div>
 
@@ -206,7 +206,6 @@ function AdminDashboard() {
                   value={form.m2}
                   onChange={handleChange}
                   min="0"
-                  required
                 />
               </div>
             </div>
@@ -224,7 +223,6 @@ function AdminDashboard() {
                   placeholder="İstanbul"
                   value={form.il}
                   onChange={handleChange}
-                  required
                 />
               </div>
 
@@ -239,7 +237,6 @@ function AdminDashboard() {
                   placeholder="Kadıköy"
                   value={form.ilce}
                   onChange={handleChange}
-                  required
                 />
               </div>
 
@@ -254,7 +251,6 @@ function AdminDashboard() {
                   placeholder="Moda"
                   value={form.mahalle}
                   onChange={handleChange}
-                  required
                 />
               </div>
             </div>
@@ -272,7 +268,6 @@ function AdminDashboard() {
                   placeholder="Ahmet Yılmaz"
                   value={form.sahibi_ad}
                   onChange={handleChange}
-                  required
                 />
               </div>
 
@@ -287,7 +282,6 @@ function AdminDashboard() {
                   placeholder="0532 123 45 67"
                   value={form.sahibi_tel}
                   onChange={handleChange}
-                  required
                 />
               </div>
             </div>
@@ -376,7 +370,6 @@ function AdminDashboard() {
                       className="form-control"
                       value={form.oda_sayisi}
                       onChange={handleChange}
-                      required
                     >
                       <option value="1+0">1+0</option>
                       <option value="1+1">1+1</option>
@@ -398,7 +391,6 @@ function AdminDashboard() {
                       className="form-control"
                       value={form.bina_yasi}
                       onChange={handleChange}
-                      required
                     >
                       <option value="0-5 yıl">0-5 yıl</option>
                       <option value="6-10 yıl">6-10 yıl</option>
@@ -421,7 +413,6 @@ function AdminDashboard() {
                       value={form.bulundugu_kat}
                       onChange={handleChange}
                       min="0"
-                      required
                     />
                   </div>
 
@@ -438,7 +429,6 @@ function AdminDashboard() {
                       value={form.kat_sayisi}
                       onChange={handleChange}
                       min="1"
-                      required
                     />
                   </div>
                 </div>
@@ -455,7 +445,6 @@ function AdminDashboard() {
                       className="form-control"
                       value={form.isitma}
                       onChange={handleChange}
-                      required
                     >
                       <option value="Kombi">Kombi</option>
                       <option value="Merkezi">Merkezi</option>
@@ -478,7 +467,6 @@ function AdminDashboard() {
                       value={form.banyo_sayisi}
                       onChange={handleChange}
                       min="1"
-                      required
                     />
                   </div>
 
@@ -559,6 +547,22 @@ function AdminDashboard() {
                 <i className="fas fa-eye-slash" style={{ marginRight: 'var(--spacing-sm)' }}></i>
                 İlanı Gizle (Sadece admin görebilir)
               </label>
+            </div>
+
+            {/* Admin Not Alanı */}
+            <div className="form-group">
+              <label className="form-label">
+                <i className="fas fa-sticky-note" style={{ marginRight: 'var(--spacing-sm)' }}></i>
+                Not (Sadece admin görebilir)
+              </label>
+              <textarea
+                name="not"
+                className="form-control"
+                placeholder="Admin notları..."
+                value={form.not}
+                onChange={handleChange}
+                rows={2}
+              />
             </div>
 
             {/* Fotoğraflar */}

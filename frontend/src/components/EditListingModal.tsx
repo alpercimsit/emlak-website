@@ -41,7 +41,8 @@ function EditListingModal({ listing, isOpen, onClose, onUpdate }: Props) {
     esyali: false,
     aidat: 0,
     fotolar: '',
-    gizli: false
+    gizli: false,
+    not: ''
   });
 
   // Form'u mevcut ilan bilgileri ile doldur
@@ -73,7 +74,8 @@ function EditListingModal({ listing, isOpen, onClose, onUpdate }: Props) {
         esyali: listing.esyali || false,
         aidat: listing.aidat || 0,
         fotolar: listing.fotolar || '',
-        gizli: listing.gizli || false
+        gizli: listing.gizli || false,
+        not: listing.not || ''
       });
       
       // Convert existing photos from URL string to photo objects
@@ -203,7 +205,6 @@ function EditListingModal({ listing, isOpen, onClose, onUpdate }: Props) {
                 placeholder="Örn: Merkezi Konumda 2+1 Daire"
                 value={form.baslik}
                 onChange={handleChange}
-                required
               />
             </div>
 
@@ -218,7 +219,6 @@ function EditListingModal({ listing, isOpen, onClose, onUpdate }: Props) {
                 placeholder="İlan detaylarını yazın..."
                 value={form.detay}
                 onChange={handleChange}
-                required
                 rows={3}
               />
             </div>
@@ -255,7 +255,6 @@ function EditListingModal({ listing, isOpen, onClose, onUpdate }: Props) {
                   value={form.m2}
                   onChange={handleChange}
                   min="0"
-                  required
                 />
               </div>
             </div>
@@ -273,7 +272,6 @@ function EditListingModal({ listing, isOpen, onClose, onUpdate }: Props) {
                   placeholder="İstanbul"
                   value={form.il}
                   onChange={handleChange}
-                  required
                 />
               </div>
 
@@ -288,7 +286,6 @@ function EditListingModal({ listing, isOpen, onClose, onUpdate }: Props) {
                   placeholder="Kadıköy"
                   value={form.ilce}
                   onChange={handleChange}
-                  required
                 />
               </div>
 
@@ -303,7 +300,6 @@ function EditListingModal({ listing, isOpen, onClose, onUpdate }: Props) {
                   placeholder="Moda"
                   value={form.mahalle}
                   onChange={handleChange}
-                  required
                 />
               </div>
             </div>
@@ -321,7 +317,6 @@ function EditListingModal({ listing, isOpen, onClose, onUpdate }: Props) {
                   placeholder="Ahmet Yılmaz"
                   value={form.sahibi_ad}
                   onChange={handleChange}
-                  required
                 />
               </div>
 
@@ -336,7 +331,6 @@ function EditListingModal({ listing, isOpen, onClose, onUpdate }: Props) {
                   placeholder="0532 123 45 67"
                   value={form.sahibi_tel}
                   onChange={handleChange}
-                  required
                 />
               </div>
             </div>
@@ -425,7 +419,6 @@ function EditListingModal({ listing, isOpen, onClose, onUpdate }: Props) {
                       className="form-control"
                       value={form.oda_sayisi}
                       onChange={handleChange}
-                      required
                     >
                       <option value="1+0">1+0</option>
                       <option value="1+1">1+1</option>
@@ -447,7 +440,6 @@ function EditListingModal({ listing, isOpen, onClose, onUpdate }: Props) {
                       className="form-control"
                       value={form.bina_yasi}
                       onChange={handleChange}
-                      required
                     >
                       <option value="0-5 yıl">0-5 yıl</option>
                       <option value="6-10 yıl">6-10 yıl</option>
@@ -470,7 +462,6 @@ function EditListingModal({ listing, isOpen, onClose, onUpdate }: Props) {
                       value={form.bulundugu_kat}
                       onChange={handleChange}
                       min="0"
-                      required
                     />
                   </div>
 
@@ -487,7 +478,6 @@ function EditListingModal({ listing, isOpen, onClose, onUpdate }: Props) {
                       value={form.kat_sayisi}
                       onChange={handleChange}
                       min="1"
-                      required
                     />
                   </div>
                 </div>
@@ -504,7 +494,6 @@ function EditListingModal({ listing, isOpen, onClose, onUpdate }: Props) {
                       className="form-control"
                       value={form.isitma}
                       onChange={handleChange}
-                      required
                     >
                       <option value="Kombi">Kombi</option>
                       <option value="Merkezi">Merkezi</option>
@@ -527,7 +516,6 @@ function EditListingModal({ listing, isOpen, onClose, onUpdate }: Props) {
                       value={form.banyo_sayisi}
                       onChange={handleChange}
                       min="1"
-                      required
                     />
                   </div>
 
@@ -608,6 +596,22 @@ function EditListingModal({ listing, isOpen, onClose, onUpdate }: Props) {
                 <i className="fas fa-eye-slash" style={{ marginRight: 'var(--spacing-sm)' }}></i>
                 İlanı Gizle (Sadece admin görebilir)
               </label>
+            </div>
+
+            {/* Admin Not Alanı */}
+            <div className="form-group">
+              <label className="form-label">
+                <i className="fas fa-sticky-note" style={{ marginRight: 'var(--spacing-sm)' }}></i>
+                Not (Sadece admin görebilir)
+              </label>
+              <textarea
+                name="not"
+                className="form-control"
+                placeholder="Admin notları..."
+                value={form.not}
+                onChange={handleChange}
+                rows={2}
+              />
             </div>
 
             {/* Fotoğraflar */}

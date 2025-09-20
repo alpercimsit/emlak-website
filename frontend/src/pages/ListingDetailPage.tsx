@@ -172,7 +172,7 @@ function ListingDetailPage() {
       {/* İlan Başlığı */}
       <div className="d-flex justify-between align-center mb-4" style={{ marginTop: 'var(--spacing-lg)' }}>
         <h1 style={{ color: 'var(--text-primary)', margin: 0, fontSize: '1.5rem', fontWeight: 600 }}>
-          {listing.baslik}
+          {listing.baslik || 'Başlık belirtilmemiş'}
         </h1>
         
         {isAdmin && (
@@ -303,14 +303,12 @@ function ListingDetailPage() {
           )}
           
           {/* İlan Açıklaması - Fotoğrafların altında */}
-          {listing.detay && (
-            <div className="description-section" style={{ marginTop: 'var(--spacing-lg)' }}>
-              <h3>İlan Açıklaması</h3>
-              <div className="description-content">
-                {listing.detay}
-              </div>
+          <div className="description-section" style={{ marginTop: 'var(--spacing-lg)' }}>
+            <h3>İlan Açıklaması</h3>
+            <div className="description-content">
+              {listing.detay || 'Açıklama belirtilmemiş'}
             </div>
-          )}
+          </div>
         </div>
 
         {/* Sağ Taraf - Bilgiler ve İletişim */}
@@ -325,7 +323,7 @@ function ListingDetailPage() {
           {/* Konum - Fiyatın altında */}
           <div style={{ textAlign: 'center', padding: 'var(--spacing-sm)', background: 'var(--bg-secondary)', borderRadius: 'var(--radius-sm)', marginBottom: 'var(--spacing-md)' }}>
             <div style={{ fontSize: '1rem', color: 'var(--text-primary)', fontWeight: 500 }}>
-              {listing.il} / {listing.ilce} / {listing.mahalle}
+              {[listing.il, listing.ilce, listing.mahalle].filter(Boolean).join(' / ') || 'Konum belirtilmemiş'}
             </div>
           </div>
 
@@ -364,11 +362,11 @@ function ListingDetailPage() {
               <div className="info-item">
                 <i className="fas fa-expand"></i>
                 <span className="label">Alan:</span>
-                <span className="value">{listing.m2} m²</span>
+                <span className="value">{listing.m2 ? `${listing.m2} m²` : 'Belirtilmemiş'}</span>
               </div>
               
               {/* Arsa tipli ilanlar için m² fiyatı */}
-              {listing.emlak_tipi === 'Arsa' && listing.m2 > 0 && (
+              {listing.emlak_tipi === 'Arsa' && listing.m2 && listing.m2 > 0 && (
                 <div className="info-item">
                   <i className="fas fa-calculator"></i>
                   <span className="label">m² Fiyatı:</span>
@@ -382,32 +380,32 @@ function ListingDetailPage() {
                   <div className="info-item">
                     <i className="fas fa-bed"></i>
                     <span className="label">Oda Sayısı:</span>
-                    <span className="value">{listing.oda_sayisi}</span>
+                    <span className="value">{listing.oda_sayisi || 'Belirtilmemiş'}</span>
                   </div>
                   <div className="info-item">
                     <i className="fas fa-building"></i>
                     <span className="label">Bina Yaşı:</span>
-                    <span className="value">{listing.bina_yasi}</span>
+                    <span className="value">{listing.bina_yasi || 'Belirtilmemiş'}</span>
                   </div>
                   <div className="info-item">
                     <i className="fas fa-layer-group"></i>
                     <span className="label">Kat:</span>
-                    <span className="value">{listing.bulundugu_kat} / {listing.kat_sayisi}</span>
+                    <span className="value">{listing.bulundugu_kat != null && listing.kat_sayisi != null ? `${listing.bulundugu_kat} / ${listing.kat_sayisi}` : 'Belirtilmemiş'}</span>
                   </div>
                   <div className="info-item">
                     <i className="fas fa-fire"></i>
                     <span className="label">Isıtma:</span>
-                    <span className="value">{listing.isitma}</span>
+                    <span className="value">{listing.isitma || 'Belirtilmemiş'}</span>
                   </div>
                   <div className="info-item">
                     <i className="fas fa-bath"></i>
                     <span className="label">Banyo:</span>
-                    <span className="value">{listing.banyo_sayisi}</span>
+                    <span className="value">{listing.banyo_sayisi != null ? listing.banyo_sayisi : 'Belirtilmemiş'}</span>
                   </div>
                   <div className="info-item">
                     <i className="fas fa-money-bill-wave"></i>
                     <span className="label">Aidat:</span>
-                    <span className="value">{listing.aidat > 0 ? `${listing.aidat} TL` : 'Yok'}</span>
+                    <span className="value">{listing.aidat != null && listing.aidat > 0 ? `${listing.aidat} TL` : 'Yok'}</span>
                   </div>
                 </>
               )}
@@ -439,38 +437,34 @@ function ListingDetailPage() {
           </div>
 
           {/* Kadastro Bilgileri - Sadece arsa tipinde göster */}
-          {listing.emlak_tipi === 'Arsa' && (listing.ada || listing.parsel) && (
+          {listing.emlak_tipi === 'Arsa' && (
             <div className="info-section">
               <h3>Kadastro Bilgileri</h3>
               <div className="info-grid">
-                {listing.ada && (
-                  <div className="info-item">
-                    <i className="fas fa-map"></i>
-                    <span className="label">Ada No:</span>
-                    <span className="value">{listing.ada}</span>
-                  </div>
-                )}
-                {listing.parsel && (
-                  <div className="info-item">
-                    <i className="fas fa-map-pin"></i>
-                    <span className="label">Parsel No:</span>
-                    <span className="value">{listing.parsel}</span>
-                  </div>
-                )}
+                <div className="info-item">
+                  <i className="fas fa-map"></i>
+                  <span className="label">Ada No:</span>
+                  <span className="value">{listing.ada || 'Belirtilmemiş'}</span>
+                </div>
+                <div className="info-item">
+                  <i className="fas fa-map-pin"></i>
+                  <span className="label">Parsel No:</span>
+                  <span className="value">{listing.parsel || 'Belirtilmemiş'}</span>
+                </div>
               </div>
             </div>
           )}
 
 
           {/* İlan Sahibi Bilgileri - Dönen Kart */}
-          {isAdmin && (listing.sahibi_ad || listing.sahibi_tel) && (
+          {isAdmin && (
             <div className="owner-card-container" style={{ marginBottom: 'var(--spacing-md)' }}>
               <div 
                 className={`owner-flip-card ${showOwnerInfo ? 'flipped' : ''}`}
                 onClick={() => setShowOwnerInfo(!showOwnerInfo)}
                 style={{
                   width: '100%',
-                  height: '120px',
+                  height: '140px',
                   perspective: '1000px',
                   cursor: 'pointer'
                 }}
@@ -514,35 +508,41 @@ function ListingDetailPage() {
                     borderRadius: 'var(--radius-md)',
                     transform: 'rotateY(180deg)',
                     padding: 'var(--spacing-md)',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    justifyContent: 'center',
-                    gap: 'var(--spacing-xs)'
+                    display: 'grid',
+                    gridTemplateColumns: '1fr 1fr',
+                    gridTemplateRows: '1fr 1fr auto',
+                    gap: 'var(--spacing-xs)',
+                    alignItems: 'center'
                   }}>
-                    {listing.sahibi_ad && (
-                      <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-sm)', fontSize: '0.9rem' }}>
-                        <i className="fas fa-user" style={{ color: 'var(--primary-color)', width: '16px' }}></i>
-                        <span>{listing.sahibi_ad}</span>
-                      </div>
-                    )}
-                    {listing.sahibi_tel && (
-                      <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-sm)', fontSize: '0.9rem' }}>
-                        <i className="fas fa-phone" style={{ color: 'var(--primary-color)', width: '16px' }}></i>
-                        <span>{listing.sahibi_tel}</span>
-                      </div>
-                    )}
-                    {listing.sahibinden_no && (
-                      <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-sm)', fontSize: '0.9rem' }}>
-                        <i className="fas fa-hashtag" style={{ color: 'var(--primary-color)', width: '16px' }}></i>
-                        <span>Sahibinden No: {listing.sahibinden_no}</span>
-                      </div>
-                    )}
-                    {listing.sahibinden_tarih && (
-                      <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-sm)', fontSize: '0.9rem' }}>
-                        <i className="fas fa-calendar" style={{ color: 'var(--primary-color)', width: '16px' }}></i>
-                        <span>Sahibinden Tarih: {new Date(listing.sahibinden_tarih).toLocaleDateString('tr-TR')}</span>
-                      </div>
-                    )}
+                    {/* Sol üst - Sahibi adı */}
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-xs)', fontSize: '0.85rem', gridColumn: '1', gridRow: '1' }}>
+                      <i className="fas fa-user" style={{ color: 'var(--primary-color)', width: '12px' }}></i>
+                      <span>{listing.sahibi_ad || 'Belirtilmemiş'}</span>
+                    </div>
+                    
+                    {/* Sağ üst - Sahibinden ilan no */}
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-xs)', fontSize: '0.85rem', gridColumn: '2', gridRow: '1' }}>
+                      <i className="fas fa-hashtag" style={{ color: 'var(--primary-color)', width: '12px' }}></i>
+                      <span>{listing.sahibinden_no || 'Belirtilmemiş'}</span>
+                    </div>
+                    
+                    {/* Sol alt - Sahibi tel */}
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-xs)', fontSize: '0.85rem', gridColumn: '1', gridRow: '2' }}>
+                      <i className="fas fa-phone" style={{ color: 'var(--primary-color)', width: '12px' }}></i>
+                      <span>{listing.sahibi_tel || 'Belirtilmemiş'}</span>
+                    </div>
+                    
+                    {/* Sağ alt - Sahibinden tarih */}
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-xs)', fontSize: '0.85rem', gridColumn: '2', gridRow: '2' }}>
+                      <i className="fas fa-calendar" style={{ color: 'var(--primary-color)', width: '12px' }}></i>
+                      <span>{listing.sahibinden_tarih ? new Date(listing.sahibinden_tarih).toLocaleDateString('tr-TR') : 'Belirtilmemiş'}</span>
+                    </div>
+                    
+                    {/* Alt - Not */}
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-xs)', fontSize: '0.8rem', gridColumn: '1 / 3', gridRow: '3', borderTop: '1px solid var(--border-color)', paddingTop: 'var(--spacing-xs)' }}>
+                      <i className="fas fa-sticky-note" style={{ color: 'var(--primary-color)', width: '12px' }}></i>
+                      <span style={{ wordBreak: 'break-word' }}>{listing.not || 'Not yok'}</span>
+                    </div>
                   </div>
                 </div>
               </div>
