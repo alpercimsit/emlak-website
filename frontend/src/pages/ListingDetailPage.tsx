@@ -360,6 +360,11 @@ function ListingDetailPage() {
                 <span className="value">{formatEmlakTipi(listing.emlak_tipi)}</span>
               </div>
               <div className="info-item">
+                <i className="fas fa-calendar-plus"></i>
+                <span className="label">İlan Tarihi:</span>
+                <span className="value">{listing.ilan_tarihi ? new Date(listing.ilan_tarihi).toLocaleDateString('tr-TR') : 'Belirtilmemiş'}</span>
+              </div>
+              <div className="info-item">
                 <i className="fas fa-expand"></i>
                 <span className="label">Alan:</span>
                 <span className="value">{listing.m2 ? `${listing.m2} m²` : 'Belirtilmemiş'}</span>
@@ -389,8 +394,13 @@ function ListingDetailPage() {
                   </div>
                   <div className="info-item">
                     <i className="fas fa-layer-group"></i>
-                    <span className="label">Kat:</span>
-                    <span className="value">{listing.bulundugu_kat != null && listing.kat_sayisi != null ? `${listing.bulundugu_kat} / ${listing.kat_sayisi}` : 'Belirtilmemiş'}</span>
+                    <span className="label">Bulunduğu Kat:</span>
+                    <span className="value">{listing.bulundugu_kat != null ? listing.bulundugu_kat : 'Belirtilmemiş'}</span>
+                  </div>
+                  <div className="info-item">
+                    <i className="fas fa-building"></i>
+                    <span className="label">Kat Sayısı:</span>
+                    <span className="value">{listing.kat_sayisi != null ? listing.kat_sayisi : 'Belirtilmemiş'}</span>
                   </div>
                   <div className="info-item">
                     <i className="fas fa-fire"></i>

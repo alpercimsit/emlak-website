@@ -138,6 +138,12 @@ function ListingList({ listings, isAdmin = false, onUpdate }: Props) {
                     {l.bulundugu_kat != null ? `${l.bulundugu_kat}. kat` : 'Belirtilmemiş'}
                   </span>
                 )}
+                {l.emlak_tipi !== 'Arsa' && l.kat_sayisi != null && (
+                  <span>
+                    <i className="fas fa-building"></i>
+                    {l.kat_sayisi} katlı
+                  </span>
+                )}
               </div>
               <div className="meta-row location">
                 <span>
