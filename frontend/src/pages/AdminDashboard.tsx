@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import api from '../utils/api';
 import { Listing } from './ListingsPage';
 import PhotoUpload from '../components/PhotoUpload';
+import LocationSelector from '../components/LocationSelector';
 
 function AdminDashboard() {
   const [feedback, setFeedback] = useState('');
@@ -38,7 +39,30 @@ function AdminDashboard() {
       gizli: false,
       not: ''
   });
+
+  // Location data for LocationSelector component
+  const [locationData, setLocationData] = useState<{
+    province?: { id: number; name: string };
+    district?: { id: number; name: string };
+    neighborhood?: { id: number; name: string };
+  }>({});
   const navigate = useNavigate();
+
+  // Handle location change from LocationSelector
+  const handleLocationChange = (location: {
+    province?: { id: number; name: string };
+    district?: { id: number; name: string };
+    neighborhood?: { id: number; name: string };
+  }) => {
+    setLocationData(location);
+    // Update form state with location names for backward compatibility
+    setForm(prev => ({
+      ...prev,
+      il: location.province?.name || '',
+      ilce: location.district?.name || '',
+      mahalle: location.neighborhood?.name || ''
+    }));
+  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target;
@@ -211,49 +235,10 @@ function AdminDashboard() {
             </div>
 
             {/* Konum Bilgileri */}
-            <div className="d-flex gap-3" style={{ flexWrap: 'wrap' }}>
-              <div className="form-group" style={{ flex: 1, minWidth: '150px' }}>
-                <label className="form-label">
-                  <i className="fas fa-map-marker-alt" style={{ marginRight: 'var(--spacing-sm)' }}></i>
-                  İl
-                </label>
-                <input
-                  name="il"
-                  className="form-control"
-                  placeholder="İstanbul"
-                  value={form.il}
-                  onChange={handleChange}
-                />
-              </div>
-
-              <div className="form-group" style={{ flex: 1, minWidth: '150px' }}>
-                <label className="form-label">
-                  <i className="fas fa-map-marker-alt" style={{ marginRight: 'var(--spacing-sm)' }}></i>
-                  İlçe
-                </label>
-                <input
-                  name="ilce"
-                  className="form-control"
-                  placeholder="Kadıköy"
-                  value={form.ilce}
-                  onChange={handleChange}
-                />
-              </div>
-
-              <div className="form-group" style={{ flex: 1, minWidth: '150px' }}>
-                <label className="form-label">
-                  <i className="fas fa-map-marker-alt" style={{ marginRight: 'var(--spacing-sm)' }}></i>
-                  Mahalle
-                </label>
-                <input
-                  name="mahalle"
-                  className="form-control"
-                  placeholder="Moda"
-                  value={form.mahalle}
-                  onChange={handleChange}
-                />
-              </div>
-            </div>
+            <LocationSelector
+              onLocationChange={handleLocationChange}
+              initialLocation={locationData}
+            />
 
 
             {/* Arsa Özellikleri - Sadece arsa tipinde göster */}

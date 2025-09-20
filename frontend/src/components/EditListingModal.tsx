@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Listing } from '../pages/ListingsPage';
 import api from '../utils/api';
 import PhotoUpload from './PhotoUpload';
+import LocationSelector from './LocationSelector';
 
 interface Props {
   listing: Listing;
@@ -45,6 +46,13 @@ function EditListingModal({ listing, isOpen, onClose, onUpdate }: Props) {
     not: ''
   });
 
+  // Location data for LocationSelector component
+  const [locationData, setLocationData] = useState<{
+    province?: { id: number; name: string };
+    district?: { id: number; name: string };
+    neighborhood?: { id: number; name: string };
+  }>({});
+
   // Form'u mevcut ilan bilgileri ile doldur
   useEffect(() => {
     if (listing && isOpen) {
@@ -77,14 +85,39 @@ function EditListingModal({ listing, isOpen, onClose, onUpdate }: Props) {
         gizli: listing.gizli || false,
         not: listing.not || ''
       });
-      
+
+      // Set location data for LocationSelector
+      if (listing.il || listing.ilce || listing.mahalle) {
+        setLocationData({
+          province: listing.il ? { id: 0, name: listing.il } : undefined,
+          district: listing.ilce ? { id: 0, name: listing.ilce } : undefined,
+          neighborhood: listing.mahalle ? { id: 0, name: listing.mahalle } : undefined
+        });
+      }
+
       // Convert existing photos from URL string to photo objects
       setPhotos(api.urlStringToPhotos(listing.fotolar || ''));
-      
+
       setFeedback('');
       setFeedbackType('');
     }
   }, [listing, isOpen]);
+
+  // Handle location change from LocationSelector
+  const handleLocationChange = (location: {
+    province?: { id: number; name: string };
+    district?: { id: number; name: string };
+    neighborhood?: { id: number; name: string };
+  }) => {
+    setLocationData(location);
+    // Update form state with location names for backward compatibility
+    setForm(prev => ({
+      ...prev,
+      il: location.province?.name || '',
+      ilce: location.district?.name || '',
+      mahalle: location.neighborhood?.name || ''
+    }));
+  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target;
@@ -260,49 +293,10 @@ function EditListingModal({ listing, isOpen, onClose, onUpdate }: Props) {
             </div>
 
             {/* Konum Bilgileri */}
-            <div className="d-flex gap-3" style={{ flexWrap: 'wrap' }}>
-              <div className="form-group" style={{ flex: 1, minWidth: '150px' }}>
-                <label className="form-label">
-                  <i className="fas fa-map-marker-alt" style={{ marginRight: 'var(--spacing-sm)' }}></i>
-                  İl
-                </label>
-                <input
-                  name="il"
-                  className="form-control"
-                  placeholder="İstanbul"
-                  value={form.il}
-                  onChange={handleChange}
-                />
-              </div>
-
-              <div className="form-group" style={{ flex: 1, minWidth: '150px' }}>
-                <label className="form-label">
-                  <i className="fas fa-map-marker-alt" style={{ marginRight: 'var(--spacing-sm)' }}></i>
-                  İlçe
-                </label>
-                <input
-                  name="ilce"
-                  className="form-control"
-                  placeholder="Kadıköy"
-                  value={form.ilce}
-                  onChange={handleChange}
-                />
-              </div>
-
-              <div className="form-group" style={{ flex: 1, minWidth: '150px' }}>
-                <label className="form-label">
-                  <i className="fas fa-map-marker-alt" style={{ marginRight: 'var(--spacing-sm)' }}></i>
-                  Mahalle
-                </label>
-                <input
-                  name="mahalle"
-                  className="form-control"
-                  placeholder="Moda"
-                  value={form.mahalle}
-                  onChange={handleChange}
-                />
-              </div>
-            </div>
+            <LocationSelector
+              onLocationChange={handleLocationChange}
+              initialLocation={locationData}
+            />
 
 
             {/* Arsa Özellikleri - Sadece arsa tipinde göster */}

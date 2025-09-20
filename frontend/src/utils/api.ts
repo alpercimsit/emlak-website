@@ -7,6 +7,32 @@ const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYm
 // Create Supabase client
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
+// Cache management
+class ApiCache {
+  private static cache: Map<string, { data: any; timestamp: number }> = new Map();
+  private static readonly CACHE_DURATION = 24 * 60 * 60 * 1000; // 24 hours
+
+  static get(key: string): any | null {
+    const item = this.cache.get(key);
+    if (!item) return null;
+
+    if (Date.now() - item.timestamp > this.CACHE_DURATION) {
+      this.cache.delete(key);
+      return null;
+    }
+
+    return item.data;
+  }
+
+  static set(key: string, data: any): void {
+    this.cache.set(key, { data, timestamp: Date.now() });
+  }
+
+  static clear(): void {
+    this.cache.clear();
+  }
+}
+
 // Helper functions for API calls
 export const api = {
   // Authentication
@@ -370,13 +396,110 @@ export const api = {
   // Helper function to convert URL string to photo objects
   urlStringToPhotos(urlString: string): Array<{id: string, url: string}> {
     if (!urlString) return [];
-    
+
     return urlString.split(',')
       .filter(url => url.trim())
       .map((url, index) => ({
         id: `existing_${index}_${Date.now()}`,
         url: url.trim()
       }));
+  },
+
+  // TürkiyeAPI integration for location selection
+  async getProvinces(): Promise<Array<{id: number, name: string}>> {
+    const cacheKey = 'turkey_api_provinces';
+
+    // Check cache first
+    const cachedData = ApiCache.get(cacheKey);
+    if (cachedData) {
+      return cachedData;
+    }
+
+    try {
+      const response = await fetch('https://turkiyeapi.dev/api/v1/provinces');
+      const result = await response.json();
+
+      if (result.status === 'OK') {
+        const provinces = result.data.map((province: any) => ({
+          id: province.id,
+          name: province.name
+        }));
+
+        // Cache the result
+        ApiCache.set(cacheKey, provinces);
+
+        return provinces;
+      } else {
+        throw new Error('Failed to fetch provinces');
+      }
+    } catch (error) {
+      console.error('Error fetching provinces:', error);
+      throw error;
+    }
+  },
+
+  async getDistricts(provinceId: number): Promise<Array<{id: number, name: string}>> {
+    const cacheKey = `turkey_api_districts_${provinceId}`;
+
+    // Check cache first
+    const cachedData = ApiCache.get(cacheKey);
+    if (cachedData) {
+      return cachedData;
+    }
+
+    try {
+      const response = await fetch(`https://turkiyeapi.dev/api/v1/provinces/${provinceId}`);
+      const result = await response.json();
+
+      if (result.status === 'OK') {
+        const districts = result.data.districts.map((district: any) => ({
+          id: district.id,
+          name: district.name
+        }));
+
+        // Cache the result
+        ApiCache.set(cacheKey, districts);
+
+        return districts;
+      } else {
+        throw new Error('Failed to fetch districts');
+      }
+    } catch (error) {
+      console.error('Error fetching districts:', error);
+      throw error;
+    }
+  },
+
+  async getNeighborhoods(districtId: number): Promise<Array<{id: number, name: string}>> {
+    const cacheKey = `turkey_api_neighborhoods_${districtId}`;
+
+    // Check cache first
+    const cachedData = ApiCache.get(cacheKey);
+    if (cachedData) {
+      return cachedData;
+    }
+
+    try {
+      const response = await fetch(`https://turkiyeapi.dev/api/v1/districts/${districtId}`);
+      const result = await response.json();
+
+      if (result.status === 'OK') {
+        const neighborhoods = result.data.neighborhoods.map((neighborhood: any) => ({
+          id: neighborhood.id,
+          name: neighborhood.name
+        }));
+
+        // Cache the result
+        ApiCache.set(cacheKey, neighborhoods);
+
+        return neighborhoods;
+      } else {
+        throw new Error('Failed to fetch neighborhoods');
+      }
+    } catch (error) {
+      console.error('Error fetching neighborhoods:', error);
+      throw error;
+    }
   }
 };
 
