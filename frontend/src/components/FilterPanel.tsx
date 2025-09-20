@@ -13,6 +13,9 @@ export interface FilterState {
   il: string;
   ilce: string;
   mahalle: string;
+  // Arsa özel filtreleri
+  adaNo: string;
+  parselNo: string;
   // Konut özel filtreleri
   binaYaslari: string[];
   odaSayilari: string[];
@@ -54,6 +57,8 @@ function FilterPanel({ filters, onFiltersChange, totalCount }: Props) {
       il: '',
       ilce: '',
       mahalle: '',
+      adaNo: '',
+      parselNo: '',
       binaYaslari: [],
       odaSayilari: [],
       katlar: []
@@ -255,6 +260,41 @@ function FilterPanel({ filters, onFiltersChange, totalCount }: Props) {
             onChange={(e) => handleFilterChange('mahalle', e.target.value)}
           />
         </div>
+
+        {/* Arsa Özel Filtreleri */}
+        {filters.category === 'arsa' && (
+          <>
+            {/* Ada No */}
+            <div className="filter-group">
+              <label className="filter-label">
+                <i className="fas fa-map"></i>
+                Ada No
+              </label>
+              <input
+                type="text"
+                className="filter-input"
+                placeholder="Ada numarası..."
+                value={filters.adaNo}
+                onChange={(e) => handleFilterChange('adaNo', e.target.value)}
+              />
+            </div>
+
+            {/* Parsel No */}
+            <div className="filter-group">
+              <label className="filter-label">
+                <i className="fas fa-map-pin"></i>
+                Parsel No
+              </label>
+              <input
+                type="text"
+                className="filter-input"
+                placeholder="Parsel numarası..."
+                value={filters.parselNo}
+                onChange={(e) => handleFilterChange('parselNo', e.target.value)}
+              />
+            </div>
+          </>
+        )}
 
         {/* Konut Özel Filtreleri */}
         {filters.category === 'konut' && (

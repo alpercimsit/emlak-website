@@ -18,7 +18,7 @@ export interface Listing {
   sahibinden_no: number;        // sahibinden_no int8
   sahibi_ad?: string;          // sahibi_ad text (optional for non-admin users)
   sahibi_tel?: string;         // sahibi_tel text (optional for non-admin users)
-  sahibinden_tarih: string;     // sahibinden_tarih date
+  sahibinden_tarih?: string;     // sahibinden_tarih date
   ada: number;                 // ada int8
   parsel: number;              // parsel int8
   oda_sayisi: string;           // oda_sayisi text
@@ -63,6 +63,8 @@ function ListingsPage() {
       il: '',
       ilce: '',
       mahalle: '',
+      adaNo: '',
+      parselNo: '',
       binaYaslari: [],
       odaSayilari: [],
       katlar: []
@@ -138,6 +140,12 @@ function ListingsPage() {
       if (filters.il && !listing.il.toLowerCase().includes(filters.il.toLowerCase())) return false;
       if (filters.ilce && !listing.ilce.toLowerCase().includes(filters.ilce.toLowerCase())) return false;
       if (filters.mahalle && !listing.mahalle.toLowerCase().includes(filters.mahalle.toLowerCase())) return false;
+
+      // Arsa özel filtreleri
+      if (filters.category === 'arsa') {
+        if (filters.adaNo && !listing.ada?.toString().includes(filters.adaNo)) return false;
+        if (filters.parselNo && !listing.parsel?.toString().includes(filters.parselNo)) return false;
+      }
 
       // Konut özel filtreleri
       if (filters.category === 'konut') {
