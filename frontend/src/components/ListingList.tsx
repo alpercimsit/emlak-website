@@ -108,6 +108,24 @@ function ListingList({ listings, isAdmin = false, onUpdate }: Props) {
                   <i className="fas fa-expand"></i>
                   {l.m2} m²
                 </span>
+                {l.emlak_tipi === 'Arsa' && l.m2 > 0 && (
+                  <span>
+                    <i className="fas fa-calculator"></i>
+                    {Math.floor(l.fiyat / l.m2).toLocaleString('tr-TR')} TL/m²
+                  </span>
+                )}
+                {l.emlak_tipi === 'Arsa' && l.ada && (
+                  <span>
+                    <i className="fas fa-map"></i>
+                    Ada: {l.ada}
+                  </span>
+                )}
+                {l.emlak_tipi === 'Arsa' && l.parsel && (
+                  <span>
+                    <i className="fas fa-map-pin"></i>
+                    Parsel: {l.parsel}
+                  </span>
+                )}
                 {l.emlak_tipi !== 'Arsa' && (
                   <span>
                     <i className="fas fa-bed"></i>

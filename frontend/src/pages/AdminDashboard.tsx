@@ -12,7 +12,7 @@ function AdminDashboard() {
   const [form, setForm] = useState<Partial<Listing>>({
     baslik: '',
     detay: '',
-        emlak_tipi: 'Arsa',
+    emlak_tipi: 'Arsa',
     fiyat: 0,
     m2: 0,
     il: '',
@@ -20,14 +20,18 @@ function AdminDashboard() {
     mahalle: '',
     sahibi_ad: '',
     sahibi_tel: '',
+    ada: 0,
+    parsel: 0,
+    sahibinden_no: 0,
+    sahibinden_tarih: '',
     oda_sayisi: '2+1',
-    bina_yasi: '0-5 yıl',
+    bina_yasi: '6-10 yıl',
     bulundugu_kat: 1,
     kat_sayisi: 5,
     isitma: 'Kombi', // Will be mapped to 'isitma' in database
     banyo_sayisi: 1,
-      balkon: false,
-      asansor: false,
+      balkon: true,
+      asansor: true,
       esyali: false,
       aidat: 0,
       fotolar: '',
@@ -77,6 +81,10 @@ function AdminDashboard() {
         mahalle: '',
         sahibi_ad: '',
         sahibi_tel: '',
+        ada: 0,
+        parsel: 0,
+        sahibinden_no: 0,
+        sahibinden_tarih: '',
         oda_sayisi: '2+1',
         bina_yasi: '0-5 yıl',
         bulundugu_kat: 1,
@@ -283,6 +291,76 @@ function AdminDashboard() {
                 />
               </div>
             </div>
+
+            {/* Sahibinden Bilgileri */}
+            <div className="d-flex gap-3" style={{ flexWrap: 'wrap' }}>
+              <div className="form-group" style={{ flex: 1, minWidth: '200px' }}>
+                <label className="form-label">
+                  <i className="fas fa-hashtag" style={{ marginRight: 'var(--spacing-sm)' }}></i>
+                  Sahibinden İlan No
+                </label>
+                <input
+                  type="number"
+                  name="sahibinden_no"
+                  className="form-control"
+                  placeholder="123456789"
+                  value={form.sahibinden_no}
+                  onChange={handleChange}
+                  min="0"
+                />
+              </div>
+
+              <div className="form-group" style={{ flex: 1, minWidth: '200px' }}>
+                <label className="form-label">
+                  <i className="fas fa-calendar" style={{ marginRight: 'var(--spacing-sm)' }}></i>
+                  Sahibinden Tarih
+                </label>
+                <input
+                  type="date"
+                  name="sahibinden_tarih"
+                  className="form-control"
+                  value={form.sahibinden_tarih}
+                  onChange={handleChange}
+                />
+              </div>
+            </div>
+
+            {/* Arsa Özellikleri - Sadece arsa tipinde göster */}
+            {form.emlak_tipi === 'Arsa' && (
+              <div className="d-flex gap-3" style={{ flexWrap: 'wrap' }}>
+                <div className="form-group" style={{ flex: 1, minWidth: '150px' }}>
+                  <label className="form-label">
+                    <i className="fas fa-map" style={{ marginRight: 'var(--spacing-sm)' }}></i>
+                    Ada No
+                  </label>
+                  <input
+                    type="number"
+                    name="ada"
+                    className="form-control"
+                    placeholder="123"
+                    value={form.ada}
+                    onChange={handleChange}
+                    min="0"
+                  />
+                </div>
+
+                <div className="form-group" style={{ flex: 1, minWidth: '150px' }}>
+                  <label className="form-label">
+                    <i className="fas fa-map-pin" style={{ marginRight: 'var(--spacing-sm)' }}></i>
+                    Parsel No
+                  </label>
+                  <input
+                    type="number"
+                    name="parsel"
+                    className="form-control"
+                    placeholder="45"
+                    value={form.parsel}
+                    onChange={handleChange}
+                    min="0"
+                  />
+                </div>
+              </div>
+            )}
 
             {/* Emlak Özellikleri - Sadece konut tiplerinde göster */}
             {(form.emlak_tipi === 'kiralikDaire' || form.emlak_tipi === 'satilikDaire') && (

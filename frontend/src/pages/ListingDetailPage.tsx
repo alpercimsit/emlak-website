@@ -367,6 +367,15 @@ function ListingDetailPage() {
                 <span className="value">{listing.m2} m²</span>
               </div>
               
+              {/* Arsa tipli ilanlar için m² fiyatı */}
+              {listing.emlak_tipi === 'Arsa' && listing.m2 > 0 && (
+                <div className="info-item">
+                  <i className="fas fa-calculator"></i>
+                  <span className="label">m² Fiyatı:</span>
+                  <span className="value">{Math.floor(listing.fiyat / listing.m2).toLocaleString('tr-TR')} TL/m²</span>
+                </div>
+              )}
+              
               {/* Sadece konut tiplerinde göster */}
               {listing.emlak_tipi !== 'Arsa' && (
                 <>
@@ -429,22 +438,22 @@ function ListingDetailPage() {
             )}
           </div>
 
-          {/* Kadastro Bilgileri */}
-          {(listing.ada || listing.parsel) && (
+          {/* Kadastro Bilgileri - Sadece arsa tipinde göster */}
+          {listing.emlak_tipi === 'Arsa' && (listing.ada || listing.parsel) && (
             <div className="info-section">
-              <h3>Kadastro</h3>
+              <h3>Kadastro Bilgileri</h3>
               <div className="info-grid">
                 {listing.ada && (
                   <div className="info-item">
                     <i className="fas fa-map"></i>
-                    <span className="label">Ada:</span>
+                    <span className="label">Ada No:</span>
                     <span className="value">{listing.ada}</span>
                   </div>
                 )}
                 {listing.parsel && (
                   <div className="info-item">
                     <i className="fas fa-map-pin"></i>
-                    <span className="label">Parsel:</span>
+                    <span className="label">Parsel No:</span>
                     <span className="value">{listing.parsel}</span>
                   </div>
                 )}
@@ -525,7 +534,13 @@ function ListingDetailPage() {
                     {listing.sahibinden_no && (
                       <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-sm)', fontSize: '0.9rem' }}>
                         <i className="fas fa-hashtag" style={{ color: 'var(--primary-color)', width: '16px' }}></i>
-                        <span>{listing.sahibinden_no}</span>
+                        <span>Sahibinden No: {listing.sahibinden_no}</span>
+                      </div>
+                    )}
+                    {listing.sahibinden_tarih && (
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-sm)', fontSize: '0.9rem' }}>
+                        <i className="fas fa-calendar" style={{ color: 'var(--primary-color)', width: '16px' }}></i>
+                        <span>Sahibinden Tarih: {new Date(listing.sahibinden_tarih).toLocaleDateString('tr-TR')}</span>
                       </div>
                     )}
                   </div>

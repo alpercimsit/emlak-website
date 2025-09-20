@@ -26,6 +26,10 @@ function EditListingModal({ listing, isOpen, onClose, onUpdate }: Props) {
     mahalle: '',
     sahibi_ad: '',
     sahibi_tel: '',
+    ada: 0,
+    parsel: 0,
+    sahibinden_no: 0,
+    sahibinden_tarih: '',
     oda_sayisi: '2+1',
     bina_yasi: '0-5 yıl',
     bulundugu_kat: 1,
@@ -54,6 +58,10 @@ function EditListingModal({ listing, isOpen, onClose, onUpdate }: Props) {
         mahalle: listing.mahalle || '',
         sahibi_ad: listing.sahibi_ad || '',
         sahibi_tel: listing.sahibi_tel || '',
+        ada: listing.ada || 0,
+        parsel: listing.parsel || 0,
+        sahibinden_no: listing.sahibinden_no || 0,
+        sahibinden_tarih: listing.sahibinden_tarih || '',
         oda_sayisi: listing.oda_sayisi || '2+1',
         bina_yasi: listing.bina_yasi || '0-5 yıl',
         bulundugu_kat: listing.bulundugu_kat || 1,
@@ -332,6 +340,76 @@ function EditListingModal({ listing, isOpen, onClose, onUpdate }: Props) {
                 />
               </div>
             </div>
+
+            {/* Sahibinden Bilgileri */}
+            <div className="d-flex gap-3" style={{ flexWrap: 'wrap' }}>
+              <div className="form-group" style={{ flex: 1, minWidth: '200px' }}>
+                <label className="form-label">
+                  <i className="fas fa-hashtag" style={{ marginRight: 'var(--spacing-sm)' }}></i>
+                  Sahibinden İlan No
+                </label>
+                <input
+                  type="number"
+                  name="sahibinden_no"
+                  className="form-control"
+                  placeholder="123456789"
+                  value={form.sahibinden_no}
+                  onChange={handleChange}
+                  min="0"
+                />
+              </div>
+
+              <div className="form-group" style={{ flex: 1, minWidth: '200px' }}>
+                <label className="form-label">
+                  <i className="fas fa-calendar" style={{ marginRight: 'var(--spacing-sm)' }}></i>
+                  Sahibinden Tarih
+                </label>
+                <input
+                  type="date"
+                  name="sahibinden_tarih"
+                  className="form-control"
+                  value={form.sahibinden_tarih}
+                  onChange={handleChange}
+                />
+              </div>
+            </div>
+
+            {/* Arsa Özellikleri - Sadece arsa tipinde göster */}
+            {form.emlak_tipi === 'Arsa' && (
+              <div className="d-flex gap-3" style={{ flexWrap: 'wrap' }}>
+                <div className="form-group" style={{ flex: 1, minWidth: '150px' }}>
+                  <label className="form-label">
+                    <i className="fas fa-map" style={{ marginRight: 'var(--spacing-sm)' }}></i>
+                    Ada No
+                  </label>
+                  <input
+                    type="number"
+                    name="ada"
+                    className="form-control"
+                    placeholder="123"
+                    value={form.ada}
+                    onChange={handleChange}
+                    min="0"
+                  />
+                </div>
+
+                <div className="form-group" style={{ flex: 1, minWidth: '150px' }}>
+                  <label className="form-label">
+                    <i className="fas fa-map-pin" style={{ marginRight: 'var(--spacing-sm)' }}></i>
+                    Parsel No
+                  </label>
+                  <input
+                    type="number"
+                    name="parsel"
+                    className="form-control"
+                    placeholder="45"
+                    value={form.parsel}
+                    onChange={handleChange}
+                    min="0"
+                  />
+                </div>
+              </div>
+            )}
 
             {/* Emlak Özellikleri - Sadece konut tiplerinde göster */}
             {form.emlak_tipi !== 'Arsa' && (
