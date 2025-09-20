@@ -51,7 +51,7 @@ function EditListingModal({ listing, isOpen, onClose, onUpdate }: Props) {
     province?: { id: number; name: string };
     district?: { id: number; name: string };
     neighborhood?: { id: number; name: string };
-  }>({});
+  }>();
 
   // Form'u mevcut ilan bilgileri ile doldur
   useEffect(() => {
@@ -93,6 +93,8 @@ function EditListingModal({ listing, isOpen, onClose, onUpdate }: Props) {
           district: listing.ilce ? { id: 0, name: listing.ilce } : undefined,
           neighborhood: listing.mahalle ? { id: 0, name: listing.mahalle } : undefined
         });
+      } else {
+        setLocationData(undefined);
       }
 
       // Convert existing photos from URL string to photo objects

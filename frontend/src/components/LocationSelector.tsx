@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import api from '../utils/api';
 
 interface LocationData {
@@ -240,9 +240,29 @@ function LocationSelector({ onLocationChange, initialLocation, className = '' }:
     neighborhoods: false
   });
 
-  const [selectedProvince, setSelectedProvince] = useState<Province | undefined>(initialLocation?.province);
-  const [selectedDistrict, setSelectedDistrict] = useState<District | undefined>(initialLocation?.district);
-  const [selectedNeighborhood, setSelectedNeighborhood] = useState<Neighborhood | undefined>(initialLocation?.neighborhood);
+  const [selectedProvince, setSelectedProvince] = useState<Province | undefined>();
+  const [selectedDistrict, setSelectedDistrict] = useState<District | undefined>();
+  const [selectedNeighborhood, setSelectedNeighborhood] = useState<Neighborhood | undefined>();
+
+  // Track if this is the initial render to prevent unnecessary onLocationChange calls
+  const isInitialRenderRef = useRef(true);
+
+  // Store the initial location in state to capture the correct values
+  const [savedInitialLocation, setSavedInitialLocation] = useState<LocationData | undefined>();
+
+  // Update saved location when initialLocation changes, but only if it's not empty
+  useEffect(() => {
+    console.log('LocationSelector: received initialLocation:', initialLocation);
+    if (initialLocation && (initialLocation.province || initialLocation.district || initialLocation.neighborhood)) {
+      console.log('Saving initialLocation to state:', initialLocation);
+      setSavedInitialLocation(initialLocation);
+
+      // Also update the selected states immediately in a single batch
+      setSelectedProvince(initialLocation.province);
+      setSelectedDistrict(initialLocation.district);
+      setSelectedNeighborhood(initialLocation.neighborhood);
+    }
+  }, [initialLocation]);
 
   // Load provinces on component mount
   useEffect(() => {
@@ -261,9 +281,78 @@ function LocationSelector({ onLocationChange, initialLocation, className = '' }:
     loadProvinces();
   }, []);
 
+  // Set province when provinces are loaded
+  useEffect(() => {
+    console.log('Province useEffect triggered:', {
+      initialProvince: savedInitialLocation?.province,
+      provincesLength: provinces.length
+    });
+
+    if (savedInitialLocation?.province && provinces.length > 0) {
+      // Check if we have a matching province by name
+      const matchingProvince = provinces.find(p => p.name === savedInitialLocation.province?.name);
+      if (matchingProvince) {
+        console.log('Setting province by name match:', matchingProvince);
+        setSelectedProvince(matchingProvince);
+      } else if (savedInitialLocation.province.id !== 0) {
+        console.log('Setting province by id:', savedInitialLocation.province);
+        setSelectedProvince(savedInitialLocation.province);
+      }
+    }
+  }, [provinces.length]); // Only depend on provinces loading, not savedInitialLocation
+
+  // Set district when province is selected or districts are loaded
+  useEffect(() => {
+    console.log('District useEffect triggered:', {
+      initialDistrict: savedInitialLocation?.district,
+      districtsLength: districts.length,
+      selectedProvince: selectedProvince
+    });
+
+    // Only set district if we have a saved initial district and the districts are loaded
+    if (savedInitialLocation?.district && districts.length > 0) {
+      // Check if the initial district is in the loaded districts by name or id
+      const districtExists = districts.find(d =>
+        d.name === savedInitialLocation.district?.name ||
+        (savedInitialLocation.district?.id !== 0 && d.id === savedInitialLocation.district?.id)
+      );
+      if (districtExists) {
+        console.log('Setting district:', districtExists);
+        setSelectedDistrict(districtExists);
+      }
+    } else {
+      console.log('District useEffect conditions not met');
+    }
+  }, [districts]); // Only depend on districts loading, not savedInitialLocation
+
+  // Set neighborhood when district is selected or neighborhoods are loaded
+  useEffect(() => {
+    console.log('Neighborhood useEffect triggered:', {
+      initialNeighborhood: savedInitialLocation?.neighborhood,
+      neighborhoodsLength: neighborhoods.length,
+      selectedDistrict: selectedDistrict
+    });
+
+    // Only set neighborhood if we have a saved initial neighborhood and the neighborhoods are loaded
+    if (savedInitialLocation?.neighborhood && neighborhoods.length > 0) {
+      // Check if the initial neighborhood is in the loaded neighborhoods by name or id
+      const neighborhoodExists = neighborhoods.find(n =>
+        n.name === savedInitialLocation.neighborhood?.name ||
+        (savedInitialLocation.neighborhood?.id !== 0 && n.id === savedInitialLocation.neighborhood?.id)
+      );
+      if (neighborhoodExists) {
+        console.log('Setting neighborhood:', neighborhoodExists);
+        setSelectedNeighborhood(neighborhoodExists);
+      }
+    } else {
+      console.log('Neighborhood useEffect conditions not met');
+    }
+  }, [neighborhoods]); // Only depend on neighborhoods loading, not savedInitialLocation
+
   // Load districts when province changes
   useEffect(() => {
     if (selectedProvince) {
+      console.log('Loading districts for province:', selectedProvince);
       setLoading(prev => ({ ...prev, districts: true }));
       setDistricts([]);
       setSelectedDistrict(undefined);
@@ -271,6 +360,7 @@ function LocationSelector({ onLocationChange, initialLocation, className = '' }:
 
       api.getDistricts(selectedProvince.id)
         .then(districtsData => {
+          console.log('Districts loaded:', districtsData);
           setDistricts(districtsData);
         })
         .catch(error => {
@@ -289,12 +379,14 @@ function LocationSelector({ onLocationChange, initialLocation, className = '' }:
   // Load neighborhoods when district changes
   useEffect(() => {
     if (selectedDistrict) {
+      console.log('Loading neighborhoods for district:', selectedDistrict);
       setLoading(prev => ({ ...prev, neighborhoods: true }));
       setNeighborhoods([]);
       setSelectedNeighborhood(undefined);
 
       api.getNeighborhoods(selectedDistrict.id)
         .then(neighborhoodsData => {
+          console.log('Neighborhoods loaded:', neighborhoodsData);
           setNeighborhoods(neighborhoodsData);
         })
         .catch(error => {
@@ -311,14 +403,20 @@ function LocationSelector({ onLocationChange, initialLocation, className = '' }:
 
   // Notify parent component of location changes
   useEffect(() => {
-    if (onLocationChange) {
+    if (onLocationChange && !isInitialRenderRef.current) {
       onLocationChange({
         province: selectedProvince,
         district: selectedDistrict,
         neighborhood: selectedNeighborhood
       });
     }
-  }, [selectedProvince, selectedDistrict, selectedNeighborhood, onLocationChange]);
+
+    // Mark as not initial render after first call
+    if (isInitialRenderRef.current) {
+      isInitialRenderRef.current = false;
+    }
+  }, [selectedProvince, selectedDistrict, selectedNeighborhood, isInitialRenderRef.current]);
+
 
   return (
     <div className={`location-selector ${className}`}>

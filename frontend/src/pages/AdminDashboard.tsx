@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../utils/api';
 import { Listing } from './ListingsPage';
@@ -41,20 +41,66 @@ function AdminDashboard() {
   });
 
   // Location data for LocationSelector component
-  const [locationData, setLocationData] = useState<{
+  const [locationDataState, setLocationDataState] = useState<{
     province?: { id: number; name: string };
     district?: { id: number; name: string };
     neighborhood?: { id: number; name: string };
-  }>({});
+  }>();
+
+  // Memoize locationData to prevent unnecessary re-renders
+  const locationData = useMemo(() => locationDataState, [locationDataState]);
   const navigate = useNavigate();
 
+  // Load default location data on component mount
+  useEffect(() => {
+    const loadDefaultLocation = async () => {
+      try {
+        // Load Tekirdağ province
+        const provinces = await api.getProvinces();
+        const tekirdag = provinces.find(p => p.id === 59);
+        if (!tekirdag) return;
+
+        // Load Saray district
+        const districts = await api.getDistricts(tekirdag.id);
+        const saray = districts.find(d => d.id === 1596);
+        if (!saray) return;
+
+        // Load Büyükyoncalı Merkez neighborhood
+        const neighborhoods = await api.getNeighborhoods(saray.id);
+        const buyukyoncAli = neighborhoods.find(n => n.id === 175889);
+
+        setLocationDataState({
+          province: tekirdag,
+          district: saray,
+          neighborhood: buyukyoncAli
+        });
+        console.log('AdminDashboard: locationData set to:', {
+          province: tekirdag,
+          district: saray,
+          neighborhood: buyukyoncAli
+        });
+      } catch (error) {
+        console.error('Error loading default location:', error);
+        // Fallback to hardcoded values if API fails
+        const fallbackLocation = {
+          province: { id: 59, name: 'Tekirdağ' },
+          district: { id: 1596, name: 'Saray' },
+          neighborhood: { id: 175889, name: 'Büyükyoncalı Merkez' }
+        };
+        setLocationDataState(fallbackLocation);
+      }
+    };
+
+    loadDefaultLocation();
+  }, []);
+
   // Handle location change from LocationSelector
-  const handleLocationChange = (location: {
+  const handleLocationChange = useCallback((location: {
     province?: { id: number; name: string };
     district?: { id: number; name: string };
     neighborhood?: { id: number; name: string };
   }) => {
-    setLocationData(location);
+    setLocationDataState(location);
     // Update form state with location names for backward compatibility
     setForm(prev => ({
       ...prev,
@@ -62,7 +108,7 @@ function AdminDashboard() {
       ilce: location.district?.name || '',
       mahalle: location.neighborhood?.name || ''
     }));
-  };
+  }, [setForm, setLocationDataState]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target;
@@ -123,6 +169,13 @@ function AdminDashboard() {
         fotolar: '',
         gizli: false,
         not: ''
+      });
+
+      // Reset location data to defaults
+      setLocationDataState({
+        province: { id: 59, name: 'Tekirdağ' },
+        district: { id: 1596, name: 'Saray' },
+        neighborhood: { id: 175889, name: 'Büyükyoncalı Merkez' }
       });
     } catch (err: any) {
       console.error('Error adding listing:', err);
