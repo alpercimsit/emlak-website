@@ -24,11 +24,11 @@ function AdminDashboard() {
     parsel: 0,
     sahibinden_no: 0,
     sahibinden_tarih: '',
-    oda_sayisi: '2+1',
-    bina_yasi: '6-10 yıl',
-    bulundugu_kat: 1,
-    kat_sayisi: 5,
-    isitma: 'Kombi', // Will be mapped to 'isitma' in database
+    oda_sayisi: '',
+    bina_yasi: '',
+    bulundugu_kat: 0,
+    kat_sayisi: 0,
+    isitma: '', // Will be mapped to 'isitma' in database
     banyo_sayisi: 1,
       balkon: true,
       asansor: true,
@@ -86,14 +86,14 @@ function AdminDashboard() {
         parsel: 0,
         sahibinden_no: 0,
         sahibinden_tarih: '',
-        oda_sayisi: '2+1',
-        bina_yasi: '0-5 yıl',
-        bulundugu_kat: 1,
-        kat_sayisi: 5,
-        isitma: 'Kombi', // Will be mapped to 'isitma' in database
+        oda_sayisi: '',
+        bina_yasi: '',
+        bulundugu_kat: 0,
+        kat_sayisi: 0,
+        isitma: '', // Will be mapped to 'isitma' in database
         banyo_sayisi: 1,
-        balkon: false,
-        asansor: false,
+        balkon: true,
+        asansor: true,
         esyali: false,
         aidat: 0,
         fotolar: '',
@@ -371,6 +371,7 @@ function AdminDashboard() {
                       value={form.oda_sayisi}
                       onChange={handleChange}
                     >
+                      <option value="" selected disabled>Seçiniz</option>
                       <option value="1+0">1+0</option>
                       <option value="1+1">1+1</option>
                       <option value="2+1">2+1</option>
@@ -392,6 +393,7 @@ function AdminDashboard() {
                       value={form.bina_yasi}
                       onChange={handleChange}
                     >
+                      <option value="" selected disabled>Seçiniz</option>
                       <option value="0-5 yıl">0-5 yıl</option>
                       <option value="6-10 yıl">6-10 yıl</option>
                       <option value="11-15 yıl">11-15 yıl</option>

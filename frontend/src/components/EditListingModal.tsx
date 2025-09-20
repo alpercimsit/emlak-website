@@ -30,14 +30,14 @@ function EditListingModal({ listing, isOpen, onClose, onUpdate }: Props) {
     parsel: 0,
     sahibinden_no: 0,
     sahibinden_tarih: '',
-    oda_sayisi: '2+1',
-    bina_yasi: '0-5 yıl',
-    bulundugu_kat: 1,
-    kat_sayisi: 5,
-    isitma: 'Kombi',
+    oda_sayisi: '',
+    bina_yasi: '',
+    bulundugu_kat: 0,
+    kat_sayisi: 0,
+    isitma: '',
     banyo_sayisi: 1,
-    balkon: false,
-    asansor: false,
+    balkon: true,
+    asansor: true,
     esyali: false,
     aidat: 0,
     fotolar: '',
@@ -63,14 +63,14 @@ function EditListingModal({ listing, isOpen, onClose, onUpdate }: Props) {
         parsel: listing.parsel || 0,
         sahibinden_no: listing.sahibinden_no || 0,
         sahibinden_tarih: listing.sahibinden_tarih || '',
-        oda_sayisi: listing.oda_sayisi || '2+1',
-        bina_yasi: listing.bina_yasi || '0-5 yıl',
-        bulundugu_kat: listing.bulundugu_kat || 1,
-        kat_sayisi: listing.kat_sayisi || 5,
-        isitma: listing.isitma || 'Kombi',
+        oda_sayisi: listing.oda_sayisi || '',
+        bina_yasi: listing.bina_yasi || '',
+        bulundugu_kat: listing.bulundugu_kat || 0,
+        kat_sayisi: listing.kat_sayisi || 0,
+        isitma: listing.isitma || '',
         banyo_sayisi: listing.banyo_sayisi || 1,
-        balkon: listing.balkon || false,
-        asansor: listing.asansor || false,
+        balkon: listing.balkon || true,
+        asansor: listing.asansor || true,
         esyali: listing.esyali || false,
         aidat: listing.aidat || 0,
         fotolar: listing.fotolar || '',
@@ -420,6 +420,7 @@ function EditListingModal({ listing, isOpen, onClose, onUpdate }: Props) {
                       value={form.oda_sayisi}
                       onChange={handleChange}
                     >
+                      <option value="" selected disabled>Seçiniz</option>
                       <option value="1+0">1+0</option>
                       <option value="1+1">1+1</option>
                       <option value="2+1">2+1</option>
@@ -441,6 +442,7 @@ function EditListingModal({ listing, isOpen, onClose, onUpdate }: Props) {
                       value={form.bina_yasi}
                       onChange={handleChange}
                     >
+                      <option value="" selected disabled>Seçiniz</option>
                       <option value="0-5 yıl">0-5 yıl</option>
                       <option value="6-10 yıl">6-10 yıl</option>
                       <option value="11-15 yıl">11-15 yıl</option>
