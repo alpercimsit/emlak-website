@@ -138,9 +138,9 @@ function ListingsPage() {
       if (filters.alanMax && listing.m2 && listing.m2 > parseInt(filters.alanMax)) return false;
 
       // Konum filtreleri
-      if (filters.il && listing.il && !listing.il.toLowerCase().includes(filters.il.toLowerCase())) return false;
-      if (filters.ilce && listing.ilce && !listing.ilce.toLowerCase().includes(filters.ilce.toLowerCase())) return false;
-      if (filters.mahalle && listing.mahalle && !listing.mahalle.toLowerCase().includes(filters.mahalle.toLowerCase())) return false;
+      if (filters.il && listing.il && !listing.il.toLowerCase().includes(filters.il.name.toLowerCase())) return false;
+      if (filters.ilce && listing.ilce && !listing.ilce.toLowerCase().includes(filters.ilce.name.toLowerCase())) return false;
+      if (filters.mahalle && listing.mahalle && !listing.mahalle.toLowerCase().includes(filters.mahalle.name.toLowerCase())) return false;
 
       // Arsa özel filtreleri
       if (filters.category === 'arsa') {

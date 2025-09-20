@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Listing } from '../pages/ListingsPage';
+import api from '../utils/api';
 
 export interface FilterState {
   category: 'arsa' | 'konut';
@@ -10,9 +11,9 @@ export interface FilterState {
   fiyatMax: string;
   alanMin: string;
   alanMax: string;
-  il: string;
-  ilce: string;
-  mahalle: string;
+  il: {id: number, name: string} | null;
+  ilce: {id: number, name: string} | null;
+  mahalle: {id: number, name: string} | null;
   // Arsa özel filtreleri
   adaNo: string;
   parselNo: string;
@@ -28,8 +29,293 @@ interface Props {
   totalCount: number;
 }
 
+interface Province {
+  id: number;
+  name: string;
+}
+
+interface District {
+  id: number;
+  name: string;
+}
+
+interface Neighborhood {
+  id: number;
+  name: string;
+}
+
+interface ComboboxProps {
+  options: Array<{id: number, name: string}>;
+  value: {id: number, name: string} | null;
+  onChange: (option: {id: number, name: string} | null) => void;
+  placeholder: string;
+  label: string;
+  disabled?: boolean;
+  loading?: boolean;
+  maxDisplayItems?: number;
+}
+
+// Combobox component for searchable dropdown
+function Combobox({
+  options,
+  value,
+  onChange,
+  placeholder,
+  label,
+  disabled = false,
+  loading = false,
+  maxDisplayItems = 11
+}: ComboboxProps) {
+  const [isOpen, setIsOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filteredOptions, setFilteredOptions] = useState<Array<{id: number, name: string}>>([]);
+
+  // Filter options based on search term
+  useEffect(() => {
+    if (searchTerm) {
+      const filtered = options.filter(option =>
+        option.name.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+      setFilteredOptions(filtered.slice(0, maxDisplayItems));
+    } else {
+      setFilteredOptions(options.slice(0, maxDisplayItems));
+    }
+  }, [searchTerm, options, maxDisplayItems]);
+
+  // Set initial search term when value changes
+  useEffect(() => {
+    if (value) {
+      setSearchTerm(value.name);
+    } else {
+      setSearchTerm('');
+    }
+  }, [value]);
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newValue = e.target.value;
+    setSearchTerm(newValue);
+
+    // Clear selection if input is empty
+    if (!newValue.trim()) {
+      onChange(null);
+    }
+  };
+
+  const handleOptionSelect = (option: {id: number, name: string}) => {
+    onChange(option);
+    setSearchTerm(option.name);
+    setIsOpen(false);
+  };
+
+  const handleInputFocus = () => {
+    if (!disabled) {
+      setIsOpen(true);
+    }
+  };
+
+  const handleInputBlur = () => {
+    // Delay closing to allow option click
+    setTimeout(() => {
+      setIsOpen(false);
+    }, 150);
+  };
+
+  const handleClear = () => {
+    onChange(null);
+    setSearchTerm('');
+  };
+
+  return (
+    <div className="combobox-container" style={{ position: 'relative' }}>
+      <label className="filter-label">
+        <i className="fas fa-map-marker-alt"></i>
+        {label}
+      </label>
+      <div className="combobox-input-wrapper" style={{ position: 'relative' }}>
+        <input
+          type="text"
+          className="filter-input"
+          placeholder={placeholder}
+          value={searchTerm}
+          onChange={handleInputChange}
+          onFocus={handleInputFocus}
+          onBlur={handleInputBlur}
+          disabled={disabled}
+          style={{
+            paddingRight: value ? '35px' : '15px',
+            cursor: disabled ? 'not-allowed' : 'text'
+          }}
+        />
+        {value && !disabled && (
+          <button
+            type="button"
+            className="combobox-clear-btn"
+            onClick={handleClear}
+            style={{
+              position: 'absolute',
+              right: '10px',
+              top: '50%',
+              transform: 'translateY(-50%)',
+              background: 'none',
+              border: 'none',
+              color: 'var(--text-muted)',
+              cursor: 'pointer',
+              fontSize: '14px',
+              padding: '2px'
+            }}
+          >
+            <i className="fas fa-times"></i>
+          </button>
+        )}
+        {loading && (
+          <div
+            className="combobox-loading"
+            style={{
+              position: 'absolute',
+              right: '10px',
+              top: '50%',
+              transform: 'translateY(-50%)',
+              color: 'var(--text-muted)',
+              fontSize: '14px'
+            }}
+          >
+            <i className="fas fa-spinner fa-spin"></i>
+          </div>
+        )}
+      </div>
+
+      {isOpen && !disabled && (
+        <div
+          className="combobox-dropdown"
+          style={{
+            position: 'absolute',
+            top: '100%',
+            left: 0,
+            right: 0,
+            backgroundColor: 'white',
+            border: '1px solid var(--border-color, #dee2e6)',
+            borderRadius: '4px',
+            boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+            maxHeight: '200px',
+            overflowY: 'auto',
+            zIndex: 1000
+          }}
+        >
+          {filteredOptions.length > 0 ? (
+            filteredOptions.map(option => (
+              <div
+                key={option.id}
+                className="combobox-option"
+                onClick={() => handleOptionSelect(option)}
+                style={{
+                  padding: '8px 12px',
+                  cursor: 'pointer',
+                  borderBottom: '1px solid var(--border-color, #f1f3f4)',
+                  backgroundColor: value?.id === option.id ? 'var(--primary-color, #007bff)' : 'white',
+                  color: value?.id === option.id ? 'white' : 'inherit'
+                }}
+                onMouseEnter={(e) => {
+                  if (value?.id !== option.id) {
+                    e.currentTarget.style.backgroundColor = 'var(--background-secondary, #f8f9fa)';
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (value?.id !== option.id) {
+                    e.currentTarget.style.backgroundColor = 'white';
+                  }
+                }}
+              >
+                {option.name}
+              </div>
+            ))
+          ) : (
+            <div
+              className="combobox-no-results"
+              style={{
+                padding: '12px',
+                textAlign: 'center',
+                color: 'var(--text-muted)',
+                fontSize: '14px'
+              }}
+            >
+              Sonuç bulunamadı
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
 function FilterPanel({ filters, onFiltersChange, totalCount }: Props) {
   const [showKonutSubmenu, setShowKonutSubmenu] = useState(false);
+  const [provinces, setProvinces] = useState<Province[]>([]);
+  const [districts, setDistricts] = useState<District[]>([]);
+  const [neighborhoods, setNeighborhoods] = useState<Neighborhood[]>([]);
+  const [loading, setLoading] = useState({
+    provinces: false,
+    districts: false,
+    neighborhoods: false
+  });
+
+  // Load provinces on component mount
+  useEffect(() => {
+    const loadProvinces = async () => {
+      setLoading(prev => ({ ...prev, provinces: true }));
+      try {
+        const provincesData = await api.getProvinces();
+        setProvinces(provincesData);
+      } catch (error) {
+        console.error('Error loading provinces:', error);
+      } finally {
+        setLoading(prev => ({ ...prev, provinces: false }));
+      }
+    };
+
+    loadProvinces();
+  }, []);
+
+  // Load districts when province changes
+  useEffect(() => {
+    if (filters.il) {
+      setLoading(prev => ({ ...prev, districts: true }));
+      setDistricts([]);
+      api.getDistricts(filters.il.id)
+        .then(districtsData => {
+          setDistricts(districtsData);
+        })
+        .catch(error => {
+          console.error('Error loading districts:', error);
+        })
+        .finally(() => {
+          setLoading(prev => ({ ...prev, districts: false }));
+        });
+    } else {
+      setDistricts([]);
+      onFiltersChange({ ...filters, ilce: null, mahalle: null });
+    }
+  }, [filters.il, onFiltersChange]);
+
+  // Load neighborhoods when district changes
+  useEffect(() => {
+    if (filters.ilce) {
+      setLoading(prev => ({ ...prev, neighborhoods: true }));
+      setNeighborhoods([]);
+      api.getNeighborhoods(filters.ilce.id)
+        .then(neighborhoodsData => {
+          setNeighborhoods(neighborhoodsData);
+        })
+        .catch(error => {
+          console.error('Error loading neighborhoods:', error);
+        })
+        .finally(() => {
+          setLoading(prev => ({ ...prev, neighborhoods: false }));
+        });
+    } else {
+      setNeighborhoods([]);
+      onFiltersChange({ ...filters, mahalle: null });
+    }
+  }, [filters.ilce, onFiltersChange]);
 
   const handleFilterChange = (key: keyof FilterState, value: any) => {
     onFiltersChange({ ...filters, [key]: value });
@@ -40,7 +326,7 @@ function FilterPanel({ filters, onFiltersChange, totalCount }: Props) {
     const newArray = currentArray.includes(value)
       ? currentArray.filter(item => item !== value)
       : [...currentArray, value];
-    
+
     onFiltersChange({ ...filters, [key]: newArray });
   };
 
@@ -54,9 +340,9 @@ function FilterPanel({ filters, onFiltersChange, totalCount }: Props) {
       fiyatMax: '',
       alanMin: '',
       alanMax: '',
-      il: '',
-      ilce: '',
-      mahalle: '',
+      il: null,
+      ilce: null,
+      mahalle: null,
       adaNo: '',
       parselNo: '',
       binaYaslari: [],
@@ -222,43 +508,43 @@ function FilterPanel({ filters, onFiltersChange, totalCount }: Props) {
         <div className="filter-group">
           <label className="filter-label">
             <i className="fas fa-map-marker-alt"></i>
-            İl
+            İl, İlçe, Mahalle
           </label>
-          <input
-            type="text"
-            className="filter-input"
-            placeholder="İl adı..."
-            value={filters.il}
-            onChange={(e) => handleFilterChange('il', e.target.value)}
-          />
-        </div>
 
-        <div className="filter-group">
-          <label className="filter-label">
-            <i className="fas fa-map-marker-alt"></i>
-            İlçe
-          </label>
-          <input
-            type="text"
-            className="filter-input"
-            placeholder="İlçe adı..."
-            value={filters.ilce}
-            onChange={(e) => handleFilterChange('ilce', e.target.value)}
-          />
-        </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            <Combobox
+              options={provinces}
+              value={filters.il}
+              onChange={(value) => handleFilterChange('il', value)}
+              placeholder="İl seçiniz"
+              label=""
+              disabled={loading.provinces}
+              loading={loading.provinces}
+              maxDisplayItems={11}
+            />
 
-        <div className="filter-group">
-          <label className="filter-label">
-            <i className="fas fa-map-marker-alt"></i>
-            Mahalle
-          </label>
-          <input
-            type="text"
-            className="filter-input"
-            placeholder="Mahalle adı..."
-            value={filters.mahalle}
-            onChange={(e) => handleFilterChange('mahalle', e.target.value)}
-          />
+            <Combobox
+              options={districts}
+              value={filters.ilce}
+              onChange={(value) => handleFilterChange('ilce', value)}
+              placeholder={!filters.il ? 'Önce il seçiniz' : 'İlçe seçiniz'}
+              label=""
+              disabled={!filters.il || loading.districts || districts.length === 0}
+              loading={loading.districts}
+              maxDisplayItems={11}
+            />
+
+            <Combobox
+              options={neighborhoods}
+              value={filters.mahalle}
+              onChange={(value) => handleFilterChange('mahalle', value)}
+              placeholder={!filters.ilce ? 'Önce ilçe seçiniz' : 'Mahalle seçiniz'}
+              label=""
+              disabled={!filters.ilce || loading.neighborhoods || neighborhoods.length === 0}
+              loading={loading.neighborhoods}
+              maxDisplayItems={11}
+            />
+          </div>
         </div>
 
         {/* Arsa Özel Filtreleri */}

@@ -28,6 +28,209 @@ interface Neighborhood {
   name: string;
 }
 
+interface ComboboxProps {
+  options: Array<{id: number, name: string}>;
+  value: {id: number, name: string} | undefined;
+  onChange: (option: {id: number, name: string} | undefined) => void;
+  placeholder: string;
+  label: string;
+  disabled?: boolean;
+  loading?: boolean;
+  maxDisplayItems?: number;
+}
+
+// Combobox component for searchable dropdown
+function Combobox({
+  options,
+  value,
+  onChange,
+  placeholder,
+  label,
+  disabled = false,
+  loading = false,
+  maxDisplayItems = 11
+}: ComboboxProps) {
+  const [isOpen, setIsOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filteredOptions, setFilteredOptions] = useState<Array<{id: number, name: string}>>([]);
+
+  // Filter options based on search term
+  useEffect(() => {
+    if (searchTerm) {
+      const filtered = options.filter(option =>
+        option.name.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+      setFilteredOptions(filtered.slice(0, maxDisplayItems));
+    } else {
+      setFilteredOptions(options.slice(0, maxDisplayItems));
+    }
+  }, [searchTerm, options, maxDisplayItems]);
+
+  // Set initial search term when value changes
+  useEffect(() => {
+    if (value) {
+      setSearchTerm(value.name);
+    } else {
+      setSearchTerm('');
+    }
+  }, [value]);
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newValue = e.target.value;
+    setSearchTerm(newValue);
+
+    // Clear selection if input is empty
+    if (!newValue.trim()) {
+      onChange(undefined);
+    }
+  };
+
+  const handleOptionSelect = (option: {id: number, name: string}) => {
+    onChange(option);
+    setSearchTerm(option.name);
+    setIsOpen(false);
+  };
+
+  const handleInputFocus = () => {
+    if (!disabled) {
+      setIsOpen(true);
+    }
+  };
+
+  const handleInputBlur = () => {
+    // Delay closing to allow option click
+    setTimeout(() => {
+      setIsOpen(false);
+    }, 150);
+  };
+
+  const handleClear = () => {
+    onChange(undefined);
+    setSearchTerm('');
+  };
+
+  return (
+    <div className="combobox-container" style={{ position: 'relative' }}>
+      <label className="form-label">
+        <i className="fas fa-map-marker-alt" style={{ marginRight: 'var(--spacing-sm)' }}></i>
+        {label}
+      </label>
+      <div className="combobox-input-wrapper" style={{ position: 'relative' }}>
+        <input
+          type="text"
+          className="form-control"
+          placeholder={placeholder}
+          value={searchTerm}
+          onChange={handleInputChange}
+          onFocus={handleInputFocus}
+          onBlur={handleInputBlur}
+          disabled={disabled}
+          style={{
+            paddingRight: value ? '35px' : '15px',
+            cursor: disabled ? 'not-allowed' : 'text'
+          }}
+        />
+        {value && !disabled && (
+          <button
+            type="button"
+            className="combobox-clear-btn"
+            onClick={handleClear}
+            style={{
+              position: 'absolute',
+              right: '10px',
+              top: '50%',
+              transform: 'translateY(-50%)',
+              background: 'none',
+              border: 'none',
+              color: 'var(--text-muted)',
+              cursor: 'pointer',
+              fontSize: '14px',
+              padding: '2px'
+            }}
+          >
+            <i className="fas fa-times"></i>
+          </button>
+        )}
+        {loading && (
+          <div
+            className="combobox-loading"
+            style={{
+              position: 'absolute',
+              right: '10px',
+              top: '50%',
+              transform: 'translateY(-50%)',
+              color: 'var(--text-muted)',
+              fontSize: '14px'
+            }}
+          >
+            <i className="fas fa-spinner fa-spin"></i>
+          </div>
+        )}
+      </div>
+
+      {isOpen && !disabled && (
+        <div
+          className="combobox-dropdown"
+          style={{
+            position: 'absolute',
+            top: '100%',
+            left: 0,
+            right: 0,
+            backgroundColor: 'white',
+            border: '1px solid var(--border-color, #dee2e6)',
+            borderRadius: '4px',
+            boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+            maxHeight: '200px',
+            overflowY: 'auto',
+            zIndex: 1000
+          }}
+        >
+          {filteredOptions.length > 0 ? (
+            filteredOptions.map(option => (
+              <div
+                key={option.id}
+                className="combobox-option"
+                onClick={() => handleOptionSelect(option)}
+                style={{
+                  padding: '8px 12px',
+                  cursor: 'pointer',
+                  borderBottom: '1px solid var(--border-color, #f1f3f4)',
+                  backgroundColor: value?.id === option.id ? 'var(--primary-color, #007bff)' : 'white',
+                  color: value?.id === option.id ? 'white' : 'inherit'
+                }}
+                onMouseEnter={(e) => {
+                  if (value?.id !== option.id) {
+                    e.currentTarget.style.backgroundColor = 'var(--background-secondary, #f8f9fa)';
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (value?.id !== option.id) {
+                    e.currentTarget.style.backgroundColor = 'white';
+                  }
+                }}
+              >
+                {option.name}
+              </div>
+            ))
+          ) : (
+            <div
+              className="combobox-no-results"
+              style={{
+                padding: '12px',
+                textAlign: 'center',
+                color: 'var(--text-muted)',
+                fontSize: '14px'
+              }}
+            >
+              Sonuç bulunamadı
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
 function LocationSelector({ onLocationChange, initialLocation, className = '' }: Props) {
   const [provinces, setProvinces] = useState<Province[]>([]);
   const [districts, setDistricts] = useState<District[]>([]);
@@ -123,99 +326,44 @@ function LocationSelector({ onLocationChange, initialLocation, className = '' }:
       <div className="d-flex gap-3" style={{ flexWrap: 'wrap' }}>
         {/* Province Selection */}
         <div className="form-group" style={{ flex: 1, minWidth: '150px' }}>
-          <label className="form-label">
-            <i className="fas fa-map-marker-alt" style={{ marginRight: 'var(--spacing-sm)' }}></i>
-            İl
-          </label>
-          <select
-            className="form-control"
-            value={selectedProvince?.id || ''}
-            onChange={(e) => {
-              const provinceId = Number(e.target.value);
-              const province = provinces.find(p => p.id === provinceId);
-              setSelectedProvince(province);
-            }}
+          <Combobox
+            options={provinces}
+            value={selectedProvince}
+            onChange={setSelectedProvince}
+            placeholder="İl seçiniz"
+            label="İl"
             disabled={loading.provinces}
-          >
-            <option value="">İl seçiniz</option>
-            {provinces.map(province => (
-              <option key={province.id} value={province.id}>
-                {province.name}
-              </option>
-            ))}
-          </select>
-          {loading.provinces && (
-            <small className="text-muted">
-              <i className="fas fa-spinner fa-spin" style={{ marginRight: 'var(--spacing-xs)' }}></i>
-              Yükleniyor...
-            </small>
-          )}
+            loading={loading.provinces}
+            maxDisplayItems={11}
+          />
         </div>
 
         {/* District Selection */}
         <div className="form-group" style={{ flex: 1, minWidth: '150px' }}>
-          <label className="form-label">
-            <i className="fas fa-map-marker-alt" style={{ marginRight: 'var(--spacing-sm)' }}></i>
-            İlçe
-          </label>
-          <select
-            className="form-control"
-            value={selectedDistrict?.id || ''}
-            onChange={(e) => {
-              const districtId = Number(e.target.value);
-              const district = districts.find(d => d.id === districtId);
-              setSelectedDistrict(district);
-            }}
+          <Combobox
+            options={districts}
+            value={selectedDistrict}
+            onChange={setSelectedDistrict}
+            placeholder={!selectedProvince ? 'Önce il seçiniz' : 'İlçe seçiniz'}
+            label="İlçe"
             disabled={!selectedProvince || loading.districts || districts.length === 0}
-          >
-            <option value="">
-              {!selectedProvince ? 'Önce il seçiniz' : 'İlçe seçiniz'}
-            </option>
-            {districts.map(district => (
-              <option key={district.id} value={district.id}>
-                {district.name}
-              </option>
-            ))}
-          </select>
-          {loading.districts && (
-            <small className="text-muted">
-              <i className="fas fa-spinner fa-spin" style={{ marginRight: 'var(--spacing-xs)' }}></i>
-              Yükleniyor...
-            </small>
-          )}
+            loading={loading.districts}
+            maxDisplayItems={11}
+          />
         </div>
 
         {/* Neighborhood Selection */}
         <div className="form-group" style={{ flex: 1, minWidth: '150px' }}>
-          <label className="form-label">
-            <i className="fas fa-map-marker-alt" style={{ marginRight: 'var(--spacing-sm)' }}></i>
-            Mahalle
-          </label>
-          <select
-            className="form-control"
-            value={selectedNeighborhood?.id || ''}
-            onChange={(e) => {
-              const neighborhoodId = Number(e.target.value);
-              const neighborhood = neighborhoods.find(n => n.id === neighborhoodId);
-              setSelectedNeighborhood(neighborhood);
-            }}
+          <Combobox
+            options={neighborhoods}
+            value={selectedNeighborhood}
+            onChange={setSelectedNeighborhood}
+            placeholder={!selectedDistrict ? 'Önce ilçe seçiniz' : 'Mahalle seçiniz'}
+            label="Mahalle"
             disabled={!selectedDistrict || loading.neighborhoods || neighborhoods.length === 0}
-          >
-            <option value="">
-              {!selectedDistrict ? 'Önce ilçe seçiniz' : 'Mahalle seçiniz'}
-            </option>
-            {neighborhoods.map(neighborhood => (
-              <option key={neighborhood.id} value={neighborhood.id}>
-                {neighborhood.name}
-              </option>
-            ))}
-          </select>
-          {loading.neighborhoods && (
-            <small className="text-muted">
-              <i className="fas fa-spinner fa-spin" style={{ marginRight: 'var(--spacing-xs)' }}></i>
-              Yükleniyor...
-            </small>
-          )}
+            loading={loading.neighborhoods}
+            maxDisplayItems={11}
+          />
         </div>
       </div>
 
