@@ -27,7 +27,7 @@ function AdminDashboard() {
     oda_sayisi: '',
     bina_yasi: '',
     bulundugu_kat: 0,
-    kat_sayisi: 0,
+    kat_sayisi: 1,
     isitma: '', // Will be mapped to 'isitma' in database
     banyo_sayisi: 1,
       balkon: true,
@@ -89,7 +89,7 @@ function AdminDashboard() {
         oda_sayisi: '',
         bina_yasi: '',
         bulundugu_kat: 0,
-        kat_sayisi: 0,
+        kat_sayisi: 1,
         isitma: '', // Will be mapped to 'isitma' in database
         banyo_sayisi: 1,
         balkon: true,
@@ -255,69 +255,6 @@ function AdminDashboard() {
               </div>
             </div>
 
-            {/* Sahibi Bilgileri */}
-            <div className="d-flex gap-3" style={{ flexWrap: 'wrap' }}>
-              <div className="form-group" style={{ flex: 1, minWidth: '200px' }}>
-                <label className="form-label">
-                  <i className="fas fa-user" style={{ marginRight: 'var(--spacing-sm)' }}></i>
-                  Sahibi Adı
-                </label>
-                <input
-                  name="sahibi_ad"
-                  className="form-control"
-                  placeholder="Ahmet Yılmaz"
-                  value={form.sahibi_ad}
-                  onChange={handleChange}
-                />
-              </div>
-
-              <div className="form-group" style={{ flex: 1, minWidth: '200px' }}>
-                <label className="form-label">
-                  <i className="fas fa-phone" style={{ marginRight: 'var(--spacing-sm)' }}></i>
-                  Telefon
-                </label>
-                <input
-                  name="sahibi_tel"
-                  className="form-control"
-                  placeholder="0532 123 45 67"
-                  value={form.sahibi_tel}
-                  onChange={handleChange}
-                />
-              </div>
-            </div>
-
-            {/* Sahibinden Bilgileri */}
-            <div className="d-flex gap-3" style={{ flexWrap: 'wrap' }}>
-              <div className="form-group" style={{ flex: 1, minWidth: '200px' }}>
-                <label className="form-label">
-                  <i className="fas fa-hashtag" style={{ marginRight: 'var(--spacing-sm)' }}></i>
-                  Sahibinden İlan No
-                </label>
-                <input
-                  type="number"
-                  name="sahibinden_no"
-                  className="form-control"
-                  placeholder="123456789"
-                  value={form.sahibinden_no}
-                  onChange={handleChange}
-                  min="0"
-                />
-              </div>
-
-              <div className="form-group" style={{ flex: 1, minWidth: '200px' }}>
-                <label className="form-label">
-                  <i className="fas fa-calendar" style={{ marginRight: 'var(--spacing-sm)' }}></i>
-                  Sahibinden Tarih
-                </label>
-                <input
-                  type="date"
-                  name="sahibinden_tarih"
-                  className="form-control"
-                  value={form.sahibinden_tarih}
-                  onChange={handleChange}
-                />
-              </div>
-            </div>
 
             {/* Arsa Özellikleri - Sadece arsa tipinde göster */}
             {form.emlak_tipi === 'Arsa' && (
@@ -536,7 +473,112 @@ function AdminDashboard() {
               </>
             )}
 
-            {/* Admin Seçenekleri */}
+            {/* Admin Paneli - Sadece adminler için görünür */}
+            <div style={{
+              border: '2px solid var(--primary-color)',
+              borderRadius: '8px',
+              padding: 'var(--spacing-lg)',
+              marginTop: 'var(--spacing-xl)',
+              backgroundColor: 'var(--background-secondary, #f8f9fa)',
+              position: 'relative'
+            }}>
+              <div style={{
+                position: 'absolute',
+                top: '-12px',
+                left: 'var(--spacing-md)',
+                backgroundColor: 'var(--primary-color)',
+                color: 'white',
+                padding: '4px 12px',
+                borderRadius: '12px',
+                fontSize: '0.8rem',
+                fontWeight: 'bold'
+              }}>
+                <i className="fas fa-user-shield" style={{ marginRight: 'var(--spacing-xs)' }}></i>
+                Admin Paneli
+              </div>
+
+              {/* Sahibi Bilgileri */}
+              <div className="d-flex gap-3" style={{ flexWrap: 'wrap', marginBottom: 'var(--spacing-md)' }}>
+                <div className="form-group" style={{ flex: 1, minWidth: '200px' }}>
+                  <label className="form-label">
+                    <i className="fas fa-user" style={{ marginRight: 'var(--spacing-sm)' }}></i>
+                    Sahibi Adı
+                  </label>
+                  <input
+                    name="sahibi_ad"
+                    className="form-control"
+                    placeholder="Ahmet Yılmaz"
+                    value={form.sahibi_ad}
+                    onChange={handleChange}
+                  />
+                </div>
+
+                <div className="form-group" style={{ flex: 1, minWidth: '200px' }}>
+                  <label className="form-label">
+                    <i className="fas fa-phone" style={{ marginRight: 'var(--spacing-sm)' }}></i>
+                    Telefon
+                  </label>
+                  <input
+                    name="sahibi_tel"
+                    className="form-control"
+                    placeholder="0532 123 45 67"
+                    value={form.sahibi_tel}
+                    onChange={handleChange}
+                  />
+                </div>
+              </div>
+
+              {/* Sahibinden Bilgileri */}
+              <div className="d-flex gap-3" style={{ flexWrap: 'wrap' }}>
+                <div className="form-group" style={{ flex: 1, minWidth: '200px' }}>
+                  <label className="form-label">
+                    <i className="fas fa-hashtag" style={{ marginRight: 'var(--spacing-sm)' }}></i>
+                    Sahibinden İlan No
+                  </label>
+                  <input
+                    type="number"
+                    name="sahibinden_no"
+                    className="form-control"
+                    placeholder="123456789"
+                    value={form.sahibinden_no}
+                    onChange={handleChange}
+                    min="0"
+                  />
+                </div>
+
+                <div className="form-group" style={{ flex: 1, minWidth: '200px' }}>
+                  <label className="form-label">
+                    <i className="fas fa-calendar" style={{ marginRight: 'var(--spacing-sm)' }}></i>
+                    Sahibinden Tarih
+                  </label>
+                  <input
+                    type="date"
+                    name="sahibinden_tarih"
+                    className="form-control"
+                    value={form.sahibinden_tarih}
+                    onChange={handleChange}
+                  />
+                </div>
+              </div>
+
+              {/* Admin Not Alanı */}
+              <div className="form-group" style={{ marginTop: 'var(--spacing-md)' }}>
+                <label className="form-label">
+                  <i className="fas fa-sticky-note" style={{ marginRight: 'var(--spacing-sm)' }}></i>
+                  Not (Sadece admin görebilir)
+                </label>
+                <textarea
+                  name="not"
+                  className="form-control"
+                  placeholder="Admin notları..."
+                  value={form.not}
+                  onChange={handleChange}
+                  rows={2}
+                />
+              </div>
+            </div>
+
+            {/* İlan Gizleme */}
             <div className="form-group">
               <label className="form-label">
                 <input
@@ -549,22 +591,6 @@ function AdminDashboard() {
                 <i className="fas fa-eye-slash" style={{ marginRight: 'var(--spacing-sm)' }}></i>
                 İlanı Gizle (Sadece admin görebilir)
               </label>
-            </div>
-
-            {/* Admin Not Alanı */}
-            <div className="form-group">
-              <label className="form-label">
-                <i className="fas fa-sticky-note" style={{ marginRight: 'var(--spacing-sm)' }}></i>
-                Not (Sadece admin görebilir)
-              </label>
-              <textarea
-                name="not"
-                className="form-control"
-                placeholder="Admin notları..."
-                value={form.not}
-                onChange={handleChange}
-                rows={2}
-              />
             </div>
 
             {/* Fotoğraflar */}

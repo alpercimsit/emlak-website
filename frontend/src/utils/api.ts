@@ -164,7 +164,7 @@ export const api = {
       sahibinden_no: listing.sahibinden_no,
       sahibi_ad: listing.sahibi_ad,
       sahibi_tel: listing.sahibi_tel,
-      sahibinden_tarih: listing.sahibinden_tarih,
+      sahibinden_tarih: listing.sahibinden_tarih || null,
       ada: listing.ada,
       parsel: listing.parsel,
       oda_sayisi: listing.oda_sayisi,
@@ -202,6 +202,11 @@ export const api = {
     const token = localStorage.getItem('adminToken');
     if (!token || !token.startsWith('admin-token-')) {
       throw new Error('Unauthorized');
+    }
+
+    // Handle nullable date field
+    if (updates.hasOwnProperty('sahibinden_tarih') && updates.sahibinden_tarih === '') {
+      updates.sahibinden_tarih = null;
     }
 
     const { data, error } = await supabase
