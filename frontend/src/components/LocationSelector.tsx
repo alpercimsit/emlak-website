@@ -299,7 +299,7 @@ function LocationSelector({ onLocationChange, initialLocation, className = '' }:
         setSelectedProvince(savedInitialLocation.province);
       }
     }
-  }, [provinces.length]); // Only depend on provinces loading, not savedInitialLocation
+  }, [savedInitialLocation?.province, provinces.length]); // Depend on both savedInitialLocation.province and provinces
 
   // Set district when province is selected or districts are loaded
   useEffect(() => {
@@ -323,7 +323,7 @@ function LocationSelector({ onLocationChange, initialLocation, className = '' }:
     } else {
       console.log('District useEffect conditions not met');
     }
-  }, [districts]); // Only depend on districts loading, not savedInitialLocation
+  }, [savedInitialLocation?.district, districts]); // Depend on both savedInitialLocation.district and districts
 
   // Set neighborhood when district is selected or neighborhoods are loaded
   useEffect(() => {
@@ -347,7 +347,7 @@ function LocationSelector({ onLocationChange, initialLocation, className = '' }:
     } else {
       console.log('Neighborhood useEffect conditions not met');
     }
-  }, [neighborhoods]); // Only depend on neighborhoods loading, not savedInitialLocation
+  }, [savedInitialLocation?.neighborhood, neighborhoods]); // Depend on both savedInitialLocation.neighborhood and neighborhoods
 
   // Load districts when province changes
   useEffect(() => {
@@ -404,11 +404,18 @@ function LocationSelector({ onLocationChange, initialLocation, className = '' }:
   // Notify parent component of location changes
   useEffect(() => {
     if (onLocationChange && !isInitialRenderRef.current) {
-      onLocationChange({
-        province: selectedProvince,
-        district: selectedDistrict,
-        neighborhood: selectedNeighborhood
-      });
+      // Only call onLocationChange if we have meaningful changes
+      const hasProvince = selectedProvince !== undefined;
+      const hasDistrict = selectedDistrict !== undefined;
+      const hasNeighborhood = selectedNeighborhood !== undefined;
+
+      if (hasProvince || hasDistrict || hasNeighborhood) {
+        onLocationChange({
+          province: selectedProvince,
+          district: selectedDistrict,
+          neighborhood: selectedNeighborhood
+        });
+      }
     }
 
     // Mark as not initial render after first call

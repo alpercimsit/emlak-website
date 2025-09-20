@@ -100,15 +100,20 @@ function AdminDashboard() {
     district?: { id: number; name: string };
     neighborhood?: { id: number; name: string };
   }) => {
-    setLocationDataState(location);
+    // Only update locationDataState with non-undefined values to preserve existing values
+    setLocationDataState(prev => ({
+      province: location.province ?? prev?.province,
+      district: location.district ?? prev?.district,
+      neighborhood: location.neighborhood ?? prev?.neighborhood
+    }));
     // Update form state with location names for backward compatibility
     setForm(prev => ({
       ...prev,
-      il: location.province?.name || '',
-      ilce: location.district?.name || '',
-      mahalle: location.neighborhood?.name || ''
+      il: location.province?.name || prev.il,
+      ilce: location.district?.name || prev.ilce,
+      mahalle: location.neighborhood?.name || prev.mahalle
     }));
-  }, [setForm, setLocationDataState]);
+  }, [setForm]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target;
