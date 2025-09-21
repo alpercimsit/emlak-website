@@ -40,73 +40,18 @@ function AdminDashboard() {
       not: ''
   });
 
-  // Location data for LocationSelector component
-  const [locationDataState, setLocationDataState] = useState<{il: string, ilce: string, mahalle: string}>();
-
-  // Memoize locationData to prevent unnecessary re-renders
-  const locationData = useMemo(() => locationDataState, [locationDataState]);
   const navigate = useNavigate();
 
-  // Load default location data on component mount
+  // Set default location data on component mount
   useEffect(() => {
-    const loadDefaultLocation = async () => {
-      try {
-        // Load Tekirdağ province
-        const provinces = await api.getProvinces();
-        const tekirdag = provinces.find(p => p.id === 59);
-        if (!tekirdag) return;
-
-        // Load Saray district
-        const districts = await api.getDistricts(tekirdag.id);
-        const saray = districts.find(d => d.id === 1596);
-        if (!saray) return;
-
-        // Load Büyükyoncalı Merkez neighborhood
-        const neighborhoods = await api.getNeighborhoods(saray.id);
-        const buyukyoncAli = neighborhoods.find(n => n.id === 175889);
-
-        setLocationDataState({
-          il: 'Tekirdağ',
-          ilce: 'Saray',
-          mahalle: 'Büyükyoncalı Merkez'
-        });
-      } catch (error) {
-        console.error('Error loading default location:', error);
-        // Fallback to hardcoded values if API fails
-        const fallbackLocation = {
-          il: 'Tekirdağ',
-          ilce: 'Saray',
-          mahalle: 'Büyükyoncalı Merkez'
-        };
-        setLocationDataState(fallbackLocation);
-      }
-    };
-
-    loadDefaultLocation();
+    setForm(prev => ({
+      ...prev,
+      il: 'Tekirdağ',
+      ilce: 'Saray',
+      mahalle: 'Büyükyoncalı Merkez'
+    }));
   }, []);
 
-  // Handle location change from LocationSelector
-  const handleLocationChange = useCallback((location: {il: string, ilce: string, mahalle: string}) => {
-    // Only update if location actually changed
-    setLocationDataState(prev => {
-      if (!prev || prev.il !== location.il || prev.ilce !== location.ilce || prev.mahalle !== location.mahalle) {
-        return location;
-      }
-      return prev;
-    });
-  }, []);
-
-  // Update form when locationDataState changes
-  useEffect(() => {
-    if (locationDataState) {
-      setForm(prev => ({
-        ...prev,
-        il: locationDataState.il,
-        ilce: locationDataState.ilce,
-        mahalle: locationDataState.mahalle
-      }));
-    }
-  }, [locationDataState]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target;
@@ -170,11 +115,12 @@ function AdminDashboard() {
       });
 
       // Reset location data to defaults
-      setLocationDataState({
+      setForm(prev => ({
+        ...prev,
         il: 'Tekirdağ',
         ilce: 'Saray',
         mahalle: 'Büyükyoncalı Merkez'
-      });
+      }));
     } catch (err: any) {
       console.error('Error adding listing:', err);
       if (err.message === 'Unauthorized') {
@@ -287,8 +233,19 @@ function AdminDashboard() {
 
             {/* Konum Bilgileri */}
             <LocationSelector
-              onLocationChange={handleLocationChange}
-              initialLocation={locationData}
+              onLocationChange={(location) => {
+                setForm(prev => ({
+                  ...prev,
+                  il: location.il,
+                  ilce: location.ilce,
+                  mahalle: location.mahalle
+                }));
+              }}
+              initialLocation={{
+                il: form.il || '',
+                ilce: form.ilce || '',
+                mahalle: form.mahalle || ''
+              }}
             />
 
 

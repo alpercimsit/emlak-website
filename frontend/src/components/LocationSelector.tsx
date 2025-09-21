@@ -1,36 +1,10 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import api from '../utils/api';
-
 
 interface Props {
   onLocationChange?: (location: {il: string, ilce: string, mahalle: string}) => void;
   initialLocation?: {il: string, ilce: string, mahalle: string};
   className?: string;
-}
-
-interface Province {
-  id: number;
-  name: string;
-}
-
-interface District {
-  id: number;
-  name: string;
-}
-
-interface Neighborhood {
-  id: number;
-  name: string;
-}
-
-interface ComboboxProps {
-  options: Array<{id: number, name: string}>;
-  value: string | undefined | null;
-  onChange: (value: string | null | undefined) => void;
-  placeholder: string;
-  label: string;
-  disabled?: boolean;
-  loading?: boolean;
 }
 
 // Combobox component for searchable dropdown
@@ -42,7 +16,15 @@ function Combobox({
   label,
   disabled = false,
   loading = false
-}: ComboboxProps) {
+}: {
+  options: Array<{id: number, name: string}>;
+  value: string | undefined | null;
+  onChange: (value: string | null | undefined) => void;
+  placeholder: string;
+  label: string;
+  disabled?: boolean;
+  loading?: boolean;
+}) {
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
 
@@ -53,7 +35,7 @@ function Combobox({
     } else if (!value && searchTerm) {
       setSearchTerm('');
     }
-  }, [value]); // Include value in dependency array
+  }, [value]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value;
@@ -220,9 +202,9 @@ function Combobox({
 }
 
 function LocationSelector({ onLocationChange, initialLocation, className = '' }: Props) {
-  const [provinces, setProvinces] = useState<Province[]>([]);
-  const [districts, setDistricts] = useState<District[]>([]);
-  const [neighborhoods, setNeighborhoods] = useState<Neighborhood[]>([]);
+  const [provinces, setProvinces] = useState<Array<{id: number, name: string}>>([]);
+  const [districts, setDistricts] = useState<Array<{id: number, name: string}>>([]);
+  const [neighborhoods, setNeighborhoods] = useState<Array<{id: number, name: string}>>([]);
   const [loading, setLoading] = useState({
     provinces: false,
     districts: false,
@@ -249,23 +231,6 @@ function LocationSelector({ onLocationChange, initialLocation, className = '' }:
     };
 
     loadProvinces();
-  }, []);
-
-  // Load all location data once on component mount
-  useEffect(() => {
-    const loadAllLocationData = async () => {
-      setLoading(prev => ({ ...prev, provinces: true }));
-      try {
-        const provincesData = await api.getProvinces();
-        setProvinces(provincesData);
-      } catch (error) {
-        console.error('Error loading provinces:', error);
-      } finally {
-        setLoading(prev => ({ ...prev, provinces: false }));
-      }
-    };
-
-    loadAllLocationData();
   }, []); // Only run once on mount
 
   // Load districts when province changes

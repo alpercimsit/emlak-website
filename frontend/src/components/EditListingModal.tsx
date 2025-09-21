@@ -46,13 +46,10 @@ function EditListingModal({ listing, isOpen, onClose, onUpdate }: Props) {
     not: ''
   });
 
-  // Location data for LocationSelector component
-  const [locationData, setLocationData] = useState<{il: string, ilce: string, mahalle: string}>();
-
   // Form'u mevcut ilan bilgileri ile doldur
   useEffect(() => {
     if (listing && isOpen) {
-      const newForm = {
+      setForm({
         baslik: listing.baslik || '',
         detay: listing.detay || '',
         emlak_tipi: listing.emlak_tipi || 'Daire',
@@ -80,15 +77,6 @@ function EditListingModal({ listing, isOpen, onClose, onUpdate }: Props) {
         fotolar: listing.fotolar || '',
         gizli: listing.gizli || false,
         not: listing.not || ''
-      };
-
-      setForm(newForm);
-
-      // Set location data for LocationSelector
-      setLocationData({
-        il: newForm.il,
-        ilce: newForm.ilce,
-        mahalle: newForm.mahalle
       });
 
       // Convert existing photos from URL string to photo objects
@@ -98,29 +86,6 @@ function EditListingModal({ listing, isOpen, onClose, onUpdate }: Props) {
       setFeedbackType('');
     }
   }, [listing, isOpen]);
-
-  // Handle location change from LocationSelector
-  const handleLocationChange = (location: {il: string, ilce: string, mahalle: string}) => {
-    // Only update if location actually changed
-    setLocationData(prev => {
-      if (!prev || prev.il !== location.il || prev.ilce !== location.ilce || prev.mahalle !== location.mahalle) {
-        return location;
-      }
-      return prev;
-    });
-  };
-
-  // Update form when locationData changes
-  useEffect(() => {
-    if (locationData) {
-      setForm(prev => ({
-        ...prev,
-        il: locationData.il,
-        ilce: locationData.ilce,
-        mahalle: locationData.mahalle
-      }));
-    }
-  }, [locationData]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target;
@@ -297,8 +262,19 @@ function EditListingModal({ listing, isOpen, onClose, onUpdate }: Props) {
 
             {/* Konum Bilgileri */}
             <LocationSelector
-              onLocationChange={handleLocationChange}
-              initialLocation={locationData}
+              onLocationChange={(location) => {
+                setForm(prev => ({
+                  ...prev,
+                  il: location.il,
+                  ilce: location.ilce,
+                  mahalle: location.mahalle
+                }));
+              }}
+              initialLocation={{
+                il: form.il || '',
+                ilce: form.ilce || '',
+                mahalle: form.mahalle || ''
+              }}
             />
 
 
