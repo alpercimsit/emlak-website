@@ -68,7 +68,7 @@ function AdminDashboard() {
         setLocationDataState({
           il: 'Tekirdağ',
           ilce: 'Saray',
-          mahalle: 'Büyükyoncalı'
+          mahalle: 'Büyükyoncalı Merkez'
         });
       } catch (error) {
         console.error('Error loading default location:', error);
@@ -76,7 +76,7 @@ function AdminDashboard() {
         const fallbackLocation = {
           il: 'Tekirdağ',
           ilce: 'Saray',
-          mahalle: 'Büyükyoncalı'
+          mahalle: 'Büyükyoncalı Merkez'
         };
         setLocationDataState(fallbackLocation);
       }
@@ -173,7 +173,7 @@ function AdminDashboard() {
       setLocationDataState({
         il: 'Tekirdağ',
         ilce: 'Saray',
-        mahalle: 'Büyükyoncalı'
+        mahalle: 'Büyükyoncalı Merkez'
       });
     } catch (err: any) {
       console.error('Error adding listing:', err);
