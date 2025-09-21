@@ -757,7 +757,7 @@ textarea.form-control {
   overflow: hidden;
   box-shadow: var(--shadow-sm);
   position: relative;
-  bottom: 55px;
+  bottom: 115px;
 }
 
 .filter-header {
@@ -1089,7 +1089,8 @@ textarea.form-control {
   background-color: var(--border-color);
   width: 100%;
   position: relative;
-  z-index: 1;
+  bottom: 10px;
+  z-index: 2;
   /* listings-container içinde olduğu için container'ın genişliğine uyum sağlasın */
   box-sizing: border-box;
 }
