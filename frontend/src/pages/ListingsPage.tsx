@@ -41,6 +41,18 @@ function ListingsPage() {
   const [loading, setLoading] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
   const navigate = useNavigate();
+
+  // Sıralama seçenekleri
+  const [sortOption, setSortOption] = useState<'price-desc' | 'price-asc' | 'date-desc' | 'date-asc'>('date-desc');
+  const [isSortDropdownOpen, setIsSortDropdownOpen] = useState(false);
+
+  // Sıralama seçenekleri tanımı
+  const sortOptions = [
+    { key: 'price-desc' as const, label: 'Fiyata göre önce en yüksek' },
+    { key: 'price-asc' as const, label: 'Fiyata göre önce en düşük' },
+    { key: 'date-desc' as const, label: 'Tarihe göre önce en yeni' },
+    { key: 'date-asc' as const, label: 'Tarihe göre önce en eski' }
+  ];
   
   // Filtre state'i - localStorage'dan yükle veya default olarak arsa seçili
   const [filters, setFilters] = useState<FilterState>(() => {
@@ -89,20 +101,39 @@ function ListingsPage() {
     localStorage.setItem('listingFilters', JSON.stringify(filters));
   }, [filters]);
 
+  // Dropdown dışına tıklandığında kapat
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (isSortDropdownOpen && !(event.target as Element).closest('.sort-dropdown')) {
+        setIsSortDropdownOpen(false);
+      }
+    };
 
-  // Filtrelenmiş ilanları hesapla
-  const filteredListings = useMemo(() => {
-    console.log('Filtering listings:', { 
-      totalListings: listings.length, 
+    if (isSortDropdownOpen) {
+      document.addEventListener('click', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('click', handleClickOutside);
+    };
+  }, [isSortDropdownOpen]);
+
+
+
+  // Filtrelenmiş ve sıralanmış ilanları hesapla
+  const filteredListings = useMemo((): Listing[] => {
+    console.log('Filtering listings:', {
+      totalListings: listings.length,
       currentCategory: filters.category,
       currentSubCategory: filters.subCategory,
-      filters 
+      filters
     });
-    
-    return listings.filter(listing => {
+
+    // Önce filtreleme yap
+    const filtered = listings.filter(listing => {
       // Debug: Her ilan için emlak_tipi'ni logla
       console.log('Listing emlak_tipi:', listing.emlak_tipi, 'Filter category:', filters.category);
-      
+
       // Kategori filtresi
       if (filters.category === 'arsa') {
         if (listing.emlak_tipi !== 'Arsa') return false;
@@ -159,7 +190,7 @@ function ListingsPage() {
         // Kat filtresi
         if (filters.katlar.length > 0 && listing.bulundugu_kat != null) {
           const kat = listing.bulundugu_kat.toString();
-          const katStr = kat === '0' ? 'Zemin' : kat === '-1' ? 'Bodrum' : 
+          const katStr = kat === '0' ? 'Zemin' : kat === '-1' ? 'Bodrum' :
                         parseInt(kat) >= 10 ? '10+' : kat;
           if (!filters.katlar.includes(katStr)) return false;
         }
@@ -167,7 +198,25 @@ function ListingsPage() {
 
       return true;
     });
-  }, [listings, filters]);
+
+    // Sonra sıralama uygula
+    const sortedListings: Listing[] = [...filtered].sort((a, b) => {
+      switch (sortOption) {
+        case 'price-desc':
+          return b.fiyat - a.fiyat;
+        case 'price-asc':
+          return a.fiyat - b.fiyat;
+        case 'date-desc':
+          return new Date(b.ilan_tarihi).getTime() - new Date(a.ilan_tarihi).getTime();
+        case 'date-asc':
+          return new Date(a.ilan_tarihi).getTime() - new Date(b.ilan_tarihi).getTime();
+        default:
+          return 0;
+      }
+    });
+
+    return sortedListings;
+  }, [listings, filters, sortOption]);
 
   // Dinamik başlık metni oluşturma
   const getPageTitle = () => {
@@ -186,10 +235,55 @@ function ListingsPage() {
   };
 
   return (
-    <div className="container" style={{ paddingTop: 'var(--spacing-xl)', paddingBottom: 'var(--spacing-xl)' }}>
-      <h1 className="listings-page-title">
-        {getPageTitle()}
-      </h1>
+    <div className="container" style={{ paddingTop: 'var(--spacing-lg)', paddingBottom: 'var(--spacing-xl)' }}>
+      {/* Ana başlık ve kontrol paneli */}
+      <div className="listings-title-section">
+        <h1 className="listings-page-title">
+          {getPageTitle()}
+        </h1>
+
+        {/* Sıralama ve bulunan kayıt sayısı - başlığın sağında */}
+        <div className="listings-header" style={{ position: 'relative', zIndex: 10 }}>
+          <div className="listings-sort-section">
+            <div className="sort-dropdown">
+              <button
+                id="sort-button"
+                className="sort-button"
+              onClick={(e) => {
+                e.stopPropagation();
+                setIsSortDropdownOpen(!isSortDropdownOpen);
+              }}
+              >
+                <i className="fas fa-sort"></i>
+                Sırala
+                <i className={`fas fa-chevron-down ${isSortDropdownOpen ? 'rotate' : ''}`}></i>
+              </button>
+              <div className={`sort-dropdown-menu ${isSortDropdownOpen ? 'show' : ''}`}>
+                {sortOptions.map(option => (
+                  <div
+                    key={option.key}
+                    className={`sort-option ${sortOption === option.key ? 'active' : ''}`}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setSortOption(option.key);
+                      setIsSortDropdownOpen(false);
+                    }}
+                  >
+                    {option.label}
+                    {sortOption === option.key && <i className="fas fa-check"></i>}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+          <div className="listings-count">
+            Bulunan Kayıt: <strong>{filteredListings.length}</strong>
+          </div>
+        </div>
+      </div>
+
+      {/* Başlık ile ilanlar arasına ayırıcı çizgi */}
+      <hr className="listings-separator" style={{ width: '100%', border: 'none', height: '2px', backgroundColor: 'var(--border-color)', margin: '1.5rem 0 2rem 0' }} />
 
       <div className="listings-container">
         <div className="listings-layout">
@@ -220,12 +314,6 @@ function ListingsPage() {
         </div>
       </div>
 
-      {/* Bulunan kayıt sayısı - sağ üstte, tamamen kutunun dışında */}
-      <div className="listings-header">
-        <div className="listings-count">
-          Bulunan Kayıt: <strong>{filteredListings.length}</strong>
-        </div>
-      </div>
     </div>
   );
 }

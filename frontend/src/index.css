@@ -735,6 +735,7 @@ textarea.form-control {
 /* Filter System Styles */
 .listings-container {
   position: relative;
+  z-index: 1;
 }
 
 .listings-layout {
@@ -756,7 +757,7 @@ textarea.form-control {
   overflow: hidden;
   box-shadow: var(--shadow-sm);
   position: relative;
-  bottom: 70px;
+  bottom: 55px;
 }
 
 .filter-header {
@@ -1062,28 +1063,7 @@ textarea.form-control {
   min-width: 0; /* Allow flex shrinking */
 }
 
-/* Listings Page Title - Dinamik başlık */
-.listings-page-title {
-  font-size: 1.75rem; /* H1'den daha küçük */
-  font-weight: 500; /* Daha az kalın */
-  margin: 0 0 var(--spacing-lg) 0;
-  color: var(--text-primary);
-  font-family: var(--font-heading);
-  line-height: 1.3;
-  /* İlan listesi ile hizalama - filter sidebar'ın padding'ini dikkate alarak */
-  padding-left: 333px; /* Filter sidebar genişliği */
-  box-sizing: border-box;
-}
 
-/* Listings Header - Sağ üstte bulunan kayıt sayısı */
-.listings-header {
-  position: absolute;
-  top: 110px; /* Başlık ve container padding'inden sonra */
-
-  right: 176px;
-  z-index: 10;
-  pointer-events: none;
-}
 
 .listings-count {
   background: var(--bg-primary);
@@ -1099,6 +1079,19 @@ textarea.form-control {
 .listings-count strong {
   color: var(--primary-color);
   font-weight: 600;
+}
+
+/* İlan listesi başlık ile ilanlar arasına ayırıcı çizgi */
+.listings-separator {
+  margin: var(--spacing-lg) 0 var(--spacing-xl) 0;
+  border: none;
+  height: 2px;
+  background-color: var(--border-color);
+  width: 100%;
+  position: relative;
+  z-index: 1;
+  /* listings-container içinde olduğu için container'ın genişliğine uyum sağlasın */
+  box-sizing: border-box;
 }
 
 /* Responsive Design */
@@ -1780,16 +1773,139 @@ textarea.form-control {
   }
 }
 
+/* Ana başlık ve kontrol paneli */
+.listings-title-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-lg);
+  position: relative;
+  /* İlan listesi ile hizalama - filter sidebar'ın padding'ini dikkate alarak */
+  padding-left: 333px; /* Filter sidebar genişliği */
+  box-sizing: border-box;
+}
+
+.listings-header {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-lg);
+  position: relative;
+  z-index: 10;
+}
+
+.listings-sort-section {
+  display: flex;
+  align-items: center;
+}
+
+.sort-dropdown {
+  position: relative;
+  display: inline-block;
+  user-select: none;
+}
+
+#sort-button.sort-button,
+.sort-button {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-sm) var(--spacing-md);
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  cursor: pointer !important;
+  font-size: 0.875rem;
+  color: var(--text-primary);
+  transition: all 0.2s ease;
+  pointer-events: auto !important;
+  user-select: none;
+  background-color: var(--bg-primary) !important;
+  border-color: var(--border-color) !important;
+  color: var(--text-primary) !important;
+}
+
+.sort-button:hover {
+  border-color: var(--primary-color);
+  background: var(--bg-secondary);
+}
+
+.sort-button i {
+  font-size: 0.75rem;
+}
+
+.sort-button i.rotate {
+  transform: rotate(180deg);
+  transition: transform 0.2s ease;
+}
+
+.sort-dropdown-menu {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  z-index: 1000;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-10px);
+  transition: opacity 0.2s ease, visibility 0.2s ease, transform 0.2s ease;
+  min-width: 200px;
+  max-height: 300px;
+  overflow-y: auto;
+  pointer-events: none;
+  padding: 4px 0;
+}
+
+.sort-dropdown-menu.show {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.sort-option {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-sm) var(--spacing-md);
+  cursor: pointer;
+  font-size: 0.875rem;
+  color: var(--text-primary);
+  transition: background-color 0.2s ease;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.sort-option:hover {
+  background: var(--bg-secondary);
+}
+
+.sort-option.active {
+  background: var(--primary-color);
+  color: white;
+}
+
+.sort-option:last-child {
+  border-bottom: none;
+}
+
+.sort-option i {
+  font-size: 0.75rem;
+  opacity: 0.7;
+}
+
 /* Responsive Modal */
 @media (max-width: 768px) {
   .modal-overlay {
     padding: var(--spacing-sm);
   }
-  
+
   .modal-content {
     max-height: 95vh;
   }
-  
+
   .modal-header,
   .modal-body {
     padding: var(--spacing-md);

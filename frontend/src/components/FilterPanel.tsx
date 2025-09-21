@@ -405,9 +405,6 @@ function FilterPanel({ filters, onFiltersChange, totalCount }: Props) {
           <i className="fas fa-filter" style={{ marginRight: 'var(--spacing-sm)' }}></i>
           İlan Filtreleme
         </h3>
-        <div className="filter-count" style={{ display: 'none' }}>
-          Bulunan Kayıt: <strong>{totalCount}</strong>
-        </div>
       </div>
 
       {/* Kategori Seçimi */}
