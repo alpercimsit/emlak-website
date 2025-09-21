@@ -121,56 +121,6 @@ function Combobox({
       // Combine exact matches first, then partial matches
       setFilteredOptions([...exactMatches, ...partialMatches]);
 
-      // Debug: Log the search and results for troubleshooting
-      console.log('=== DEBUG INFO ===');
-      console.log('Search term:', searchTerm);
-      console.log('Normalized search:', searchTermNormalized);
-
-      // Show first few options with detailed normalization
-      const sampleOptions = options.slice(0, 5).map(opt => {
-        const original = opt.name;
-        const normalized = normalizeTurkish(original);
-        return {
-          name: original,
-          normalized: normalized,
-          startsWithNormalized: normalized.startsWith(searchTermNormalized)
-        };
-      });
-      console.log('Sample options analysis:', sampleOptions);
-
-      // Find Istanbul specifically
-      const istanbulOption = options.find(opt =>
-        opt.name.includes('İstan') || opt.name.includes('Istan')
-      );
-      if (istanbulOption) {
-        const original = istanbulOption.name;
-        const normalized = normalizeTurkish(original);
-        console.log('İstanbul analysis:', {
-          name: original,
-          normalized: normalized,
-          startsWith: normalized.startsWith(searchTermNormalized),
-          charCodes: original.split('').map(c => c.charCodeAt(0))
-        });
-      }
-
-      // Let's also check why Istanbul is not being filtered
-      console.log('=== FILTERING DEBUG ===');
-      options.forEach(opt => {
-        const normalized = normalizeTurkish(opt.name);
-        const matches = normalized.startsWith(searchTermNormalized);
-        if (opt.name.includes('İstan') || opt.name.includes('Istan') ||
-            opt.name.includes('Ispar') || opt.name.includes('ispar')) {
-          console.log(`${opt.name} -> ${normalized} -> startsWith "${searchTermNormalized}": ${matches}`);
-        }
-      });
-      console.log('========================');
-
-      console.log('Available options count:', options.length);
-      console.log('Filtered results:', filtered.map(opt => opt.name));
-      console.log('Exact matches:', exactMatches.map(opt => opt.name));
-      console.log('Partial matches:', partialMatches.map(opt => opt.name));
-      console.log('==================');
-
     } else {
       setFilteredOptions(options);
     }
