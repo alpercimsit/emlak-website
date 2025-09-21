@@ -101,7 +101,13 @@ function EditListingModal({ listing, isOpen, onClose, onUpdate }: Props) {
 
   // Handle location change from LocationSelector
   const handleLocationChange = (location: {il: string, ilce: string, mahalle: string}) => {
-    setLocationData(location);
+    // Only update if location actually changed
+    setLocationData(prev => {
+      if (!prev || prev.il !== location.il || prev.ilce !== location.ilce || prev.mahalle !== location.mahalle) {
+        return location;
+      }
+      return prev;
+    });
   };
 
   // Update form when locationData changes

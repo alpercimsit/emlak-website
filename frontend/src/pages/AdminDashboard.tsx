@@ -87,8 +87,13 @@ function AdminDashboard() {
 
   // Handle location change from LocationSelector
   const handleLocationChange = useCallback((location: {il: string, ilce: string, mahalle: string}) => {
-    // Update locationDataState
-    setLocationDataState(location);
+    // Only update if location actually changed
+    setLocationDataState(prev => {
+      if (!prev || prev.il !== location.il || prev.ilce !== location.ilce || prev.mahalle !== location.mahalle) {
+        return location;
+      }
+      return prev;
+    });
   }, []);
 
   // Update form when locationDataState changes

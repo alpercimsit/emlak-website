@@ -48,12 +48,12 @@ function Combobox({
 
   // Set initial search term when value changes
   useEffect(() => {
-    if (value) {
+    if (value && value !== searchTerm) {
       setSearchTerm(value);
-    } else {
+    } else if (!value && searchTerm) {
       setSearchTerm('');
     }
-  }, []); // Remove value from dependency array to prevent infinite loop
+  }, [value]); // Include value in dependency array
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value;
