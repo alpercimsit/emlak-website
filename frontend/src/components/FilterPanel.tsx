@@ -80,14 +80,12 @@ function Combobox({
     };
 
     // First normalize Turkish characters, then convert to lowercase
-    // This handles the issue where "İstanbul".toLowerCase() becomes "i̇stanbul"
-    const normalized = str.split('').map(char => turkishCharMap[char] || char).join('');
+    // This avoids the issue where "İstanbul".toLowerCase() becomes "i̇stanbul"
+    let result = str;
 
-    // Apply normalization multiple times to handle chained replacements
-    // For example: I -> ı -> i
-    let result = normalized;
+    // Apply normalization multiple times to handle all Turkish characters
     let iterations = 0;
-    const maxIterations = 3;
+    const maxIterations = 5;
 
     while (iterations < maxIterations) {
       const newResult = result.split('').map(char => turkishCharMap[char] || char).join('');
@@ -102,7 +100,7 @@ function Combobox({
   // Filter options based on search term
   useEffect(() => {
     if (searchTerm) {
-      const searchTermNormalized = normalizeTurkish(searchTerm.toLowerCase());
+      const searchTermNormalized = normalizeTurkish(searchTerm);
 
       const filtered = options.filter(option => {
         const optionNameNormalized = normalizeTurkish(option.name);
@@ -120,6 +118,24 @@ function Combobox({
 
       // Combine exact matches first, then partial matches
       setFilteredOptions([...exactMatches, ...partialMatches]);
+
+      // Debug: Check what's happening with "İstanbul"
+      console.log('=== DEBUG: Büyük İ Sorunu ===');
+      console.log('Search term:', searchTerm);
+      console.log('Normalized search:', searchTermNormalized);
+
+      // Check if Istanbul exists in options
+      const istanbulOptions = options.filter(opt =>
+        opt.name.includes('İstan') || opt.name.includes('Istan')
+      );
+      console.log('İstanbul options found:', istanbulOptions.map(opt => ({
+        name: opt.name,
+        normalized: normalizeTurkish(opt.name),
+        matches: normalizeTurkish(opt.name).startsWith(searchTermNormalized)
+      })));
+
+      console.log('Filtered results:', filtered.map(opt => opt.name));
+      console.log('========================');
 
     } else {
       setFilteredOptions(options);
