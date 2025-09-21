@@ -119,24 +119,6 @@ function Combobox({
       // Combine exact matches first, then partial matches
       setFilteredOptions([...exactMatches, ...partialMatches]);
 
-      // Debug: Check what's happening with "İstanbul"
-      console.log('=== DEBUG: Büyük İ Sorunu ===');
-      console.log('Search term:', searchTerm);
-      console.log('Normalized search:', searchTermNormalized);
-
-      // Check if Istanbul exists in options
-      const istanbulOptions = options.filter(opt =>
-        opt.name.includes('İstan') || opt.name.includes('Istan')
-      );
-      console.log('İstanbul options found:', istanbulOptions.map(opt => ({
-        name: opt.name,
-        normalized: normalizeTurkish(opt.name),
-        matches: normalizeTurkish(opt.name).startsWith(searchTermNormalized)
-      })));
-
-      console.log('Filtered results:', filtered.map(opt => opt.name));
-      console.log('========================');
-
     } else {
       setFilteredOptions(options);
     }
