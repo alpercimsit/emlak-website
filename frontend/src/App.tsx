@@ -40,6 +40,9 @@ function App() {
             <div className="navbar-content">
               {isAdmin && (
                 <div className="admin-nav-buttons">
+                  <span style={{ fontSize: '0.9em', color: 'black', marginRight: 'var(--spacing-sm)' }}>
+                    Admin Modu
+                  </span>
                   <button
                     onClick={handleNewListing}
                     className="btn btn-primary btn-sm"

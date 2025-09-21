@@ -72,7 +72,7 @@ function ListingList({ listings, isAdmin = false, onUpdate }: Props) {
     return (
       <div className="empty-state">
         <i className="fas fa-home"></i>
-        <h3>Henüz İlan Yok</h3>
+        <h3>Arama kriterlerine uygun ilan bulunamadı.</h3>
         <p>Yakında yeni emlak ilanları eklenecektir.</p>
       </div>
     );

@@ -169,11 +169,26 @@ function ListingsPage() {
     });
   }, [listings, filters]);
 
+  // Dinamik başlık metni oluşturma
+  const getPageTitle = () => {
+    if (filters.category === 'arsa') {
+      return 'İlan Listesi - Arsa';
+    } else if (filters.category === 'konut') {
+      if (filters.subCategory === 'satilik') {
+        return 'İlan Listesi - Satılık Konut';
+      } else if (filters.subCategory === 'kiralik') {
+        return 'İlan Listesi - Kiralık Konut';
+      } else {
+        return 'İlan Listesi - Konut';
+      }
+    }
+    return 'İlan Listesi';
+  };
+
   return (
     <div className="container" style={{ paddingTop: 'var(--spacing-xl)', paddingBottom: 'var(--spacing-xl)' }}>
-      <h1 className="text-center mb-4">
-        <i className="fas fa-home" style={{ marginRight: 'var(--spacing-sm)', color: 'var(--primary-color)' }}></i>
-        Emlak İlanları {isAdmin && <span style={{ fontSize: '0.7em', color: 'var(--success-color)' }}>(Admin Modu)</span>}
+      <h1 className="listings-page-title">
+        {getPageTitle()}
       </h1>
 
       <div className="listings-container">

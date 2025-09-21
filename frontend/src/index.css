@@ -525,6 +525,12 @@ textarea.form-control {
   h1 { font-size: 1.875rem; }
   h2 { font-size: 1.5rem; }
 
+  .listings-page-title {
+    font-size: 1.5rem;
+    padding-left: 0;
+    text-align: center;
+  }
+
   /* Kompakt kartlar için responsive */
   .listings-grid {
     gap: var(--spacing-sm);
@@ -1054,11 +1060,24 @@ textarea.form-control {
   min-width: 0; /* Allow flex shrinking */
 }
 
+/* Listings Page Title - Dinamik başlık */
+.listings-page-title {
+  font-size: 1.75rem; /* H1'den daha küçük */
+  font-weight: 500; /* Daha az kalın */
+  margin: 0 0 var(--spacing-lg) 0;
+  color: var(--text-primary);
+  font-family: var(--font-heading);
+  line-height: 1.3;
+  /* İlan listesi ile hizalama - filter sidebar'ın padding'ini dikkate alarak */
+  padding-left: 333px; /* Filter sidebar genişliği */
+  box-sizing: border-box;
+}
+
 /* Listings Header - Sağ üstte bulunan kayıt sayısı */
 .listings-header {
   position: absolute;
   top: 120px; /* Başlık ve container padding'inden sonra */
-  
+
   right: 176px;
   z-index: 10;
   pointer-events: none;
