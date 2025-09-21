@@ -2,21 +2,15 @@ import React, { useState, useEffect, useRef } from 'react';
 import api from '../utils/api';
 
 interface LocationData {
-  province?: { id: number; name: string };
-  district?: { id: number; name: string };
-  neighborhood?: { id: number; name: string };
+  province?: { id: number; name: string } | null;
+  district?: { id: number; name: string } | null;
+  neighborhood?: { id: number; name: string } | null;
 }
 
 interface Props {
   onLocationChange?: (location: LocationData) => void;
   initialLocation?: LocationData;
   className?: string;
-}
-
-interface LocationData {
-  province?: { id: number; name: string } | null;
-  district?: { id: number; name: string } | null;
-  neighborhood?: { id: number; name: string } | null;
 }
 
 interface Province {
@@ -254,7 +248,7 @@ function LocationSelector({ onLocationChange, initialLocation, className = '' }:
   const isInitialRenderRef = useRef(true);
 
   // Store the initial location in state to capture the correct values
-  const [savedInitialLocation, setSavedInitialLocation] = useState<LocationData | undefined>();
+  const [savedInitialLocation, setSavedInitialLocation] = useState<LocationData | null>();
 
   // Update saved location when initialLocation changes, but only if it's not empty
   useEffect(() => {

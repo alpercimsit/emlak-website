@@ -48,9 +48,9 @@ function EditListingModal({ listing, isOpen, onClose, onUpdate }: Props) {
 
   // Location data for LocationSelector component
   const [locationData, setLocationData] = useState<{
-    province?: { id: number; name: string };
-    district?: { id: number; name: string };
-    neighborhood?: { id: number; name: string };
+    province?: { id: number; name: string } | null;
+    district?: { id: number; name: string } | null;
+    neighborhood?: { id: number; name: string } | null;
   }>();
 
   // Form'u mevcut ilan bilgileri ile doldur

@@ -42,9 +42,9 @@ function AdminDashboard() {
 
   // Location data for LocationSelector component
   const [locationDataState, setLocationDataState] = useState<{
-    province?: { id: number; name: string };
-    district?: { id: number; name: string };
-    neighborhood?: { id: number; name: string };
+    province?: { id: number; name: string } | null;
+    district?: { id: number; name: string } | null;
+    neighborhood?: { id: number; name: string } | null;
   }>();
 
   // Memoize locationData to prevent unnecessary re-renders
@@ -100,7 +100,7 @@ function AdminDashboard() {
     district?: { id: number; name: string } | null;
     neighborhood?: { id: number; name: string } | null;
   }) => {
-    // Only update locationDataState with non-undefined values to preserve existing values
+    // Update locationDataState - preserve existing values when location values are undefined
     setLocationDataState(prev => ({
       province: location.province !== undefined ? location.province : prev?.province,
       district: location.district !== undefined ? location.district : prev?.district,
