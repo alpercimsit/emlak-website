@@ -755,6 +755,8 @@ textarea.form-control {
   border-radius: var(--radius-lg);
   overflow: hidden;
   box-shadow: var(--shadow-sm);
+  position: relative;
+  bottom: 70px;
 }
 
 .filter-header {
@@ -1076,7 +1078,7 @@ textarea.form-control {
 /* Listings Header - Sağ üstte bulunan kayıt sayısı */
 .listings-header {
   position: absolute;
-  top: 120px; /* Başlık ve container padding'inden sonra */
+  top: 110px; /* Başlık ve container padding'inden sonra */
 
   right: 176px;
   z-index: 10;
