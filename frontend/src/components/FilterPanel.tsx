@@ -68,13 +68,109 @@ function Combobox({
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredOptions, setFilteredOptions] = useState<Array<{id: number, name: string}>>([]);
 
+  // Normalize Turkish characters for consistent matching
+  const normalizeTurkish = (str: string) => {
+    const turkishCharMap: {[key: string]: string} = {
+      'İ': 'i', 'I': 'ı', 'ı': 'i',
+      'Ş': 's', 'ş': 's',
+      'Ğ': 'g', 'ğ': 'g',
+      'Ü': 'u', 'ü': 'u',
+      'Ö': 'o', 'ö': 'o',
+      'Ç': 'c', 'ç': 'c'
+    };
+
+    // First normalize Turkish characters, then convert to lowercase
+    // This handles the issue where "İstanbul".toLowerCase() becomes "i̇stanbul"
+    const normalized = str.split('').map(char => turkishCharMap[char] || char).join('');
+
+    // Apply normalization multiple times to handle chained replacements
+    // For example: I -> ı -> i
+    let result = normalized;
+    let iterations = 0;
+    const maxIterations = 3;
+
+    while (iterations < maxIterations) {
+      const newResult = result.split('').map(char => turkishCharMap[char] || char).join('');
+      if (newResult === result) break;
+      result = newResult;
+      iterations++;
+    }
+
+    return result.toLowerCase();
+  };
+
   // Filter options based on search term
   useEffect(() => {
     if (searchTerm) {
-      const filtered = options.filter(option =>
-        option.name.toLowerCase().includes(searchTerm.toLowerCase())
+      const searchTermNormalized = normalizeTurkish(searchTerm.toLowerCase());
+
+      const filtered = options.filter(option => {
+        const optionNameNormalized = normalizeTurkish(option.name);
+        return optionNameNormalized.startsWith(searchTermNormalized);
+      });
+
+      // Sort filtered options: exact matches first, then partial matches
+      const exactMatches = filtered.filter(option =>
+        normalizeTurkish(option.name) === searchTermNormalized
       );
-      setFilteredOptions(filtered);
+      const partialMatches = filtered.filter(option =>
+        normalizeTurkish(option.name).startsWith(searchTermNormalized) &&
+        normalizeTurkish(option.name) !== searchTermNormalized
+      );
+
+      // Combine exact matches first, then partial matches
+      setFilteredOptions([...exactMatches, ...partialMatches]);
+
+      // Debug: Log the search and results for troubleshooting
+      console.log('=== DEBUG INFO ===');
+      console.log('Search term:', searchTerm);
+      console.log('Normalized search:', searchTermNormalized);
+
+      // Show first few options with detailed normalization
+      const sampleOptions = options.slice(0, 5).map(opt => {
+        const original = opt.name;
+        const normalized = normalizeTurkish(original);
+        return {
+          name: original,
+          normalized: normalized,
+          startsWithNormalized: normalized.startsWith(searchTermNormalized)
+        };
+      });
+      console.log('Sample options analysis:', sampleOptions);
+
+      // Find Istanbul specifically
+      const istanbulOption = options.find(opt =>
+        opt.name.includes('İstan') || opt.name.includes('Istan')
+      );
+      if (istanbulOption) {
+        const original = istanbulOption.name;
+        const normalized = normalizeTurkish(original);
+        console.log('İstanbul analysis:', {
+          name: original,
+          normalized: normalized,
+          startsWith: normalized.startsWith(searchTermNormalized),
+          charCodes: original.split('').map(c => c.charCodeAt(0))
+        });
+      }
+
+      // Let's also check why Istanbul is not being filtered
+      console.log('=== FILTERING DEBUG ===');
+      options.forEach(opt => {
+        const normalized = normalizeTurkish(opt.name);
+        const matches = normalized.startsWith(searchTermNormalized);
+        if (opt.name.includes('İstan') || opt.name.includes('Istan') ||
+            opt.name.includes('Ispar') || opt.name.includes('ispar')) {
+          console.log(`${opt.name} -> ${normalized} -> startsWith "${searchTermNormalized}": ${matches}`);
+        }
+      });
+      console.log('========================');
+
+      console.log('Available options count:', options.length);
+      console.log('Filtered results:', filtered.map(opt => opt.name));
+      console.log('Exact matches:', exactMatches.map(opt => opt.name));
+      console.log('Partial matches:', partialMatches.map(opt => opt.name));
+      console.log('==================');
+
     } else {
       setFilteredOptions(options);
     }
