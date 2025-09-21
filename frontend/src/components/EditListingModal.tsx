@@ -47,16 +47,12 @@ function EditListingModal({ listing, isOpen, onClose, onUpdate }: Props) {
   });
 
   // Location data for LocationSelector component
-  const [locationData, setLocationData] = useState<{
-    province?: { id: number; name: string } | null;
-    district?: { id: number; name: string } | null;
-    neighborhood?: { id: number; name: string } | null;
-  }>();
+  const [locationData, setLocationData] = useState<{il: string, ilce: string, mahalle: string}>();
 
   // Form'u mevcut ilan bilgileri ile doldur
   useEffect(() => {
     if (listing && isOpen) {
-      setForm({
+      const newForm = {
         baslik: listing.baslik || '',
         detay: listing.detay || '',
         emlak_tipi: listing.emlak_tipi || 'Daire',
@@ -84,18 +80,16 @@ function EditListingModal({ listing, isOpen, onClose, onUpdate }: Props) {
         fotolar: listing.fotolar || '',
         gizli: listing.gizli || false,
         not: listing.not || ''
-      });
+      };
+
+      setForm(newForm);
 
       // Set location data for LocationSelector
-      if (listing.il || listing.ilce || listing.mahalle) {
-        setLocationData({
-          province: listing.il ? { id: 0, name: listing.il } : undefined,
-          district: listing.ilce ? { id: 0, name: listing.ilce } : undefined,
-          neighborhood: listing.mahalle ? { id: 0, name: listing.mahalle } : undefined
-        });
-      } else {
-        setLocationData(undefined);
-      }
+      setLocationData({
+        il: newForm.il,
+        ilce: newForm.ilce,
+        mahalle: newForm.mahalle
+      });
 
       // Convert existing photos from URL string to photo objects
       setPhotos(api.urlStringToPhotos(listing.fotolar || ''));
@@ -106,20 +100,21 @@ function EditListingModal({ listing, isOpen, onClose, onUpdate }: Props) {
   }, [listing, isOpen]);
 
   // Handle location change from LocationSelector
-  const handleLocationChange = (location: {
-    province?: { id: number; name: string } | null;
-    district?: { id: number; name: string } | null;
-    neighborhood?: { id: number; name: string } | null;
-  }) => {
+  const handleLocationChange = (location: {il: string, ilce: string, mahalle: string}) => {
     setLocationData(location);
-    // Update form state with location names for backward compatibility
-    setForm(prev => ({
-      ...prev,
-      il: location.province?.name || '',
-      ilce: location.district?.name || '',
-      mahalle: location.neighborhood?.name || ''
-    }));
   };
+
+  // Update form when locationData changes
+  useEffect(() => {
+    if (locationData) {
+      setForm(prev => ({
+        ...prev,
+        il: locationData.il,
+        ilce: locationData.ilce,
+        mahalle: locationData.mahalle
+      }));
+    }
+  }, [locationData]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target;

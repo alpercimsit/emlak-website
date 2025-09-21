@@ -1,15 +1,10 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import api from '../utils/api';
 
-interface LocationData {
-  province?: { id: number; name: string } | null;
-  district?: { id: number; name: string } | null;
-  neighborhood?: { id: number; name: string } | null;
-}
 
 interface Props {
-  onLocationChange?: (location: LocationData) => void;
-  initialLocation?: LocationData;
+  onLocationChange?: (location: {il: string, ilce: string, mahalle: string}) => void;
+  initialLocation?: {il: string, ilce: string, mahalle: string};
   className?: string;
 }
 
@@ -30,8 +25,8 @@ interface Neighborhood {
 
 interface ComboboxProps {
   options: Array<{id: number, name: string}>;
-  value: {id: number, name: string} | undefined | null;
-  onChange: (option: {id: number, name: string} | undefined | null) => void;
+  value: string | undefined | null;
+  onChange: (value: string | null | undefined) => void;
   placeholder: string;
   label: string;
   disabled?: boolean;
@@ -50,28 +45,15 @@ function Combobox({
 }: ComboboxProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
-  const [filteredOptions, setFilteredOptions] = useState<Array<{id: number, name: string}>>([]);
-
-  // Filter options based on search term
-  useEffect(() => {
-    if (searchTerm) {
-      const filtered = options.filter(option =>
-        option.name.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-      setFilteredOptions(filtered);
-    } else {
-      setFilteredOptions(options);
-    }
-  }, [searchTerm, options]);
 
   // Set initial search term when value changes
   useEffect(() => {
     if (value) {
-      setSearchTerm(value.name);
+      setSearchTerm(value);
     } else {
       setSearchTerm('');
     }
-  }, [value]);
+  }, []); // Remove value from dependency array to prevent infinite loop
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value;
@@ -84,7 +66,7 @@ function Combobox({
   };
 
   const handleOptionSelect = (option: {id: number, name: string}) => {
-    onChange(option);
+    onChange(option.name);
     setSearchTerm(option.name);
     setIsOpen(false);
   };
@@ -183,47 +165,54 @@ function Combobox({
             zIndex: 1000
           }}
         >
-          {filteredOptions.length > 0 ? (
-            filteredOptions.map(option => (
+          {(() => {
+            const filtered = searchTerm
+              ? options.filter(option =>
+                  option.name.toLowerCase().includes(searchTerm.toLowerCase())
+                )
+              : options;
+            return filtered.length > 0 ? (
+              filtered.map(option => (
+                <div
+                  key={option.id}
+                  className="combobox-option"
+                  onClick={() => handleOptionSelect(option)}
+                  style={{
+                    padding: '6px 10px',
+                    cursor: 'pointer',
+                    borderBottom: '1px solid var(--border-color, #f1f3f4)',
+                    backgroundColor: value === option.name ? 'var(--primary-color, #007bff)' : 'white',
+                    color: value === option.name ? 'white' : 'inherit',
+                    fontSize: '14px'
+                  }}
+                  onMouseEnter={(e) => {
+                    if (value !== option.name) {
+                      e.currentTarget.style.backgroundColor = 'var(--background-secondary, #f8f9fa)';
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (value !== option.name) {
+                      e.currentTarget.style.backgroundColor = 'white';
+                    }
+                  }}
+                >
+                  {option.name}
+                </div>
+              ))
+            ) : (
               <div
-                key={option.id}
-                className="combobox-option"
-                onClick={() => handleOptionSelect(option)}
+                className="combobox-no-results"
                 style={{
-                  padding: '6px 10px',
-                  cursor: 'pointer',
-                  borderBottom: '1px solid var(--border-color, #f1f3f4)',
-                  backgroundColor: value?.id === option.id ? 'var(--primary-color, #007bff)' : 'white',
-                  color: value?.id === option.id ? 'white' : 'inherit',
+                  padding: '12px',
+                  textAlign: 'center',
+                  color: 'var(--text-muted)',
                   fontSize: '14px'
                 }}
-                onMouseEnter={(e) => {
-                  if (value?.id !== option.id) {
-                    e.currentTarget.style.backgroundColor = 'var(--background-secondary, #f8f9fa)';
-                  }
-                }}
-                onMouseLeave={(e) => {
-                  if (value?.id !== option.id) {
-                    e.currentTarget.style.backgroundColor = 'white';
-                  }
-                }}
               >
-                {option.name}
+                Sonuç bulunamadı
               </div>
-            ))
-          ) : (
-            <div
-              className="combobox-no-results"
-              style={{
-                padding: '12px',
-                textAlign: 'center',
-                color: 'var(--text-muted)',
-                fontSize: '14px'
-              }}
-            >
-              Sonuç bulunamadı
-            </div>
-          )}
+            );
+          })()}
         </div>
       )}
     </div>
@@ -240,29 +229,10 @@ function LocationSelector({ onLocationChange, initialLocation, className = '' }:
     neighborhoods: false
   });
 
-  const [selectedProvince, setSelectedProvince] = useState<Province | undefined | null>();
-  const [selectedDistrict, setSelectedDistrict] = useState<District | undefined | null>();
-  const [selectedNeighborhood, setSelectedNeighborhood] = useState<Neighborhood | undefined | null>();
-
-  // Track if this is the initial render to prevent unnecessary onLocationChange calls
-  const isInitialRenderRef = useRef(true);
-
-  // Store the initial location in state to capture the correct values
-  const [savedInitialLocation, setSavedInitialLocation] = useState<LocationData | null>();
-
-  // Update saved location when initialLocation changes, but only if it's not empty
-  useEffect(() => {
-    console.log('LocationSelector: received initialLocation:', initialLocation);
-    if (initialLocation && (initialLocation.province || initialLocation.district || initialLocation.neighborhood)) {
-      console.log('Saving initialLocation to state:', initialLocation);
-      setSavedInitialLocation(initialLocation);
-
-      // Also update the selected states immediately in a single batch
-      setSelectedProvince(initialLocation.province);
-      setSelectedDistrict(initialLocation.district);
-      setSelectedNeighborhood(initialLocation.neighborhood);
-    }
-  }, [initialLocation]);
+  // String values for location
+  const [il, setIl] = useState<string>('');
+  const [ilce, setIlce] = useState<string>('');
+  const [mahalle, setMahalle] = useState<string>('');
 
   // Load provinces on component mount
   useEffect(() => {
@@ -281,158 +251,101 @@ function LocationSelector({ onLocationChange, initialLocation, className = '' }:
     loadProvinces();
   }, []);
 
-  // Set province when provinces are loaded
+  // Load all location data once on component mount
   useEffect(() => {
-    console.log('Province useEffect triggered:', {
-      initialProvince: savedInitialLocation?.province,
-      provincesLength: provinces.length
-    });
-
-    if (savedInitialLocation?.province && provinces.length > 0) {
-      // Check if we have a matching province by name
-      const matchingProvince = provinces.find(p => p.name === savedInitialLocation.province?.name);
-      if (matchingProvince) {
-        console.log('Setting province by name match:', matchingProvince);
-        setSelectedProvince(matchingProvince);
-      } else if (savedInitialLocation.province.id !== 0) {
-        console.log('Setting province by id:', savedInitialLocation.province);
-        setSelectedProvince(savedInitialLocation.province);
+    const loadAllLocationData = async () => {
+      setLoading(prev => ({ ...prev, provinces: true }));
+      try {
+        const provincesData = await api.getProvinces();
+        setProvinces(provincesData);
+      } catch (error) {
+        console.error('Error loading provinces:', error);
+      } finally {
+        setLoading(prev => ({ ...prev, provinces: false }));
       }
-    } else if (savedInitialLocation?.province === null && provinces.length > 0) {
-      // Clear province selection
-      setSelectedProvince(null);
-    }
-  }, [savedInitialLocation?.province, provinces.length]); // Depend on both savedInitialLocation.province and provinces
+    };
 
-  // Set district when province is selected or districts are loaded
-  useEffect(() => {
-    console.log('District useEffect triggered:', {
-      initialDistrict: savedInitialLocation?.district,
-      districtsLength: districts.length,
-      selectedProvince: selectedProvince
-    });
-
-    // Only set district if we have a saved initial district and the districts are loaded
-    if (savedInitialLocation?.district && districts.length > 0) {
-      // Check if the initial district is in the loaded districts by name or id
-      const districtExists = districts.find(d =>
-        d.name === savedInitialLocation.district?.name ||
-        (savedInitialLocation.district?.id !== 0 && d.id === savedInitialLocation.district?.id)
-      );
-      if (districtExists) {
-        console.log('Setting district:', districtExists);
-        setSelectedDistrict(districtExists);
-      }
-    } else if (savedInitialLocation?.district === null && districts.length > 0) {
-      // Clear district selection
-      setSelectedDistrict(null);
-    } else {
-      console.log('District useEffect conditions not met');
-    }
-  }, [savedInitialLocation?.district, districts]); // Depend on both savedInitialLocation.district and districts
-
-  // Set neighborhood when district is selected or neighborhoods are loaded
-  useEffect(() => {
-    console.log('Neighborhood useEffect triggered:', {
-      initialNeighborhood: savedInitialLocation?.neighborhood,
-      neighborhoodsLength: neighborhoods.length,
-      selectedDistrict: selectedDistrict
-    });
-
-    // Only set neighborhood if we have a saved initial neighborhood and the neighborhoods are loaded
-    if (savedInitialLocation?.neighborhood && neighborhoods.length > 0) {
-      // Check if the initial neighborhood is in the loaded neighborhoods by name or id
-      const neighborhoodExists = neighborhoods.find(n =>
-        n.name === savedInitialLocation.neighborhood?.name ||
-        (savedInitialLocation.neighborhood?.id !== 0 && n.id === savedInitialLocation.neighborhood?.id)
-      );
-      if (neighborhoodExists) {
-        console.log('Setting neighborhood:', neighborhoodExists);
-        setSelectedNeighborhood(neighborhoodExists);
-      }
-    } else if (savedInitialLocation?.neighborhood === null && neighborhoods.length > 0) {
-      // Clear neighborhood selection
-      setSelectedNeighborhood(null);
-    } else {
-      console.log('Neighborhood useEffect conditions not met');
-    }
-  }, [savedInitialLocation?.neighborhood, neighborhoods]); // Depend on both savedInitialLocation.neighborhood and neighborhoods
+    loadAllLocationData();
+  }, []); // Only run once on mount
 
   // Load districts when province changes
   useEffect(() => {
-    if (selectedProvince) {
-      console.log('Loading districts for province:', selectedProvince);
+    if (il) {
       setLoading(prev => ({ ...prev, districts: true }));
       setDistricts([]);
-      setSelectedDistrict(undefined);
-      setSelectedNeighborhood(undefined);
 
-      api.getDistricts(selectedProvince.id)
-        .then(districtsData => {
-          console.log('Districts loaded:', districtsData);
-          setDistricts(districtsData);
-        })
-        .catch(error => {
-          console.error('Error loading districts:', error);
-        })
-        .finally(() => {
-          setLoading(prev => ({ ...prev, districts: false }));
-        });
+      const province = provinces.find(p => p.name === il);
+      if (province) {
+        api.getDistricts(province.id)
+          .then(districtsData => {
+            setDistricts(districtsData);
+          })
+          .catch(error => {
+            console.error('Error loading districts:', error);
+          })
+          .finally(() => {
+            setLoading(prev => ({ ...prev, districts: false }));
+          });
+      } else {
+        setLoading(prev => ({ ...prev, districts: false }));
+      }
     } else {
       setDistricts([]);
-      setSelectedDistrict(undefined);
-      setSelectedNeighborhood(undefined);
+      setLoading(prev => ({ ...prev, districts: false }));
     }
-  }, [selectedProvince]);
+  }, [il, provinces]); // Include provinces since it's used inside
 
   // Load neighborhoods when district changes
   useEffect(() => {
-    if (selectedDistrict) {
-      console.log('Loading neighborhoods for district:', selectedDistrict);
+    if (ilce) {
       setLoading(prev => ({ ...prev, neighborhoods: true }));
       setNeighborhoods([]);
-      setSelectedNeighborhood(undefined);
 
-      api.getNeighborhoods(selectedDistrict.id)
-        .then(neighborhoodsData => {
-          console.log('Neighborhoods loaded:', neighborhoodsData);
-          setNeighborhoods(neighborhoodsData);
-        })
-        .catch(error => {
-          console.error('Error loading neighborhoods:', error);
-        })
-        .finally(() => {
-          setLoading(prev => ({ ...prev, neighborhoods: false }));
-        });
+      const district = districts.find(d => d.name === ilce);
+      if (district) {
+        api.getNeighborhoods(district.id)
+          .then(neighborhoodsData => {
+            setNeighborhoods(neighborhoodsData);
+          })
+          .catch(error => {
+            console.error('Error loading neighborhoods:', error);
+          })
+          .finally(() => {
+            setLoading(prev => ({ ...prev, neighborhoods: false }));
+          });
+      } else {
+        setLoading(prev => ({ ...prev, neighborhoods: false }));
+      }
     } else {
       setNeighborhoods([]);
-      setSelectedNeighborhood(undefined);
+      setLoading(prev => ({ ...prev, neighborhoods: false }));
     }
-  }, [selectedDistrict]);
+  }, [ilce, districts]); // Include districts since it's used inside
+
+  // Initialize values from initialLocation
+  useEffect(() => {
+    if (initialLocation) {
+      setIl(initialLocation.il || '');
+      setIlce(initialLocation.ilce || '');
+      setMahalle(initialLocation.mahalle || '');
+    }
+  }, [initialLocation]);
 
   // Notify parent component of location changes
   useEffect(() => {
-    if (onLocationChange && !isInitialRenderRef.current) {
-      // Only call onLocationChange if we have meaningful changes (including null values)
-      const hasProvince = selectedProvince !== undefined;
-      const hasDistrict = selectedDistrict !== undefined;
-      const hasNeighborhood = selectedNeighborhood !== undefined;
-
-      if (hasProvince || hasDistrict || hasNeighborhood) {
-        onLocationChange({
-          province: selectedProvince,
-          district: selectedDistrict,
-          neighborhood: selectedNeighborhood
-        });
-      }
+    if (onLocationChange && (il || ilce || mahalle)) {
+      onLocationChange({
+        il,
+        ilce,
+        mahalle
+      });
     }
+  }, [il, ilce, mahalle]); // Stable dependency array
 
-    // Mark as not initial render after first call
-    if (isInitialRenderRef.current) {
-      isInitialRenderRef.current = false;
-    }
-  }, [selectedProvince, selectedDistrict, selectedNeighborhood, isInitialRenderRef.current]);
 
+  // Filter districts and neighborhoods based on selected values
+  const availableDistricts = il ? districts : [];
+  const availableNeighborhoods = ilce ? neighborhoods : [];
 
   return (
     <div className={`location-selector ${className}`}>
@@ -441,8 +354,12 @@ function LocationSelector({ onLocationChange, initialLocation, className = '' }:
         <div className="form-group" style={{ flex: 1, minWidth: '150px' }}>
           <Combobox
             options={provinces}
-            value={selectedProvince}
-            onChange={setSelectedProvince}
+            value={il}
+            onChange={(value) => {
+              setIl(value || '');
+              setIlce(''); // Clear district when province changes
+              setMahalle(''); // Clear neighborhood when province changes
+            }}
             placeholder="İl"
             label="İl"
             disabled={loading.provinces}
@@ -453,12 +370,15 @@ function LocationSelector({ onLocationChange, initialLocation, className = '' }:
         {/* District Selection */}
         <div className="form-group" style={{ flex: 1, minWidth: '150px' }}>
           <Combobox
-            options={districts}
-            value={selectedDistrict}
-            onChange={setSelectedDistrict}
+            options={availableDistricts}
+            value={ilce}
+            onChange={(value) => {
+              setIlce(value || '');
+              setMahalle(''); // Clear neighborhood when district changes
+            }}
             placeholder="İlçe"
             label="İlçe"
-            disabled={!selectedProvince || loading.districts || districts.length === 0}
+            disabled={!il || loading.districts}
             loading={loading.districts}
           />
         </div>
@@ -466,19 +386,19 @@ function LocationSelector({ onLocationChange, initialLocation, className = '' }:
         {/* Neighborhood Selection */}
         <div className="form-group" style={{ flex: 1, minWidth: '150px' }}>
           <Combobox
-            options={neighborhoods}
-            value={selectedNeighborhood}
-            onChange={setSelectedNeighborhood}
+            options={availableNeighborhoods}
+            value={mahalle}
+            onChange={(value) => setMahalle(value || '')}
             placeholder="Mahalle"
             label="Mahalle"
-            disabled={!selectedDistrict || loading.neighborhoods || neighborhoods.length === 0}
+            disabled={!ilce || loading.neighborhoods}
             loading={loading.neighborhoods}
           />
         </div>
       </div>
 
       {/* Selected Location Summary */}
-      {(selectedProvince || selectedDistrict || selectedNeighborhood) && (
+      {(il || ilce || mahalle) && (
         <div className="selected-location" style={{
           marginTop: 'var(--spacing-sm)',
           padding: 'var(--spacing-sm)',
@@ -489,12 +409,12 @@ function LocationSelector({ onLocationChange, initialLocation, className = '' }:
           <small className="text-muted">
             <i className="fas fa-map-marker-alt" style={{ marginRight: 'var(--spacing-xs)' }}></i>
             Seçilen konum: {
-              selectedProvince && selectedDistrict && selectedNeighborhood
-                ? `${selectedProvince.name} > ${selectedDistrict.name} > ${selectedNeighborhood.name}`
-                : selectedProvince && selectedDistrict
-                ? `${selectedProvince.name} > ${selectedDistrict.name}`
-                : selectedProvince
-                ? selectedProvince.name
+              il && ilce && mahalle
+                ? `${il} > ${ilce} > ${mahalle}`
+                : il && ilce
+                ? `${il} > ${ilce}`
+                : il
+                ? il
                 : ''
             }
           </small>

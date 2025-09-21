@@ -41,11 +41,7 @@ function AdminDashboard() {
   });
 
   // Location data for LocationSelector component
-  const [locationDataState, setLocationDataState] = useState<{
-    province?: { id: number; name: string } | null;
-    district?: { id: number; name: string } | null;
-    neighborhood?: { id: number; name: string } | null;
-  }>();
+  const [locationDataState, setLocationDataState] = useState<{il: string, ilce: string, mahalle: string}>();
 
   // Memoize locationData to prevent unnecessary re-renders
   const locationData = useMemo(() => locationDataState, [locationDataState]);
@@ -70,22 +66,17 @@ function AdminDashboard() {
         const buyukyoncAli = neighborhoods.find(n => n.id === 175889);
 
         setLocationDataState({
-          province: tekirdag,
-          district: saray,
-          neighborhood: buyukyoncAli
-        });
-        console.log('AdminDashboard: locationData set to:', {
-          province: tekirdag,
-          district: saray,
-          neighborhood: buyukyoncAli
+          il: 'Tekirdağ',
+          ilce: 'Saray',
+          mahalle: 'Büyükyoncalı'
         });
       } catch (error) {
         console.error('Error loading default location:', error);
         // Fallback to hardcoded values if API fails
         const fallbackLocation = {
-          province: { id: 59, name: 'Tekirdağ' },
-          district: { id: 1596, name: 'Saray' },
-          neighborhood: { id: 175889, name: 'Büyükyoncalı Merkez' }
+          il: 'Tekirdağ',
+          ilce: 'Saray',
+          mahalle: 'Büyükyoncalı'
         };
         setLocationDataState(fallbackLocation);
       }
@@ -95,25 +86,22 @@ function AdminDashboard() {
   }, []);
 
   // Handle location change from LocationSelector
-  const handleLocationChange = useCallback((location: {
-    province?: { id: number; name: string } | null;
-    district?: { id: number; name: string } | null;
-    neighborhood?: { id: number; name: string } | null;
-  }) => {
-    // Update locationDataState - preserve existing values when location values are undefined
-    setLocationDataState(prev => ({
-      province: location.province !== undefined ? location.province : prev?.province,
-      district: location.district !== undefined ? location.district : prev?.district,
-      neighborhood: location.neighborhood !== undefined ? location.neighborhood : prev?.neighborhood
-    }));
-    // Update form state with location names for backward compatibility
-    setForm(prev => ({
-      ...prev,
-      il: location.province?.name || '',
-      ilce: location.district?.name || '',
-      mahalle: location.neighborhood?.name || ''
-    }));
-  }, [setForm]);
+  const handleLocationChange = useCallback((location: {il: string, ilce: string, mahalle: string}) => {
+    // Update locationDataState
+    setLocationDataState(location);
+  }, []);
+
+  // Update form when locationDataState changes
+  useEffect(() => {
+    if (locationDataState) {
+      setForm(prev => ({
+        ...prev,
+        il: locationDataState.il,
+        ilce: locationDataState.ilce,
+        mahalle: locationDataState.mahalle
+      }));
+    }
+  }, [locationDataState]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target;
@@ -178,9 +166,9 @@ function AdminDashboard() {
 
       // Reset location data to defaults
       setLocationDataState({
-        province: { id: 59, name: 'Tekirdağ' },
-        district: { id: 1596, name: 'Saray' },
-        neighborhood: { id: 175889, name: 'Büyükyoncalı Merkez' }
+        il: 'Tekirdağ',
+        ilce: 'Saray',
+        mahalle: 'Büyükyoncalı'
       });
     } catch (err: any) {
       console.error('Error adding listing:', err);
