@@ -403,9 +403,9 @@ function FilterPanel({ filters, onFiltersChange, totalCount }: Props) {
       <div className="filter-header">
         <h3>
           <i className="fas fa-filter" style={{ marginRight: 'var(--spacing-sm)' }}></i>
-          İlan Kategorileri
+          İlan Filtreleme
         </h3>
-        <div className="filter-count">
+        <div className="filter-count" style={{ display: 'none' }}>
           Bulunan Kayıt: <strong>{totalCount}</strong>
         </div>
       </div>
@@ -465,8 +465,6 @@ function FilterPanel({ filters, onFiltersChange, totalCount }: Props) {
 
       {/* Arama Filtreleri */}
       <div className="filter-section">
-        <h4>İlan Filtreleme</h4>
-        
         {/* İçerik Arama */}
         <div className="filter-group">
           <label className="filter-label">

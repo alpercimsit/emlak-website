@@ -727,6 +727,10 @@ textarea.form-control {
 }
 
 /* Filter System Styles */
+.listings-container {
+  position: relative;
+}
+
 .listings-layout {
   display: grid;
   grid-template-columns: 300px 1fr;
@@ -1050,6 +1054,32 @@ textarea.form-control {
   min-width: 0; /* Allow flex shrinking */
 }
 
+/* Listings Header - Sağ üstte bulunan kayıt sayısı */
+.listings-header {
+  position: absolute;
+  top: 120px; /* Başlık ve container padding'inden sonra */
+  
+  right: 176px;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.listings-count {
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-sm) var(--spacing-md);
+  box-shadow: var(--shadow-sm);
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  pointer-events: auto; /* Sadece bu element tıklanabilir */
+}
+
+.listings-count strong {
+  color: var(--primary-color);
+  font-weight: 600;
+}
+
 /* Responsive Design */
 @media (max-width: 1024px) {
   .listings-layout {
@@ -1063,16 +1093,26 @@ textarea.form-control {
     grid-template-columns: 1fr;
     gap: var(--spacing-md);
   }
-  
+
   .filter-sidebar {
     position: static;
     order: 2;
   }
-  
+
   .listings-content {
     order: 1;
   }
-  
+
+  .listings-container {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .listings-header {
+    position: static;
+    align-self: flex-end;
+  }
+
   .category-buttons {
     flex-direction: column;
   }

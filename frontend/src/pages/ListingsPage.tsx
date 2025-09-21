@@ -176,30 +176,39 @@ function ListingsPage() {
         Emlak İlanları {isAdmin && <span style={{ fontSize: '0.7em', color: 'var(--success-color)' }}>(Admin Modu)</span>}
       </h1>
 
-      <div className="listings-layout">
-        {/* Sol taraf - Filtre Paneli */}
-        <div className="filter-sidebar">
-          <FilterPanel
-            filters={filters}
-            onFiltersChange={setFilters}
-            totalCount={filteredListings.length}
-          />
-        </div>
-
-        {/* Sağ taraf - İlan Listesi */}
-        <div className="listings-content">
-          {loading ? (
-            <div className="loading">
-              <div className="spinner"></div>
-              <span style={{ marginLeft: 'var(--spacing-sm)' }}>İlanlar yükleniyor...</span>
-            </div>
-          ) : (
-            <ListingList 
-              listings={filteredListings} 
-              isAdmin={isAdmin} 
-              onUpdate={() => window.location.reload()} 
+      <div className="listings-container">
+        <div className="listings-layout">
+          {/* Sol taraf - Filtre Paneli */}
+          <div className="filter-sidebar">
+            <FilterPanel
+              filters={filters}
+              onFiltersChange={setFilters}
+              totalCount={filteredListings.length}
             />
-          )}
+          </div>
+
+          {/* Sağ taraf - İlan Listesi */}
+          <div className="listings-content">
+            {loading ? (
+              <div className="loading">
+                <div className="spinner"></div>
+                <span style={{ marginLeft: 'var(--spacing-sm)' }}>İlanlar yükleniyor...</span>
+              </div>
+            ) : (
+              <ListingList
+                listings={filteredListings}
+                isAdmin={isAdmin}
+                onUpdate={() => window.location.reload()}
+              />
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Bulunan kayıt sayısı - sağ üstte, tamamen kutunun dışında */}
+      <div className="listings-header">
+        <div className="listings-count">
+          Bulunan Kayıt: <strong>{filteredListings.length}</strong>
         </div>
       </div>
     </div>
