@@ -13,6 +13,12 @@ interface Props {
   className?: string;
 }
 
+interface LocationData {
+  province?: { id: number; name: string } | null;
+  district?: { id: number; name: string } | null;
+  neighborhood?: { id: number; name: string } | null;
+}
+
 interface Province {
   id: number;
   name: string;
@@ -30,8 +36,8 @@ interface Neighborhood {
 
 interface ComboboxProps {
   options: Array<{id: number, name: string}>;
-  value: {id: number, name: string} | undefined;
-  onChange: (option: {id: number, name: string} | undefined) => void;
+  value: {id: number, name: string} | undefined | null;
+  onChange: (option: {id: number, name: string} | undefined | null) => void;
   placeholder: string;
   label: string;
   disabled?: boolean;
@@ -79,7 +85,7 @@ function Combobox({
 
     // Clear selection if input is empty
     if (!newValue.trim()) {
-      onChange(undefined);
+      onChange(null);
     }
   };
 
@@ -103,7 +109,7 @@ function Combobox({
   };
 
   const handleClear = () => {
-    onChange(undefined);
+    onChange(null);
     setSearchTerm('');
   };
 
@@ -240,9 +246,9 @@ function LocationSelector({ onLocationChange, initialLocation, className = '' }:
     neighborhoods: false
   });
 
-  const [selectedProvince, setSelectedProvince] = useState<Province | undefined>();
-  const [selectedDistrict, setSelectedDistrict] = useState<District | undefined>();
-  const [selectedNeighborhood, setSelectedNeighborhood] = useState<Neighborhood | undefined>();
+  const [selectedProvince, setSelectedProvince] = useState<Province | undefined | null>();
+  const [selectedDistrict, setSelectedDistrict] = useState<District | undefined | null>();
+  const [selectedNeighborhood, setSelectedNeighborhood] = useState<Neighborhood | undefined | null>();
 
   // Track if this is the initial render to prevent unnecessary onLocationChange calls
   const isInitialRenderRef = useRef(true);
@@ -298,6 +304,9 @@ function LocationSelector({ onLocationChange, initialLocation, className = '' }:
         console.log('Setting province by id:', savedInitialLocation.province);
         setSelectedProvince(savedInitialLocation.province);
       }
+    } else if (savedInitialLocation?.province === null && provinces.length > 0) {
+      // Clear province selection
+      setSelectedProvince(null);
     }
   }, [savedInitialLocation?.province, provinces.length]); // Depend on both savedInitialLocation.province and provinces
 
@@ -320,6 +329,9 @@ function LocationSelector({ onLocationChange, initialLocation, className = '' }:
         console.log('Setting district:', districtExists);
         setSelectedDistrict(districtExists);
       }
+    } else if (savedInitialLocation?.district === null && districts.length > 0) {
+      // Clear district selection
+      setSelectedDistrict(null);
     } else {
       console.log('District useEffect conditions not met');
     }
@@ -344,6 +356,9 @@ function LocationSelector({ onLocationChange, initialLocation, className = '' }:
         console.log('Setting neighborhood:', neighborhoodExists);
         setSelectedNeighborhood(neighborhoodExists);
       }
+    } else if (savedInitialLocation?.neighborhood === null && neighborhoods.length > 0) {
+      // Clear neighborhood selection
+      setSelectedNeighborhood(null);
     } else {
       console.log('Neighborhood useEffect conditions not met');
     }
@@ -404,7 +419,7 @@ function LocationSelector({ onLocationChange, initialLocation, className = '' }:
   // Notify parent component of location changes
   useEffect(() => {
     if (onLocationChange && !isInitialRenderRef.current) {
-      // Only call onLocationChange if we have meaningful changes
+      // Only call onLocationChange if we have meaningful changes (including null values)
       const hasProvince = selectedProvince !== undefined;
       const hasDistrict = selectedDistrict !== undefined;
       const hasNeighborhood = selectedNeighborhood !== undefined;

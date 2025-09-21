@@ -107,9 +107,9 @@ function EditListingModal({ listing, isOpen, onClose, onUpdate }: Props) {
 
   // Handle location change from LocationSelector
   const handleLocationChange = (location: {
-    province?: { id: number; name: string };
-    district?: { id: number; name: string };
-    neighborhood?: { id: number; name: string };
+    province?: { id: number; name: string } | null;
+    district?: { id: number; name: string } | null;
+    neighborhood?: { id: number; name: string } | null;
   }) => {
     setLocationData(location);
     // Update form state with location names for backward compatibility

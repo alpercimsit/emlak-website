@@ -96,22 +96,22 @@ function AdminDashboard() {
 
   // Handle location change from LocationSelector
   const handleLocationChange = useCallback((location: {
-    province?: { id: number; name: string };
-    district?: { id: number; name: string };
-    neighborhood?: { id: number; name: string };
+    province?: { id: number; name: string } | null;
+    district?: { id: number; name: string } | null;
+    neighborhood?: { id: number; name: string } | null;
   }) => {
     // Only update locationDataState with non-undefined values to preserve existing values
     setLocationDataState(prev => ({
-      province: location.province ?? prev?.province,
-      district: location.district ?? prev?.district,
-      neighborhood: location.neighborhood ?? prev?.neighborhood
+      province: location.province !== undefined ? location.province : prev?.province,
+      district: location.district !== undefined ? location.district : prev?.district,
+      neighborhood: location.neighborhood !== undefined ? location.neighborhood : prev?.neighborhood
     }));
     // Update form state with location names for backward compatibility
     setForm(prev => ({
       ...prev,
-      il: location.province?.name || prev.il,
-      ilce: location.district?.name || prev.ilce,
-      mahalle: location.neighborhood?.name || prev.mahalle
+      il: location.province?.name || '',
+      ilce: location.district?.name || '',
+      mahalle: location.neighborhood?.name || ''
     }));
   }, [setForm]);
 
