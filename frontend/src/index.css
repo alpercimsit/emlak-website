@@ -1090,7 +1090,7 @@ textarea.form-control {
   width: 100%;
   position: relative;
   bottom: 10px;
-  z-index: 1;
+  z-index: 2;
   /* listings-container içinde olduğu için container'ın genişliğine uyum sağlasın */
   box-sizing: border-box;
 }

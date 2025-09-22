@@ -95,6 +95,18 @@ function EditListingModal({ listing, isOpen, onClose, onUpdate }: Props) {
     } else if (type === 'number') {
       setForm({ ...form, [name]: Number(value) });
     } else {
+      // İlan başlığı için 100 karakter limiti uygula
+      if (name === 'baslik') {
+        // Mevcut başlığın uzunluğunu kontrol et
+        const currentTitle = form.baslik || '';
+        const currentLength = currentTitle.length;
+
+        // Eğer mevcut başlık 100 karakterden fazlaysa, kullanıcı düzenleyebilsin
+        // Ama yeni giriş 100 karakterden fazla olmamalı
+        if (value.length > 100) {
+          return; // Limiti aşan girişi kabul etme
+        }
+      }
       setForm({ ...form, [name]: value });
     }
   };
@@ -206,7 +218,16 @@ function EditListingModal({ listing, isOpen, onClose, onUpdate }: Props) {
                 placeholder="Örn: Merkezi Konumda 2+1 Daire"
                 value={form.baslik}
                 onChange={handleChange}
+                maxLength={100}
               />
+              <div style={{
+                fontSize: '0.8rem',
+                color: 'var(--text-muted)',
+                textAlign: 'right',
+                marginTop: '4px'
+              }}>
+                {form.baslik?.length || 0}/100 karakter
+              </div>
             </div>
 
             <div className="form-group">

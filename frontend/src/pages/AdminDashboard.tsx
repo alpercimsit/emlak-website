@@ -61,6 +61,10 @@ function AdminDashboard() {
     } else if (type === 'number') {
       setForm({ ...form, [name]: Number(value) });
     } else {
+      // İlan başlığı için 100 karakter limiti uygula
+      if (name === 'baslik' && value.length > 100) {
+        return; // Limiti aşan girişi kabul etme
+      }
       setForm({ ...form, [name]: value });
     }
   };
@@ -178,7 +182,16 @@ function AdminDashboard() {
                 placeholder="Örn: Merkezi Konumda 2+1 Daire"
                 value={form.baslik}
                 onChange={handleChange}
+                maxLength={100}
               />
+              <div style={{
+                fontSize: '0.8rem',
+                color: 'var(--text-muted)',
+                textAlign: 'right',
+                marginTop: '4px'
+              }}>
+                {form.baslik?.length || 0}/100 karakter
+              </div>
             </div>
 
             <div className="form-group">

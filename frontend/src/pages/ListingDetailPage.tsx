@@ -187,7 +187,7 @@ function ListingDetailPage() {
               <i className="fas fa-phone"></i>
               <span>+90 555 123 45 67</span>
               <i className="fas fa-map-marker-alt"></i>
-              <span>Kars Merkez</span>
+              <span>Büyükyoncalı Mah. Atatürk Cad. No: 27/1B Saray Tekirdağ</span>
             </div>
 
           </div>
