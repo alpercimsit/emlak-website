@@ -175,22 +175,21 @@ function ListingDetailPage() {
           {listing.baslik || 'Başlık belirtilmemiş'}
         </h1>
 
-        {/* İletişim Bölümü - İlan Başlığı Yanında - Büyütülmüş */}
+        {/* İletişim Bölümü - İlan Başlığı Yanında */}
         <div
           className="contact-section clickable-contact contact-header contact-large"
-          style={{ cursor: 'pointer', marginLeft: 'var(--spacing-lg)', minWidth: '300px', maxWidth: '400px' }}
-          onClick={() => navigate('/contact')}
+          style={{ cursor: 'pointer', marginLeft: 'var(--spacing-lg)' }}
+          onClick={() => navigate('/iletisim')}
         >
           <h3 style={{ fontSize: '1.1rem', margin: 0 }}>Bizimle İletişime Geçin</h3>
           <div className="contact-info-horizontal">
             <div className="contact-item">
               <i className="fas fa-phone"></i>
               <span>+90 555 123 45 67</span>
-            </div>
-            <div className="contact-item">
               <i className="fas fa-map-marker-alt"></i>
               <span>Kars Merkez</span>
             </div>
+
           </div>
         </div>
       </div>
@@ -420,7 +419,7 @@ function ListingDetailPage() {
           )}
         </div>
 
-        {/* Sağ Taraf - Bilgiler ve İletişim */}
+        {/* Sağ Taraf - Bilgiler */}
         <div className="listing-detail-info">
 
           {/* Bilgiler - Üstte */}
