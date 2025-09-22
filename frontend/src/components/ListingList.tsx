@@ -2,18 +2,17 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Listing } from '../pages/ListingsPage';
 import api from '../utils/api';
-import EditListingModal from './EditListingModal';
 
 interface Props {
   listings: Listing[];
   isAdmin?: boolean;
   onUpdate?: () => void;
+  onEditListing?: (listing: Listing) => void;
 }
 
-function ListingList({ listings, isAdmin = false, onUpdate }: Props) {
+function ListingList({ listings, isAdmin = false, onUpdate, onEditListing }: Props) {
   const navigate = useNavigate();
   const [deletingId, setDeletingId] = useState<number | null>(null);
-  const [editingListing, setEditingListing] = useState<Listing | null>(null);
 
   // Emlak tipi görüntüleme için helper fonksiyon
   const formatEmlakTipi = (emlakTipi: string) => {
@@ -51,16 +50,8 @@ function ListingList({ listings, isAdmin = false, onUpdate }: Props) {
   };
 
   const handleEdit = (listing: Listing) => {
-    setEditingListing(listing);
-  };
-
-  const handleCloseEdit = () => {
-    setEditingListing(null);
-  };
-
-  const handleUpdateSuccess = () => {
-    if (onUpdate) {
-      onUpdate();
+    if (onEditListing) {
+      onEditListing(listing);
     }
   };
 
@@ -186,16 +177,6 @@ function ListingList({ listings, isAdmin = false, onUpdate }: Props) {
           </div>
         </div>
       ))}
-      
-      {/* Edit Modal */}
-      {editingListing && (
-        <EditListingModal
-          listing={editingListing}
-          isOpen={true}
-          onClose={handleCloseEdit}
-          onUpdate={handleUpdateSuccess}
-        />
-      )}
     </div>
   );
 }

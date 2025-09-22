@@ -661,7 +661,7 @@ textarea.form-control {
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 1000;
+  z-index: 1002;
   padding: var(--spacing-md);
 }
 
@@ -1090,7 +1090,7 @@ textarea.form-control {
   width: 100%;
   position: relative;
   bottom: 10px;
-  z-index: 2;
+  z-index: 1;
   /* listings-container içinde olduğu için container'ın genişliğine uyum sağlasın */
   box-sizing: border-box;
 }

@@ -1,8 +1,9 @@
-import { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState, useMemo, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../utils/api';
 import ListingList from '../components/ListingList';
 import FilterPanel, { FilterState } from '../components/FilterPanel';
+import { ModalContext } from '../App';
 
 export interface Listing {
   ilan_no: number;              // ilan_no int8 primary key
@@ -41,6 +42,9 @@ function ListingsPage() {
   const [loading, setLoading] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
   const navigate = useNavigate();
+
+  // Get modal context
+  const modalContext = useContext(ModalContext);
 
   // Sıralama seçenekleri
   const [sortOption, setSortOption] = useState<'price-desc' | 'price-asc' | 'date-desc' | 'date-asc'>('date-desc');
@@ -308,6 +312,7 @@ function ListingsPage() {
                 listings={filteredListings}
                 isAdmin={isAdmin}
                 onUpdate={() => window.location.reload()}
+                onEditListing={modalContext.onEditListing}
               />
             )}
           </div>
