@@ -1537,10 +1537,135 @@ textarea.form-control {
   transition: all 0.3s ease;
 }
 
-.contact-section h3 {
-  color: var(--primary-color);
+.contact-section.contact-top {
+  background: var(--primary-color);
+  color: white;
+  border: none;
+  margin: 0 auto;
+  max-width: 600px;
+}
+
+.contact-section.contact-top h3 {
+  color: white;
   margin: 0 0 var(--spacing-sm) 0;
+  font-size: 1.2rem;
+  text-align: center;
+}
+
+.contact-section.contact-top .contact-item {
+  color: white;
+}
+
+.contact-section.contact-top .contact-item i {
+  color: white;
+}
+
+.contact-section.contact-header {
+  background: var(--gray-50);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  min-width: 250px;
+  max-width: 300px;
+}
+
+.contact-section.contact-header h3 {
+  color: var(--primary-color);
   font-size: 1rem;
+  margin: 0 0 var(--spacing-xs) 0;
+  text-align: center;
+}
+
+.contact-section.contact-header .contact-item {
+  color: var(--text-primary);
+  font-size: 0.85rem;
+}
+
+.contact-section.contact-header .contact-item i {
+  color: var(--primary-color);
+}
+
+.contact-section.contact-header .contact-info-horizontal {
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.contact-section.contact-large {
+  min-width: 300px;
+  max-width: 400px;
+}
+
+.contact-section.contact-large .contact-item {
+  font-size: 0.9rem;
+  justify-content: flex-start;
+  padding: var(--spacing-xs) 0;
+}
+
+.contact-section.contact-large .contact-info-horizontal {
+  gap: var(--spacing-sm);
+}
+
+/* Admin Butonları - Sabit Konumda Sağ Tarafta */
+.admin-buttons-fixed {
+  position: fixed;
+  right: var(--spacing-md);
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.admin-btn-edit,
+.admin-btn-delete {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: var(--radius-md);
+  font-size: 0.9rem;
+  font-weight: 500;
+  box-shadow: var(--shadow-md);
+  transition: all 0.3s ease;
+  min-width: 100px;
+  justify-content: center;
+}
+
+.admin-btn-edit {
+  background: var(--primary-color);
+  color: white;
+  border: none;
+}
+
+.admin-btn-edit:hover {
+  background: var(--primary-hover);
+  transform: translateX(-5px);
+  box-shadow: var(--shadow-lg);
+}
+
+.admin-btn-delete {
+  background: var(--error-color);
+  color: white;
+  border: none;
+}
+
+.admin-btn-delete:hover {
+  background: #dc2626;
+  transform: translateX(-5px);
+  box-shadow: var(--shadow-lg);
+}
+
+.admin-btn-edit:disabled,
+.admin-btn-delete:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.admin-btn-edit:disabled:hover,
+.admin-btn-delete:disabled:hover {
+  transform: none;
+  box-shadow: var(--shadow-md);
 }
 
 .contact-section.clickable-contact:hover {
@@ -1558,6 +1683,18 @@ textarea.form-control {
   color: white;
 }
 
+.contact-section.contact-header.clickable-contact:hover .contact-item {
+  color: white;
+}
+
+.contact-section.contact-large.clickable-contact:hover .contact-item {
+  color: white;
+}
+
+.contact-section.contact-large.clickable-contact:hover .contact-item i {
+  color: white;
+}
+
 .contact-info {
   display: flex;
   flex-direction: column;
@@ -1570,6 +1707,10 @@ textarea.form-control {
   gap: var(--spacing-lg);
   justify-content: center;
   align-items: center;
+}
+
+.contact-section.contact-top .contact-info-horizontal {
+  justify-content: center;
 }
 
 .contact-item {
@@ -1764,6 +1905,44 @@ textarea.form-control {
   .contact-info-horizontal {
     flex-direction: column;
     gap: var(--spacing-sm);
+  }
+
+  .contact-section.contact-top {
+    margin: 0 var(--spacing-md);
+    margin-bottom: var(--spacing-lg);
+  }
+
+  .contact-section.contact-header {
+    min-width: auto;
+    max-width: none;
+    margin-left: var(--spacing-sm);
+  }
+
+  .contact-section.contact-header .contact-info-horizontal {
+    gap: var(--spacing-xs);
+  }
+
+  /* Admin butonları için responsive */
+  @media (max-width: 900px) {
+    .contact-section.contact-header {
+      display: none;
+    }
+
+    .admin-buttons-fixed {
+      display: none;
+    }
+  }
+
+  /* Tablet için responsive */
+  @media (max-width: 1200px) {
+    .admin-buttons-fixed {
+      right: var(--spacing-sm);
+    }
+
+    .contact-section.contact-large {
+      min-width: 250px;
+      max-width: 300px;
+    }
   }
 
   .photo-nav {

@@ -169,42 +169,62 @@ function ListingDetailPage() {
       
       <div className="container">
 
-      {/* İlan Başlığı */}
-      <div className="d-flex justify-between align-center mb-4" style={{ marginTop: 'var(--spacing-lg)' }}>
-        <h1 style={{ color: 'var(--text-primary)', margin: 0, fontSize: '1.5rem', fontWeight: 600 }}>
+      {/* Üst Kısım - İlan Başlığı ve İletişim */}
+      <div className="d-flex justify-between align-start mb-4" style={{ marginTop: 'var(--spacing-lg)' }}>
+        <h1 style={{ color: 'var(--text-primary)', margin: 0, fontSize: '1.5rem', fontWeight: 600, flex: 1 }}>
           {listing.baslik || 'Başlık belirtilmemiş'}
         </h1>
-        
-        {isAdmin && (
-          <div className="d-flex gap-2">
-            <button
-              className="btn btn-secondary"
-              onClick={() => handleEdit(listing)}
-              disabled={deletingId === listing.ilan_no}
-            >
-              <i className="fas fa-edit" style={{ marginRight: 'var(--spacing-sm)' }}></i>
-              Düzenle
-            </button>
-            <button
-              className="btn btn-danger"
-              onClick={() => handleDelete(listing.ilan_no)}
-              disabled={deletingId === listing.ilan_no}
-            >
-              {deletingId === listing.ilan_no ? (
-                <>
-                  <div className="spinner" style={{ width: '16px', height: '16px', marginRight: 'var(--spacing-sm)' }}></div>
-                  Siliniyor...
-                </>
-              ) : (
-                <>
-                  <i className="fas fa-trash" style={{ marginRight: 'var(--spacing-sm)' }}></i>
-                  Sil
-                </>
-              )}
-            </button>
+
+        {/* İletişim Bölümü - İlan Başlığı Yanında - Büyütülmüş */}
+        <div
+          className="contact-section clickable-contact contact-header contact-large"
+          style={{ cursor: 'pointer', marginLeft: 'var(--spacing-lg)', minWidth: '300px', maxWidth: '400px' }}
+          onClick={() => navigate('/contact')}
+        >
+          <h3 style={{ fontSize: '1.1rem', margin: 0 }}>Bizimle İletişime Geçin</h3>
+          <div className="contact-info-horizontal">
+            <div className="contact-item">
+              <i className="fas fa-phone"></i>
+              <span>+90 555 123 45 67</span>
+            </div>
+            <div className="contact-item">
+              <i className="fas fa-map-marker-alt"></i>
+              <span>Kars Merkez</span>
+            </div>
           </div>
-        )}
+        </div>
       </div>
+
+      {/* Admin Butonları - Sağ Tarafta Sabit Konumda */}
+      {isAdmin && (
+        <div className="admin-buttons-fixed">
+          <button
+            className="btn btn-secondary admin-btn-edit"
+            onClick={() => handleEdit(listing)}
+            disabled={deletingId === listing.ilan_no}
+          >
+            <i className="fas fa-edit"></i>
+            <span>Düzenle</span>
+          </button>
+          <button
+            className="btn btn-danger admin-btn-delete"
+            onClick={() => handleDelete(listing.ilan_no)}
+            disabled={deletingId === listing.ilan_no}
+          >
+            {deletingId === listing.ilan_no ? (
+              <>
+                <div className="spinner" style={{ width: '16px', height: '16px' }}></div>
+                <span>Siliniyor...</span>
+              </>
+            ) : (
+              <>
+                <i className="fas fa-trash"></i>
+                <span>Sil</span>
+              </>
+            )}
+          </button>
+        </div>
+      )}
 
       <div className="listing-detail-layout">
         {/* Sol Taraf - Fotoğraflar ve Açıklama */}
@@ -445,25 +465,6 @@ function ListingDetailPage() {
                 )}
               </div>
             )}
-          </div>
-
-          {/* İletişim Bölümü - Aşağıda */}
-          <div
-            className="contact-section clickable-contact"
-            style={{ marginTop: 'var(--spacing-md)', cursor: 'pointer' }}
-            onClick={() => navigate('/contact')}
-          >
-            <h3>Bizimle İletişime Geçin</h3>
-            <div className="contact-info-horizontal">
-              <div className="contact-item">
-                <i className="fas fa-phone"></i>
-                <span>+90 555 123 45 67</span>
-              </div>
-              <div className="contact-item">
-                <i className="fas fa-map-marker-alt"></i>
-                <span>Kars Merkez</span>
-              </div>
-            </div>
           </div>
 
 
