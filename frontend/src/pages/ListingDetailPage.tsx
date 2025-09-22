@@ -313,19 +313,6 @@ function ListingDetailPage() {
 
         {/* Sağ Taraf - Bilgiler ve İletişim */}
         <div className="listing-detail-info">
-          {/* Fiyat - Küçültülmüş */}
-          <div style={{ textAlign: 'center', padding: 'var(--spacing-sm)', background: 'var(--bg-tertiary)', borderRadius: 'var(--radius-sm)', marginBottom: 'var(--spacing-sm)' }}>
-            <div style={{ fontSize: '1.4rem', fontWeight: 700, color: 'var(--primary-color)' }}>
-              {listing.fiyat.toLocaleString('tr-TR')} TL
-            </div>
-          </div>
-
-          {/* Konum - Fiyatın altında */}
-          <div style={{ textAlign: 'center', padding: 'var(--spacing-sm)', background: 'var(--bg-secondary)', borderRadius: 'var(--radius-sm)', marginBottom: 'var(--spacing-md)' }}>
-            <div style={{ fontSize: '1rem', color: 'var(--text-primary)', fontWeight: 500 }}>
-              {[listing.il, listing.ilce, listing.mahalle].filter(Boolean).join(' / ') || 'Konum belirtilmemiş'}
-            </div>
-          </div>
 
           {/* İletişim Bölümü - Özelliklerin üstüne taşındı */}
           <div className="contact-section" style={{ marginBottom: 'var(--spacing-md)' }}>
@@ -349,6 +336,20 @@ function ListingDetailPage() {
           {/* Bilgiler */}
           <div className="info-section">
             <div className="info-grid">
+              {/* Fiyat */}
+              <div className="info-item">
+                <i className="fas fa-money-bill-wave"></i>
+                <span className="label">Fiyat:</span>
+                <span className="value">{listing.fiyat.toLocaleString('tr-TR')} TL</span>
+              </div>
+
+              {/* Konum */}
+              <div className="info-item">
+                <i className="fas fa-map-marker-alt"></i>
+                <span className="label">Konum:</span>
+                <span className="value">{[listing.il, listing.ilce, listing.mahalle].filter(Boolean).join(' / ') || 'Konum belirtilmemiş'}</span>
+              </div>
+
               <div className="info-item">
                 <i className="fas fa-hashtag"></i>
                 <span className="label">İlan No:</span>
