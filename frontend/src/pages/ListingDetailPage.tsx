@@ -371,11 +371,30 @@ function ListingDetailPage() {
               </div>
               
               {/* Arsa tipli ilanlar için m² fiyatı */}
-              {listing.emlak_tipi === 'Arsa' && listing.m2 && listing.m2 > 0 && (
+              {listing.emlak_tipi === 'Arsa' && (
                 <div className="info-item">
                   <i className="fas fa-calculator"></i>
                   <span className="label">m² Fiyatı:</span>
-                  <span className="value">{Math.floor(listing.fiyat / listing.m2).toLocaleString('tr-TR')} TL/m²</span>
+                  <span className="value">
+                    {listing.m2 && listing.m2 > 0
+                      ? `${Math.floor(listing.fiyat / listing.m2).toLocaleString('tr-TR')} TL/m²`
+                      : 'Belirtilmemiş'
+                    }
+                  </span>
+                </div>
+              )}
+              {listing.emlak_tipi === 'Arsa' && (
+                <div className="info-item">
+                  <i className="fas fa-map"></i>
+                  <span className="label">Ada No:</span>
+                  <span className="value">{listing.ada || 'Belirtilmemiş'}</span>
+                </div>
+              )}
+              {listing.emlak_tipi === 'Arsa' && (
+                <div className="info-item">
+                  <i className="fas fa-map-pin"></i>
+                  <span className="label">Parsel No:</span>
+                  <span className="value">{listing.parsel || 'Belirtilmemiş'}</span>
                 </div>
               )}
               
@@ -445,25 +464,6 @@ function ListingDetailPage() {
               </div>
             )}
           </div>
-
-          {/* Kadastro Bilgileri - Sadece arsa tipinde göster */}
-          {listing.emlak_tipi === 'Arsa' && (
-            <div className="info-section">
-              <h3>Kadastro Bilgileri</h3>
-              <div className="info-grid">
-                <div className="info-item">
-                  <i className="fas fa-map"></i>
-                  <span className="label">Ada No:</span>
-                  <span className="value">{listing.ada || 'Belirtilmemiş'}</span>
-                </div>
-                <div className="info-item">
-                  <i className="fas fa-map-pin"></i>
-                  <span className="label">Parsel No:</span>
-                  <span className="value">{listing.parsel || 'Belirtilmemiş'}</span>
-                </div>
-              </div>
-            </div>
-          )}
 
 
           {/* İlan Sahibi Bilgileri - Dönen Kart */}
