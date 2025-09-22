@@ -314,26 +314,7 @@ function ListingDetailPage() {
         {/* Sağ Taraf - Bilgiler ve İletişim */}
         <div className="listing-detail-info">
 
-          {/* İletişim Bölümü - Özelliklerin üstüne taşındı */}
-          <div className="contact-section" style={{ marginBottom: 'var(--spacing-md)' }}>
-            <h3>Bizimle İletişime Geçin</h3>
-            <div className="contact-info">
-              <div className="contact-item">
-                <i className="fas fa-phone"></i>
-                <span>+90 555 123 45 67</span>
-              </div>
-              <div className="contact-item">
-                <i className="fas fa-envelope"></i>
-                <span>info@ozkafkasemlak.com</span>
-              </div>
-              <div className="contact-item">
-                <i className="fas fa-map-marker-alt"></i>
-                <span>Kars Merkez</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Bilgiler */}
+          {/* Bilgiler - Üstte */}
           <div className="info-section">
             <div className="info-grid">
               {/* Fiyat */}
@@ -370,7 +351,7 @@ function ListingDetailPage() {
                 <span className="label">Alan:</span>
                 <span className="value">{listing.m2 ? `${listing.m2} m²` : 'Belirtilmemiş'}</span>
               </div>
-              
+
               {/* Arsa tipli ilanlar için m² fiyatı */}
               {listing.emlak_tipi === 'Arsa' && (
                 <div className="info-item">
@@ -398,7 +379,7 @@ function ListingDetailPage() {
                   <span className="value">{listing.parsel || 'Belirtilmemiş'}</span>
                 </div>
               )}
-              
+
               {/* Sadece konut tiplerinde göster */}
               {listing.emlak_tipi !== 'Arsa' && (
                 <>
@@ -464,6 +445,25 @@ function ListingDetailPage() {
                 )}
               </div>
             )}
+          </div>
+
+          {/* İletişim Bölümü - Aşağıda */}
+          <div
+            className="contact-section clickable-contact"
+            style={{ marginTop: 'var(--spacing-md)', cursor: 'pointer' }}
+            onClick={() => navigate('/contact')}
+          >
+            <h3>Bizimle İletişime Geçin</h3>
+            <div className="contact-info-horizontal">
+              <div className="contact-item">
+                <i className="fas fa-phone"></i>
+                <span>+90 555 123 45 67</span>
+              </div>
+              <div className="contact-item">
+                <i className="fas fa-map-marker-alt"></i>
+                <span>Kars Merkez</span>
+              </div>
+            </div>
           </div>
 
 

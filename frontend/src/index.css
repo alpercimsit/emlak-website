@@ -1276,6 +1276,7 @@ textarea.form-control {
   grid-template-columns: 1.5fr 1fr;
   gap: var(--spacing-lg);
   margin-bottom: var(--spacing-lg);
+  align-items: start;
 }
 
 /* Fotoğraf Bölümü */
@@ -1530,14 +1531,31 @@ textarea.form-control {
 /* İletişim Bölümü */
 .contact-section {
   background: var(--gray-50);
-  padding: var(--spacing-lg);
+  padding: var(--spacing-md);
   border-radius: var(--radius-md);
   border: 1px solid var(--border-color);
+  transition: all 0.3s ease;
 }
 
 .contact-section h3 {
   color: var(--primary-color);
-  margin: 0 0 var(--spacing-md) 0;
+  margin: 0 0 var(--spacing-sm) 0;
+  font-size: 1rem;
+}
+
+.contact-section.clickable-contact:hover {
+  background: var(--primary-color);
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.contact-section.clickable-contact:hover h3 {
+  color: white;
+}
+
+.contact-section.clickable-contact:hover .contact-item i {
+  color: white;
 }
 
 .contact-info {
@@ -1547,16 +1565,24 @@ textarea.form-control {
   margin-bottom: var(--spacing-md);
 }
 
+.contact-info-horizontal {
+  display: flex;
+  gap: var(--spacing-lg);
+  justify-content: center;
+  align-items: center;
+}
+
 .contact-item {
   display: flex;
   align-items: center;
-  gap: var(--spacing-sm);
+  gap: var(--spacing-xs);
   color: var(--text-dark);
+  font-size: 0.9rem;
 }
 
 .contact-item i {
   color: var(--primary-color);
-  width: 20px;
+  width: 16px;
   text-align: center;
 }
 
@@ -1720,25 +1746,30 @@ textarea.form-control {
   .listing-detail-title {
     font-size: 1.2rem;
   }
-  
+
   .price {
     font-size: 1.5rem;
   }
-  
+
   .info-section,
   .contact-section,
   .description-section {
     padding: var(--spacing-sm);
   }
-  
+
   .info-grid {
     grid-template-columns: 1fr;
   }
-  
+
+  .contact-info-horizontal {
+    flex-direction: column;
+    gap: var(--spacing-sm);
+  }
+
   .photo-nav {
     padding: var(--spacing-sm);
   }
-  
+
   .thumbnail {
     width: 50px;
     height: 38px;
