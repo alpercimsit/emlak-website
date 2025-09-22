@@ -170,8 +170,8 @@ function ListingDetailPage() {
       <div className="container">
 
       {/* Üst Kısım - İlan Başlığı ve İletişim */}
-      <div className="d-flex justify-between align-start mb-4" style={{ marginTop: 'var(--spacing-lg)' }}>
-        <h1 style={{ color: 'var(--text-primary)', margin: 0, fontSize: '1.5rem', fontWeight: 600, flex: 1 }}>
+      <div className="d-flex justify-between align-start mb-4" style={{ marginTop: 0 }}>
+        <h1 style={{ color: 'var(--text-primary)', position: 'relative', top: 20, fontSize: '1.5rem', fontWeight: 600, flex: 1 }}>
           {listing.baslik || 'Başlık belirtilmemiş'}
         </h1>
 
@@ -181,13 +181,21 @@ function ListingDetailPage() {
           style={{ cursor: 'pointer', marginLeft: 'var(--spacing-lg)' }}
           onClick={() => navigate('/iletisim')}
         >
-          <h3 style={{ fontSize: '1.1rem', margin: 0 }}>Bizimle İletişime Geçin</h3>
-          <div className="contact-info-horizontal">
-            <div className="contact-item">
-              <i className="fas fa-phone"></i>
-              <span>+90 555 123 45 67</span>
+          <h3 style={{ fontSize: '1.1rem', margin: 0, bottom: 13, position: 'relative' }}>Bizimle İletişime Geçin</h3>
+          <div className="contact-info-horizontal" style={{ position: 'relative', bottom: 13 }}>
+            <div className="contact-item" >
               <i className="fas fa-map-marker-alt"></i>
               <span>Büyükyoncalı Mah. Atatürk Cad. No: 27/1B Saray Tekirdağ</span>
+            </div>
+            <div className="contact-item">
+              <i className="fas fa-phone"></i>
+              <span>536 642 47 52</span>
+              &nbsp;&nbsp;&nbsp;&nbsp;
+              <i className="fas fa-phone"></i>
+              <span>532 063 63 72</span>
+              &nbsp;&nbsp;&nbsp;&nbsp;
+              <i className="fas fa-phone"></i>
+              <span>530 465 04 14</span>
             </div>
 
           </div>

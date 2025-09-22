@@ -1567,8 +1567,7 @@ textarea.form-control {
   width: calc(100%);
   min-width: 458px;
   max-width: 300px;
-  min-height: 80px;
-  max-height: 90px;
+  height: 100px;
 }
 
 .contact-section.contact-header h3 {
