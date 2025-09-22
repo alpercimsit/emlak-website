@@ -322,13 +322,102 @@ function ListingDetailPage() {
             </div>
           )}
           
-          {/* İlan Açıklaması - Fotoğrafların altında */}
-          <div className="description-section" style={{ marginTop: 'var(--spacing-lg)' }}>
-            <h3>İlan Açıklaması</h3>
-            <div className="description-content">
-              {listing.detay || 'Açıklama belirtilmemiş'}
+          {/* İlan Sahibi Bilgileri - Fotoğrafların altında */}
+          {isAdmin && (
+            <div className="owner-card-container" style={{ marginTop: 'var(--spacing-lg)' }}>
+              <div
+                className={`owner-flip-card ${showOwnerInfo ? 'flipped' : ''}`}
+                onClick={() => setShowOwnerInfo(!showOwnerInfo)}
+                style={{
+                  width: '100%',
+                  height: '140px',
+                  perspective: '1000px',
+                  cursor: 'pointer'
+                }}
+              >
+                <div style={{
+                  position: 'relative',
+                  width: '100%',
+                  height: '100%',
+                  textAlign: 'center',
+                  transition: 'transform 0.6s',
+                  transformStyle: 'preserve-3d',
+                  transform: showOwnerInfo ? 'rotateY(180deg)' : 'rotateY(0deg)'
+                }}>
+                  {/* Ön Yüz */}
+                  <div style={{
+                    position: 'absolute',
+                    width: '100%',
+                    height: '100%',
+                    backfaceVisibility: 'hidden',
+                    background: 'var(--primary-color)',
+                    color: 'white',
+                    borderRadius: 'var(--radius-md)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    flexDirection: 'column',
+                    gap: 'var(--spacing-sm)'
+                  }}>
+                    <i className="fas fa-user" style={{ fontSize: '2rem' }}></i>
+                    <span style={{ fontWeight: 600 }}>İlan sahibi bilgileri için tıklayın</span>
+                  </div>
+
+                  {/* Arka Yüz */}
+                  <div style={{
+                    position: 'absolute',
+                    width: '100%',
+                    height: '100%',
+                    backfaceVisibility: 'hidden',
+                    background: 'var(--bg-primary)',
+                    border: '2px solid var(--primary-color)',
+                    borderRadius: 'var(--radius-md)',
+                    transform: 'rotateY(180deg)',
+                    padding: 'var(--spacing-md)',
+                    display: 'grid',
+                    gridTemplateColumns: '1fr 1fr',
+                    gridTemplateRows: '1fr 1fr auto',
+                    gap: 'var(--spacing-xs)',
+                    alignItems: 'center'
+                  }}>
+                    {/* Sol üst - Sahibi adı */}
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-xs)', fontSize: '0.85rem', gridColumn: '1', gridRow: '1' }}>
+                      <i className="fas fa-user" style={{ color: 'var(--primary-color)', width: '12px' }}></i>
+                      <span className="label"> Sahibi Adı:</span>
+                      <span>{listing.sahibi_ad || 'Belirtilmemiş'}</span>
+                    </div>
+
+                    {/* Sağ üst - Sahibinden ilan no */}
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-xs)', fontSize: '0.85rem', gridColumn: '2', gridRow: '1' }}>
+                      <i className="fas fa-hashtag" style={{ color: 'var(--primary-color)', width: '12px' }}></i>
+                      <span className="label"> Sahibinden No:</span>
+                      <span>{listing.sahibinden_no || 'Belirtilmemiş'}</span>
+                    </div>
+
+                    {/* Sol alt - Sahibi tel */}
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-xs)', fontSize: '0.85rem', gridColumn: '1', gridRow: '2' }}>
+                      <i className="fas fa-phone" style={{ color: 'var(--primary-color)', width: '12px' }}></i>
+                      <span className="label"> Sahibi Tel:</span>
+                      <span>{listing.sahibi_tel || 'Belirtilmemiş'}</span>
+                    </div>
+
+                    {/* Sağ alt - Sahibinden tarih */}
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-xs)', fontSize: '0.85rem', gridColumn: '2', gridRow: '2' }}>
+                      <i className="fas fa-calendar" style={{ color: 'var(--primary-color)', width: '12px' }}></i>
+                      <span className="label"> Sahibinden Tarih:</span>
+                      <span>{listing.sahibinden_tarih ? new Date(listing.sahibinden_tarih).toLocaleDateString('tr-TR') : 'Belirtilmemiş'}</span>
+                    </div>
+
+                    {/* Alt - Not */}
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-xs)', fontSize: '0.8rem', gridColumn: '1 / 3', gridRow: '3', borderTop: '1px solid var(--border-color)', paddingTop: 'var(--spacing-xs)' }}>
+                      <i className="fas fa-sticky-note" style={{ color: 'var(--primary-color)', width: '12px' }}></i>
+                      <span style={{ wordBreak: 'break-word' }}>{listing.not || 'Not yok'}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
-          </div>
+          )}
         </div>
 
         {/* Sağ Taraf - Bilgiler ve İletişim */}
@@ -467,99 +556,15 @@ function ListingDetailPage() {
             )}
           </div>
 
-
-          {/* İlan Sahibi Bilgileri - Dönen Kart */}
-          {isAdmin && (
-            <div className="owner-card-container" style={{ marginBottom: 'var(--spacing-md)' }}>
-              <div 
-                className={`owner-flip-card ${showOwnerInfo ? 'flipped' : ''}`}
-                onClick={() => setShowOwnerInfo(!showOwnerInfo)}
-                style={{
-                  width: '100%',
-                  height: '140px',
-                  perspective: '1000px',
-                  cursor: 'pointer'
-                }}
-              >
-                <div style={{
-                  position: 'relative',
-                  width: '100%',
-                  height: '100%',
-                  textAlign: 'center',
-                  transition: 'transform 0.6s',
-                  transformStyle: 'preserve-3d',
-                  transform: showOwnerInfo ? 'rotateY(180deg)' : 'rotateY(0deg)'
-                }}>
-                  {/* Ön Yüz */}
-                  <div style={{
-                    position: 'absolute',
-                    width: '100%',
-                    height: '100%',
-                    backfaceVisibility: 'hidden',
-                    background: 'var(--primary-color)',
-                    color: 'white',
-                    borderRadius: 'var(--radius-md)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    flexDirection: 'column',
-                    gap: 'var(--spacing-sm)'
-                  }}>
-                    <i className="fas fa-user" style={{ fontSize: '2rem' }}></i>
-                    <span style={{ fontWeight: 600 }}>İlan sahibi bilgileri için tıklayın</span>
-                  </div>
-                  
-                  {/* Arka Yüz */}
-                  <div style={{
-                    position: 'absolute',
-                    width: '100%',
-                    height: '100%',
-                    backfaceVisibility: 'hidden',
-                    background: 'var(--bg-primary)',
-                    border: '2px solid var(--primary-color)',
-                    borderRadius: 'var(--radius-md)',
-                    transform: 'rotateY(180deg)',
-                    padding: 'var(--spacing-md)',
-                    display: 'grid',
-                    gridTemplateColumns: '1fr 1fr',
-                    gridTemplateRows: '1fr 1fr auto',
-                    gap: 'var(--spacing-xs)',
-                    alignItems: 'center'
-                  }}>
-                    {/* Sol üst - Sahibi adı */}
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-xs)', fontSize: '0.85rem', gridColumn: '1', gridRow: '1' }}>
-                      <i className="fas fa-user" style={{ color: 'var(--primary-color)', width: '12px' }}></i>
-                      <span>{listing.sahibi_ad || 'Belirtilmemiş'}</span>
-                    </div>
-                    
-                    {/* Sağ üst - Sahibinden ilan no */}
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-xs)', fontSize: '0.85rem', gridColumn: '2', gridRow: '1' }}>
-                      <i className="fas fa-hashtag" style={{ color: 'var(--primary-color)', width: '12px' }}></i>
-                      <span>{listing.sahibinden_no || 'Belirtilmemiş'}</span>
-                    </div>
-                    
-                    {/* Sol alt - Sahibi tel */}
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-xs)', fontSize: '0.85rem', gridColumn: '1', gridRow: '2' }}>
-                      <i className="fas fa-phone" style={{ color: 'var(--primary-color)', width: '12px' }}></i>
-                      <span>{listing.sahibi_tel || 'Belirtilmemiş'}</span>
-                    </div>
-                    
-                    {/* Sağ alt - Sahibinden tarih */}
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-xs)', fontSize: '0.85rem', gridColumn: '2', gridRow: '2' }}>
-                      <i className="fas fa-calendar" style={{ color: 'var(--primary-color)', width: '12px' }}></i>
-                      <span>{listing.sahibinden_tarih ? new Date(listing.sahibinden_tarih).toLocaleDateString('tr-TR') : 'Belirtilmemiş'}</span>
-                    </div>
-                    
-                    {/* Alt - Not */}
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-xs)', fontSize: '0.8rem', gridColumn: '1 / 3', gridRow: '3', borderTop: '1px solid var(--border-color)', paddingTop: 'var(--spacing-xs)' }}>
-                      <i className="fas fa-sticky-note" style={{ color: 'var(--primary-color)', width: '12px' }}></i>
-                      <span style={{ wordBreak: 'break-word' }}>{listing.not || 'Not yok'}</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
+          {/* İlan Açıklaması - Bilgi bölümünün altında */}
+          <div className="description-section" style={{ marginBottom: 'var(--spacing-md)' }}>
+            <h3>İlan Açıklaması</h3>
+            <div className="description-content">
+              {listing.detay || 'Açıklama belirtilmemiş'}
             </div>
-          )}
+          </div>
+
+          
         </div>
       </div>
       </div>
