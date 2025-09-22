@@ -434,7 +434,7 @@ function ListingDetailPage() {
                   <div className="info-item">
                     <i className="fas fa-money-bill-wave"></i>
                     <span className="label">Aidat:</span>
-                    <span className="value">{listing.aidat != null && listing.aidat > 0 ? `${listing.aidat} TL` : 'Yok'}</span>
+                    <span className="value">{listing.aidat != null && listing.aidat > 0 ? `${listing.aidat} TL` : 'Belirtilmemiş'}</span>
                   </div>
                 </>
               )}
