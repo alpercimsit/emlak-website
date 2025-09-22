@@ -97,14 +97,18 @@ function EditListingModal({ listing, isOpen, onClose, onUpdate }: Props) {
     } else {
       // İlan başlığı için 100 karakter limiti uygula
       if (name === 'baslik') {
-        // Mevcut başlığın uzunluğunu kontrol et
         const currentTitle = form.baslik || '';
         const currentLength = currentTitle.length;
 
-        // Eğer mevcut başlık 100 karakterden fazlaysa, kullanıcı düzenleyebilsin
-        // Ama yeni giriş 100 karakterden fazla olmamalı
-        if (value.length > 100) {
-          return; // Limiti aşan girişi kabul etme
+        // Eğer mevcut başlık 100 karakterden uzunsa, kullanıcı başlığı düzenleyebilsin
+        // Ama mevcut başlıktan daha uzun olamasın
+        if (currentLength > 100 && value.length > currentLength) {
+          return; // Mevcut başlıktan daha uzun girişi kabul etme
+        }
+
+        // Eğer mevcut başlık 100 karakter veya daha kısaysa, normal limit uygula
+        if (currentLength <= 100 && value.length > 100) {
+          return; // 100 karakter limitini aşan girişi kabul etme
         }
       }
       setForm({ ...form, [name]: value });
@@ -218,7 +222,7 @@ function EditListingModal({ listing, isOpen, onClose, onUpdate }: Props) {
                 placeholder="Örn: Merkezi Konumda 2+1 Daire"
                 value={form.baslik}
                 onChange={handleChange}
-                maxLength={100}
+                maxLength={(form.baslik && form.baslik.length > 100) ? form.baslik.length : 100}
               />
               <div style={{
                 fontSize: '0.8rem',
@@ -226,7 +230,7 @@ function EditListingModal({ listing, isOpen, onClose, onUpdate }: Props) {
                 textAlign: 'right',
                 marginTop: '4px'
               }}>
-                {form.baslik?.length || 0}/100 karakter
+                {form.baslik?.length || 0}/{(form.baslik && form.baslik.length > 100) ? form.baslik.length : 100} karakter
               </div>
             </div>
 
