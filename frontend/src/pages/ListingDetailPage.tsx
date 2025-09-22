@@ -152,20 +152,6 @@ function ListingDetailPage() {
 
   return (
     <div style={{ paddingTop: 'var(--spacing-xl)', paddingBottom: 'var(--spacing-xl)', position: 'relative' }}>
-      {/* Geri Dönme Butonu - Sol boş alanda */}
-      <button 
-        className="btn btn-secondary"
-        onClick={() => navigate('/')}
-        style={{ 
-          position: 'absolute',
-          left: 'var(--spacing-md)',
-          top: 'var(--spacing-xl)',
-          zIndex: 10
-        }}
-      >
-        <i className="fas fa-arrow-left" style={{ marginRight: 'var(--spacing-sm)' }}></i>
-        İlanlara Dön
-      </button>
       
       <div className="container">
 
