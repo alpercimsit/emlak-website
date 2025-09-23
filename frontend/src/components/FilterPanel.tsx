@@ -396,7 +396,25 @@ function FilterPanel({ filters, onFiltersChange, totalCount }: Props) {
 
   const binaYasiOptions = ['0-5 yıl', '6-10 yıl', '11-15 yıl', '16-20 yıl', '21+ yıl'];
   const odaSayisiOptions = ['1+0', '1+1', '2+1', '3+1', '4+1', '5+1', '6+1'];
-  const katOptions = ['Bodrum', 'Zemin', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10+'];
+  const katOptions = [
+    'Bodrum Kat',
+    'Zemin Kat',
+    'Giriş Katı',
+    'Yüksek Giriş',
+    'Bahçe Katı',
+    'Çatı Katı',
+    'Teras',
+    'Müstakil',
+    'Villa Tipi',
+    'Kot 1',
+    'Kot 2',
+    'Kot 3',
+    'Kot 4',
+    '1', '2', '3', '4', '5', '6', '7', '8', '9', '10',
+    '11', '12', '13', '14', '15', '16', '17', '18', '19', '20',
+    '21', '22', '23', '24', '25', '26', '27', '28', '29',
+    '30 ve Üzeri',
+  ];
 
   return (
     <div className="filter-panel">

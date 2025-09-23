@@ -117,7 +117,7 @@ function ListingList({ listings, isAdmin = false, onUpdate, onEditListing }: Pro
                 {l.emlak_tipi !== 'Arsa' && (
                   <span>
                     <i className="fas fa-layer-group"></i>
-                    {l.bulundugu_kat != null ? `${l.bulundugu_kat}. kat` : 'Belirtilmemiş'}
+                    {l.bulundugu_kat != null ? l.bulundugu_kat : 'Belirtilmemiş'}
                   </span>
                 )}
               </div>

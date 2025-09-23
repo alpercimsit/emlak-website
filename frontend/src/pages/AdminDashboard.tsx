@@ -5,6 +5,27 @@ import { Listing } from './ListingsPage';
 import PhotoUpload from '../components/PhotoUpload';
 import LocationSelector from '../components/LocationSelector';
 
+// Kat seçenekleri
+const katOptions = [
+  'Bodrum Kat',
+  'Zemin Kat',
+  'Giriş Katı',
+  'Yüksek Giriş',
+  'Bahçe Katı',
+  'Çatı Katı',
+  'Teras',
+  'Müstakil',
+  'Villa Tipi',
+  'Kot 1',
+  'Kot 2',
+  'Kot 3',
+  'Kot 4',
+  '1', '2', '3', '4', '5', '6', '7', '8', '9', '10',
+  '11', '12', '13', '14', '15', '16', '17', '18', '19', '20',
+  '21', '22', '23', '24', '25', '26', '27', '28', '29',
+  '30 ve Üzeri',
+];
+
 function AdminDashboard() {
   const [feedback, setFeedback] = useState('');
   const [feedbackType, setFeedbackType] = useState<'success' | 'error' | ''>('');
@@ -27,7 +48,7 @@ function AdminDashboard() {
     sahibinden_tarih: '',
     oda_sayisi: '',
     bina_yasi: '',
-    bulundugu_kat: 0,
+    bulundugu_kat: '',
     kat_sayisi: 1,
     isitma: '', // Will be mapped to 'isitma' in database
     banyo_sayisi: 1,
@@ -105,7 +126,7 @@ function AdminDashboard() {
         sahibinden_tarih: '',
         oda_sayisi: '',
         bina_yasi: '',
-        bulundugu_kat: 0,
+        bulundugu_kat: '',
         kat_sayisi: 1,
         isitma: '', // Will be mapped to 'isitma' in database
         banyo_sayisi: 1,
@@ -350,15 +371,17 @@ function AdminDashboard() {
                       <i className="fas fa-layer-group" style={{ marginRight: 'var(--spacing-sm)' }}></i>
                       Bulunduğu Kat
                     </label>
-                    <input
-                      type="number"
+                    <select
                       name="bulundugu_kat"
                       className="form-control"
-                      placeholder="3"
                       value={form.bulundugu_kat}
                       onChange={handleChange}
-                      min="0"
-                    />
+                    >
+                      <option value="" selected disabled>Seçiniz</option>
+                      {katOptions.map(option => (
+                        <option key={option} value={option}>{option}</option>
+                      ))}
+                    </select>
                   </div>
 
                   <div className="form-group" style={{ flex: 1, minWidth: '150px' }}>

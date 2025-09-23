@@ -24,7 +24,7 @@ export interface Listing {
   parsel?: number;              // parsel int8 (nullable)
   oda_sayisi?: string;           // oda_sayisi text (nullable)
   bina_yasi?: string;            // bina_yasi text (nullable)
-  bulundugu_kat?: number;        // bulundugu_kat int8 (nullable)
+  bulundugu_kat?: string;        // bulundugu_kat text (nullable)
   kat_sayisi?: number;           // kat_sayisi int8 (nullable)
   isitma?: string;              // isitma text (nullable)
   banyo_sayisi?: number;         // banyo_sayisi int8 (nullable)
@@ -193,10 +193,7 @@ function ListingsPage() {
 
         // Kat filtresi
         if (filters.katlar.length > 0 && listing.bulundugu_kat != null) {
-          const kat = listing.bulundugu_kat.toString();
-          const katStr = kat === '0' ? 'Zemin' : kat === '-1' ? 'Bodrum' :
-                        parseInt(kat) >= 10 ? '10+' : kat;
-          if (!filters.katlar.includes(katStr)) return false;
+          if (!filters.katlar.includes(listing.bulundugu_kat)) return false;
         }
       }
 
