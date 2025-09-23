@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Listing } from '../pages/ListingsPage';
 import api from '../utils/api';
 
@@ -346,18 +346,42 @@ function MultiSelectDropdown({
       })
     : options;
 
+  const handleInputFocus = () => {
+    if (!disabled) {
+      setIsOpen(true);
+    }
+  };
+
   const handleInputClick = () => {
     if (!disabled) {
       setIsOpen(!isOpen);
     }
   };
 
-  const handleOptionToggle = (option: string) => {
+  const handleInputBlur = () => {
+    // Delay closing to allow option click
+    setTimeout(() => {
+      setIsOpen(false);
+    }, 150);
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newValue = e.target.value;
+    setSearchTerm(newValue);
+  };
+
+  const handleOptionToggle = (option: string, e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+
     if (value.includes(option)) {
       onChange(value.filter(item => item !== option));
     } else {
       onChange([...value, option]);
     }
+
+    // Keep dropdown open for multiple selections
+    // Don't close the dropdown
   };
 
   const handleRemoveValue = (optionToRemove: string, e: React.MouseEvent) => {
@@ -368,6 +392,7 @@ function MultiSelectDropdown({
   const handleClear = (e: React.MouseEvent) => {
     e.stopPropagation();
     onChange([]);
+    setSearchTerm('');
   };
 
   const displayText = value.length === 0
@@ -377,40 +402,42 @@ function MultiSelectDropdown({
     : `${value.length} seçenek seçildi`;
 
   return (
-    <div className="multiselect-container" style={{ position: 'relative'}}>
+    <div className="filter-group">
       <label className="filter-label">
         {label}
       </label>
-      <div
-        className="multiselect-input-wrapper"
-        style={{
-          position: 'relative',
-          border: '1px solid var(--border-color, #dee2e6)',
-          borderRadius: '4px',
-          backgroundColor: disabled ? 'var(--background-secondary, #f8f9fa)' : 'white',
-          cursor: disabled ? 'not-allowed' : 'pointer',
-          minHeight: '38px',
-          display: 'flex',
-          alignItems: 'center',
-          padding: '4px 8px',
-          gap: '4px',
-          flexWrap: 'wrap'
-        }}
-        onClick={handleInputClick}
-      >
-        {value.length === 0 ? (
-          <span
+      <div style={{ position: 'relative' }}>
+        <input
+          type="text"
+          className="filter-input"
+          placeholder={displayText}
+          value={searchTerm}
+          onChange={handleInputChange}
+          onFocus={handleInputFocus}
+          onBlur={handleInputBlur}
+          disabled={disabled}
+          style={{
+            paddingRight: value.length > 0 ? '70px' : '40px',
+            cursor: disabled ? 'not-allowed' : 'text',
+            color: searchTerm ? 'inherit' : (value.length === 0 ? 'var(--text-muted)' : 'inherit')
+          }}
+        />
+
+        {/* Selected values display */}
+        {value.length > 0 && searchTerm === '' && (
+          <div
             style={{
-              color: 'var(--text-muted)',
-              fontSize: '14px',
-              flex: 1
+              position: 'absolute',
+              top: '50%',
+              left: '8px',
+              transform: 'translateY(-50%)',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '4px',
+              pointerEvents: 'none'
             }}
           >
-            {placeholder}
-          </span>
-        ) : (
-          <>
-            {value.map(selectedValue => (
+            {value.slice(0, 2).map(selectedValue => (
               <span
                 key={selectedValue}
                 style={{
@@ -440,21 +467,43 @@ function MultiSelectDropdown({
                     height: '12px',
                     display: 'flex',
                     alignItems: 'center',
-                    justifyContent: 'center'
+                    justifyContent: 'center',
+                    pointerEvents: 'auto'
                   }}
                 >
                   ×
                 </button>
               </span>
             ))}
-          </>
+            {value.length > 2 && (
+              <span
+                style={{
+                  backgroundColor: 'var(--background-secondary, #f8f9fa)',
+                  color: 'var(--text-muted)',
+                  padding: '2px 6px',
+                  borderRadius: '12px',
+                  fontSize: '12px'
+                }}
+              >
+                +{value.length - 2}
+              </span>
+            )}
+          </div>
         )}
 
-        <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: '4px' }}>
-          {value.length > 0 && (
+        {/* Right side buttons */}
+        <div style={{
+          position: 'absolute',
+          right: '8px',
+          top: '50%',
+          transform: 'translateY(-50%)',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '4px'
+        }}>
+          {value.length > 0 && searchTerm === '' && (
             <button
               type="button"
-              className="multiselect-clear-btn"
               onClick={handleClear}
               style={{
                 background: 'none',
@@ -476,105 +525,78 @@ function MultiSelectDropdown({
             }}
           />
         </div>
-      </div>
 
-      {isOpen && !disabled && (
-        <div
-          className="multiselect-dropdown"
-          style={{
-            position: 'absolute',
-            top: '100%',
-            left: 0,
-            right: 0,
-            backgroundColor: 'white',
-            border: '1px solid var(--border-color, #dee2e6)',
-            borderRadius: '4px',
-            boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-            maxHeight: '300px',
-            overflowY: 'auto',
-            zIndex: 1000,
-            marginTop: '2px'
-          }}
-        >
-          {/* Search input */}
+        {/* Dropdown */}
+        {isOpen && !disabled && (
           <div
+            className="multiselect-dropdown"
+            onClick={(e) => e.stopPropagation()}
             style={{
-              padding: '8px',
-              borderBottom: '1px solid var(--border-color, #f1f3f4)',
-              position: 'sticky',
-              top: 0,
+              position: 'absolute',
+              top: '100%',
+              left: 0,
+              right: 0,
               backgroundColor: 'white',
-              zIndex: 1
+              border: '1px solid var(--border-color, #dee2e6)',
+              borderRadius: '4px',
+              boxShadow: '0 4px 16px rgba(0,0,0,0.15)',
+              maxHeight: '300px',
+              overflowY: 'auto',
+              zIndex: 1000
             }}
           >
-            <input
-              type="text"
-              placeholder="Ara..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              style={{
-                width: '100%',
-                padding: '6px 8px',
-                border: '1px solid var(--border-color, #dee2e6)',
-                borderRadius: '4px',
-                fontSize: '14px'
-              }}
-              onClick={(e) => e.stopPropagation()}
-            />
-          </div>
-
-          {/* Options */}
-          {filteredOptions.length > 0 ? (
-            filteredOptions.map(option => (
+            {filteredOptions.length > 0 ? (
+              filteredOptions.map(option => (
+                <div
+                  key={option}
+                  className="multiselect-option"
+                  onClick={(e) => handleOptionToggle(option, e)}
+                  style={{
+                    padding: '8px 12px',
+                    cursor: 'pointer',
+                    borderBottom: '1px solid var(--border-color, #f1f3f4)',
+                    backgroundColor: value.includes(option) ? 'var(--primary-color, #007bff)' : 'white',
+                    color: value.includes(option) ? 'white' : 'inherit',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px'
+                  }}
+                  onMouseEnter={(e) => {
+                    if (!value.includes(option)) {
+                      e.currentTarget.style.backgroundColor = 'var(--background-secondary, #f8f9fa)';
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (!value.includes(option)) {
+                      e.currentTarget.style.backgroundColor = 'white';
+                    }
+                  }}
+                >
+                  <input
+                    type="checkbox"
+                    checked={value.includes(option)}
+                    onChange={() => {}}
+                    style={{ margin: 0 }}
+                  />
+                  {option}
+                </div>
+              ))
+            ) : (
               <div
-                key={option}
-                className="multiselect-option"
-                onClick={() => handleOptionToggle(option)}
+                className="multiselect-no-results"
                 style={{
-                  padding: '8px 12px',
-                  cursor: 'pointer',
-                  borderBottom: '1px solid var(--border-color, #f1f3f4)',
-                  backgroundColor: value.includes(option) ? 'var(--primary-color, #007bff)' : 'white',
-                  color: value.includes(option) ? 'white' : 'inherit',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '8px'
-                }}
-                onMouseEnter={(e) => {
-                  if (!value.includes(option)) {
-                    e.currentTarget.style.backgroundColor = 'var(--background-secondary, #f8f9fa)';
-                  }
-                }}
-                onMouseLeave={(e) => {
-                  if (!value.includes(option)) {
-                    e.currentTarget.style.backgroundColor = 'white';
-                  }
+                  padding: '12px',
+                  textAlign: 'center',
+                  color: 'var(--text-muted)',
+                  fontSize: '14px'
                 }}
               >
-                <input
-                  type="checkbox"
-                  checked={value.includes(option)}
-                  onChange={() => {}}
-                  style={{ margin: 0 }}
-                />
-                {option}
+                Sonuç bulunamadı
               </div>
-            ))
-          ) : (
-            <div
-              className="multiselect-no-results"
-              style={{
-                padding: '12px',
-                textAlign: 'center',
-                color: 'var(--text-muted)',
-                fontSize: '14px'
-              }}
-            >
-              Sonuç bulunamadı
-            </div>
-          )}
-        </div>
-      )}
+            )}
+          </div>
+        )}
+      </div>
     </div>
   );
 }
