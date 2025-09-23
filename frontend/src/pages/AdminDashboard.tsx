@@ -513,7 +513,6 @@ function AdminDashboard() {
                   <input
                     name="sahibi_ad"
                     className="form-control"
-                    placeholder="Ahmet Yılmaz"
                     value={form.sahibi_ad}
                     onChange={handleChange}
                   />
@@ -527,7 +526,6 @@ function AdminDashboard() {
                   <input
                     name="sahibi_tel"
                     className="form-control"
-                    placeholder="0532 123 45 67"
                     value={form.sahibi_tel}
                     onChange={handleChange}
                   />
