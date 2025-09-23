@@ -775,7 +775,7 @@ textarea.form-control {
 }
 
 .filter-section {
-  padding: var(--spacing-lg);
+  padding: var(--spacing-md);
   border-bottom: 1px solid var(--border-color);
 }
 
@@ -964,7 +964,7 @@ textarea.form-control {
 
 /* Filter Groups */
 .filter-group {
-  margin-bottom: var(--spacing-lg);
+  margin-bottom: var(--spacing-md);
 }
 
 .filter-group:last-child {
@@ -975,7 +975,7 @@ textarea.form-control {
   display: flex;
   align-items: center;
   gap: var(--spacing-sm);
-  margin-bottom: var(--spacing-sm);
+  margin-bottom: 0px;
   color: var(--text-primary);
   font-weight: 500;
   font-size: 0.9rem;
@@ -1014,7 +1014,7 @@ textarea.form-control {
 .checkbox-group {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-sm);
+  gap: var(--spacing-xs);
 }
 
 .checkbox-label {
@@ -1022,7 +1022,7 @@ textarea.form-control {
   align-items: center;
   gap: var(--spacing-sm);
   cursor: pointer;
-  padding: var(--spacing-xs);
+  padding: calc(var(--spacing-xs) /4);
   border-radius: var(--radius-sm);
   transition: background-color 0.2s ease;
 }
@@ -1047,8 +1047,8 @@ textarea.form-control {
 
 /* Filter Actions */
 .filter-actions {
-  margin-top: var(--spacing-lg);
-  padding-top: var(--spacing-lg);
+  margin-top: var(--spacing-md);
+  padding-top: var(--spacing-md);
   border-top: 1px solid var(--border-color);
 }
 
@@ -1998,7 +1998,7 @@ textarea.form-control {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: var(--spacing-lg);
+  margin-bottom: var(--spacing-md);
   position: relative;
   /* İlan listesi ile hizalama - filter sidebar'ın padding'ini dikkate alarak */
   padding-left: 333px; /* Filter sidebar genişliği */

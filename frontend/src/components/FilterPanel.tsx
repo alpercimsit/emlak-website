@@ -465,7 +465,6 @@ function FilterPanel({ filters, onFiltersChange, totalCount }: Props) {
         {/* İçerik Arama */}
         <div className="filter-group">
           <label className="filter-label">
-            <i className="fas fa-search"></i>
             İlan Arama
           </label>
           <input
@@ -480,13 +479,12 @@ function FilterPanel({ filters, onFiltersChange, totalCount }: Props) {
         {/* İlan No Arama */}
         <div className="filter-group">
           <label className="filter-label">
-            <i className="fas fa-hashtag"></i>
             İlan No
           </label>
           <input
             type="text"
             className="filter-input"
-            placeholder="İlan numarası..."
+            placeholder="İlan numarası"
             value={filters.ilanNo}
             onChange={(e) => handleFilterChange('ilanNo', e.target.value)}
           />
@@ -495,14 +493,13 @@ function FilterPanel({ filters, onFiltersChange, totalCount }: Props) {
         {/* Fiyat Aralığı */}
         <div className="filter-group">
           <label className="filter-label">
-            <i className="fas fa-lira-sign"></i>
             Fiyat Aralığı
           </label>
           <div className="range-inputs">
             <input
               type="number"
               className="filter-input"
-              placeholder="Min"
+              placeholder="Minimum"
               value={filters.fiyatMin}
               onChange={(e) => handleFilterChange('fiyatMin', e.target.value)}
             />
@@ -510,7 +507,7 @@ function FilterPanel({ filters, onFiltersChange, totalCount }: Props) {
             <input
               type="number"
               className="filter-input"
-              placeholder="Maks"
+              placeholder="Maksimum"
               value={filters.fiyatMax}
               onChange={(e) => handleFilterChange('fiyatMax', e.target.value)}
             />
@@ -520,14 +517,13 @@ function FilterPanel({ filters, onFiltersChange, totalCount }: Props) {
         {/* Alan Aralığı */}
         <div className="filter-group">
           <label className="filter-label">
-            <i className="fas fa-expand"></i>
             Alan (m²)
           </label>
           <div className="range-inputs">
             <input
               type="number"
               className="filter-input"
-              placeholder="Min"
+              placeholder="Minimum"
               value={filters.alanMin}
               onChange={(e) => handleFilterChange('alanMin', e.target.value)}
             />
@@ -535,7 +531,7 @@ function FilterPanel({ filters, onFiltersChange, totalCount }: Props) {
             <input
               type="number"
               className="filter-input"
-              placeholder="Maks"
+              placeholder="Maksimum"
               value={filters.alanMax}
               onChange={(e) => handleFilterChange('alanMax', e.target.value)}
             />
@@ -545,7 +541,6 @@ function FilterPanel({ filters, onFiltersChange, totalCount }: Props) {
         {/* Konum Filtreleri */}
         <div className="filter-group">
           <label className="filter-label">
-            <i className="fas fa-map-marker-alt"></i>
             Adres
           </label>
 
@@ -588,7 +583,6 @@ function FilterPanel({ filters, onFiltersChange, totalCount }: Props) {
             {/* Ada No */}
             <div className="filter-group">
               <label className="filter-label">
-                <i className="fas fa-map"></i>
                 Ada No
               </label>
               <input
@@ -603,7 +597,6 @@ function FilterPanel({ filters, onFiltersChange, totalCount }: Props) {
             {/* Parsel No */}
             <div className="filter-group">
               <label className="filter-label">
-                <i className="fas fa-map-pin"></i>
                 Parsel No
               </label>
               <input
@@ -623,7 +616,6 @@ function FilterPanel({ filters, onFiltersChange, totalCount }: Props) {
             {/* Bina Yaşı */}
             <div className="filter-group">
               <label className="filter-label">
-                <i className="fas fa-calendar"></i>
                 Bina Yaşı
               </label>
               <div className="checkbox-group">
@@ -643,7 +635,6 @@ function FilterPanel({ filters, onFiltersChange, totalCount }: Props) {
             {/* Oda Sayısı */}
             <div className="filter-group">
               <label className="filter-label">
-                <i className="fas fa-bed"></i>
                 Oda Sayısı
               </label>
               <div className="checkbox-group">
@@ -663,7 +654,6 @@ function FilterPanel({ filters, onFiltersChange, totalCount }: Props) {
             {/* Kat */}
             <div className="filter-group">
               <label className="filter-label">
-                <i className="fas fa-layer-group"></i>
                 Bulunduğu Kat
               </label>
               <div className="checkbox-group">
