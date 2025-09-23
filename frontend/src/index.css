@@ -1,9 +1,9 @@
 /* Modern CSS Framework for Emlak Website */
 :root {
   /* Modern Color Palette */
-  --primary-color: #2563eb;
+  --primary-color: #1e40af;
   --primary-hover: #1d4ed8;
-  --primary-light: #3b82f6;
+  --primary-light: #2563eb;
   --secondary-color: #64748b;
   --accent-color: #f59e0b;
   --success-color: #10b981;
@@ -160,7 +160,7 @@ p {
 
 .nav-link.active {
   color: var(--primary-color);
-  background-color: rgba(37, 99, 235, 0.1);
+  background-color: rgba(30, 64, 175, 0.1);
 }
 
 /* Buttons */
@@ -477,7 +477,7 @@ p {
 .form-control:focus {
   outline: none;
   border-color: var(--primary-color);
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+  box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.1);
 }
 
 .form-control.error {
@@ -925,7 +925,7 @@ textarea.form-control {
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(37, 99, 235, 0.1), transparent);
+  background: linear-gradient(90deg, transparent, rgba(30, 64, 175, 0.1), transparent);
   transition: left 0.5s ease;
 }
 
@@ -1160,7 +1160,7 @@ textarea.form-control {
 .photo-upload-area:hover,
 .photo-upload-area.dragging {
   border-color: var(--primary-color);
-  background: rgba(37, 99, 235, 0.08);
+  background: rgba(30, 64, 175, 0.08);
 }
 
 .upload-content i {
