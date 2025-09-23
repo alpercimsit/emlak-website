@@ -242,7 +242,7 @@ function ListingsPage() {
     <div className="container" style={{ paddingTop: 'var(--spacing-lg)', paddingBottom: 'var(--spacing-xl)' }}>
       {/* Ana başlık ve kontrol paneli */}
       <div className="listings-title-section">
-        <h1 className="listings-page-title">
+        <h1 className="listings-page-title" style={{fontSize: '29px'}}>
           {getPageTitle()}
         </h1>
 
@@ -281,7 +281,7 @@ function ListingsPage() {
             </div>
           </div>
           <div className="listings-count">
-            Bulunan Kayıt: <strong>{filteredListings.length}</strong>
+            Bulunan İlan:&nbsp; <strong>{filteredListings.length}</strong>
           </div>
         </div>
       </div>
