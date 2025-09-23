@@ -2,6 +2,51 @@ import { useState, useEffect, useRef } from 'react';
 import { Listing } from '../pages/ListingsPage';
 import api from '../utils/api';
 
+// Smart dropdown positioning hook
+function useSmartDropdownPosition(dropdownRef: React.RefObject<HTMLDivElement>) {
+  const [dropdownDirection, setDropdownDirection] = useState<'down' | 'up'>('down');
+
+  useEffect(() => {
+    const calculateDirection = () => {
+      if (!dropdownRef.current) return;
+
+      const rect = dropdownRef.current.getBoundingClientRect();
+      const viewportHeight = window.innerHeight;
+      const dropdownHeight = 300; // maxHeight of dropdown
+
+      // Calculate space below and above
+      const spaceBelow = viewportHeight - rect.bottom;
+      const spaceAbove = rect.top;
+
+      // If there's not enough space below (less than dropdown height + 20px padding)
+      // and there's more space above, open upwards
+      if (spaceBelow < dropdownHeight + 20 && spaceAbove > spaceBelow) {
+        setDropdownDirection('up');
+      } else {
+        setDropdownDirection('down');
+      }
+    };
+
+    // Calculate on mount and when dropdown opens
+    calculateDirection();
+
+    // Recalculate on window resize or scroll
+    const handleResizeOrScroll = () => {
+      calculateDirection();
+    };
+
+    window.addEventListener('resize', handleResizeOrScroll);
+    window.addEventListener('scroll', handleResizeOrScroll, true);
+
+    return () => {
+      window.removeEventListener('resize', handleResizeOrScroll);
+      window.removeEventListener('scroll', handleResizeOrScroll, true);
+    };
+  }, []);
+
+  return dropdownDirection;
+}
+
 export interface FilterState {
   category: 'arsa' | 'konut';
   subCategory: 'all' | 'satilik' | 'kiralik'; // konut için alt kategori
@@ -76,6 +121,8 @@ function Combobox({
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredOptions, setFilteredOptions] = useState<Array<{id: number, name: string}>>([]);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+  const dropdownDirection = useSmartDropdownPosition(dropdownRef);
 
   // Normalize Turkish characters for consistent matching
   const normalizeTurkish = (str: string) => {
@@ -177,9 +224,8 @@ function Combobox({
   };
 
   return (
-    <div className="combobox-container" style={{ position: 'relative' }}>
+    <div className="combobox-container" style={{ position: 'relative' }} ref={dropdownRef}>
       <label className="filter-label">
-        
         {label}
       </label>
       <div className="combobox-input-wrapper" style={{ position: 'relative' }}>
@@ -240,13 +286,13 @@ function Combobox({
           className="combobox-dropdown"
           style={{
             position: 'absolute',
-            top: '100%',
+            [dropdownDirection === 'up' ? 'bottom' : 'top']: '100%',
             left: 0,
             right: 0,
             backgroundColor: 'white',
             border: '1px solid var(--border-color, #dee2e6)',
             borderRadius: '4px',
-            boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+            boxShadow: dropdownDirection === 'up' ? '0 -2px 8px rgba(0,0,0,0.1)' : '0 2px 8px rgba(0,0,0,0.1)',
             maxHeight: '300px',
             overflowY: 'auto',
             zIndex: 2000
@@ -259,12 +305,13 @@ function Combobox({
                 className="combobox-option"
                 onClick={() => handleOptionSelect(option)}
                 style={{
-                  padding: '6px 10px',
+                  padding: '8px 12px',
                   cursor: 'pointer',
                   borderBottom: '1px solid var(--border-color, #f1f3f4)',
                   backgroundColor: value?.id === option.id ? 'var(--primary-color, #007bff)' : 'white',
                   color: value?.id === option.id ? 'white' : 'inherit',
-                  fontSize: '14px'
+                  fontSize: '13px',
+                  lineHeight: '1.4'
                 }}
                 onMouseEnter={(e) => {
                   if (value?.id !== option.id) {
@@ -310,6 +357,8 @@ function MultiSelectDropdown({
 }: MultiSelectDropdownProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
+  const dropdownRef = useRef<HTMLDivElement>(null);
+  const dropdownDirection = useSmartDropdownPosition(dropdownRef);
 
   // Normalize Turkish characters for consistent matching
   const normalizeTurkish = (str: string) => {
@@ -402,7 +451,7 @@ function MultiSelectDropdown({
     : `${value.length} seçenek seçildi`;
 
   return (
-    <div className="filter-group">
+    <div className="filter-group" ref={dropdownRef}>
       <label className="filter-label">
         {label}
       </label>
@@ -533,13 +582,13 @@ function MultiSelectDropdown({
             onClick={(e) => e.stopPropagation()}
             style={{
               position: 'absolute',
-              top: '100%',
+              [dropdownDirection === 'up' ? 'bottom' : 'top']: '100%',
               left: 0,
               right: 0,
               backgroundColor: 'white',
               border: '1px solid var(--border-color, #dee2e6)',
               borderRadius: '4px',
-              boxShadow: '0 4px 16px rgba(0,0,0,0.15)',
+              boxShadow: dropdownDirection === 'up' ? '0 -4px 16px rgba(0,0,0,0.15)' : '0 4px 16px rgba(0,0,0,0.15)',
               maxHeight: '300px',
               overflowY: 'auto',
               zIndex: 2000
@@ -559,7 +608,9 @@ function MultiSelectDropdown({
                     color: value.includes(option) ? 'white' : 'inherit',
                     display: 'flex',
                     alignItems: 'center',
-                    gap: '8px'
+                    gap: '8px',
+                    fontSize: '13px',
+                    lineHeight: '1.4'
                   }}
                   onMouseEnter={(e) => {
                     if (!value.includes(option)) {
