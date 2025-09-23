@@ -249,7 +249,7 @@ function Combobox({
             boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
             maxHeight: '300px',
             overflowY: 'auto',
-            zIndex: 1000
+            zIndex: 2000
           }}
         >
           {filteredOptions.length > 0 ? (
@@ -542,7 +542,7 @@ function MultiSelectDropdown({
               boxShadow: '0 4px 16px rgba(0,0,0,0.15)',
               maxHeight: '300px',
               overflowY: 'auto',
-              zIndex: 1000
+              zIndex: 2000
             }}
           >
             {filteredOptions.length > 0 ? (

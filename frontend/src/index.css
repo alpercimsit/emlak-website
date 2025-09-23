@@ -748,7 +748,7 @@ textarea.form-control {
   background: var(--bg-primary);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-lg);
-  overflow: hidden;
+  overflow: visible;
   box-shadow: var(--shadow-sm);
   position: relative;
   bottom: 115px;
@@ -965,6 +965,7 @@ textarea.form-control {
 /* Filter Groups */
 .filter-group {
   margin-bottom: var(--spacing-md);
+  position: relative;
 }
 
 .filter-group:last-child {
