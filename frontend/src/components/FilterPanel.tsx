@@ -54,6 +54,15 @@ interface ComboboxProps {
   loading?: boolean;
 }
 
+interface MultiSelectDropdownProps {
+  options: string[];
+  value: string[];
+  onChange: (values: string[]) => void;
+  placeholder: string;
+  label: string;
+  disabled?: boolean;
+}
+
 // Combobox component for searchable dropdown
 function Combobox({
   options,
@@ -274,6 +283,286 @@ function Combobox({
           ) : (
             <div
               className="combobox-no-results"
+              style={{
+                padding: '12px',
+                textAlign: 'center',
+                color: 'var(--text-muted)',
+                fontSize: '14px'
+              }}
+            >
+              Sonuç bulunamadı
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
+// MultiSelectDropdown component for multiple selections
+function MultiSelectDropdown({
+  options,
+  value,
+  onChange,
+  placeholder,
+  label,
+  disabled = false
+}: MultiSelectDropdownProps) {
+  const [isOpen, setIsOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
+
+  // Normalize Turkish characters for consistent matching
+  const normalizeTurkish = (str: string) => {
+    const turkishCharMap: {[key: string]: string} = {
+      'İ': 'i', 'I': 'ı', 'ı': 'i',
+      'Ş': 's', 'ş': 's',
+      'Ğ': 'g', 'ğ': 'g',
+      'Ü': 'u', 'ü': 'u',
+      'Ö': 'o', 'ö': 'o',
+      'Ç': 'c', 'ç': 'c'
+    };
+
+    // Apply normalization multiple times to handle all Turkish characters
+    let result = str;
+    let iterations = 0;
+    const maxIterations = 5;
+
+    while (iterations < maxIterations) {
+      const newResult = result.split('').map(char => turkishCharMap[char] || char).join('');
+      if (newResult === result) break;
+      result = newResult;
+      iterations++;
+    }
+
+    return result.toLowerCase();
+  };
+
+  // Filter options based on search term
+  const filteredOptions = searchTerm
+    ? options.filter(option => {
+        const optionNormalized = normalizeTurkish(option);
+        const searchTermNormalized = normalizeTurkish(searchTerm);
+        return optionNormalized.includes(searchTermNormalized);
+      })
+    : options;
+
+  const handleInputClick = () => {
+    if (!disabled) {
+      setIsOpen(!isOpen);
+    }
+  };
+
+  const handleOptionToggle = (option: string) => {
+    if (value.includes(option)) {
+      onChange(value.filter(item => item !== option));
+    } else {
+      onChange([...value, option]);
+    }
+  };
+
+  const handleRemoveValue = (optionToRemove: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    onChange(value.filter(item => item !== optionToRemove));
+  };
+
+  const handleClear = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    onChange([]);
+  };
+
+  const displayText = value.length === 0
+    ? placeholder
+    : value.length === 1
+    ? value[0]
+    : `${value.length} seçenek seçildi`;
+
+  return (
+    <div className="multiselect-container" style={{ position: 'relative'}}>
+      <label className="filter-label">
+        {label}
+      </label>
+      <div
+        className="multiselect-input-wrapper"
+        style={{
+          position: 'relative',
+          border: '1px solid var(--border-color, #dee2e6)',
+          borderRadius: '4px',
+          backgroundColor: disabled ? 'var(--background-secondary, #f8f9fa)' : 'white',
+          cursor: disabled ? 'not-allowed' : 'pointer',
+          minHeight: '38px',
+          display: 'flex',
+          alignItems: 'center',
+          padding: '4px 8px',
+          gap: '4px',
+          flexWrap: 'wrap'
+        }}
+        onClick={handleInputClick}
+      >
+        {value.length === 0 ? (
+          <span
+            style={{
+              color: 'var(--text-muted)',
+              fontSize: '14px',
+              flex: 1
+            }}
+          >
+            {placeholder}
+          </span>
+        ) : (
+          <>
+            {value.map(selectedValue => (
+              <span
+                key={selectedValue}
+                style={{
+                  backgroundColor: 'var(--primary-color, #007bff)',
+                  color: 'white',
+                  padding: '2px 6px',
+                  borderRadius: '12px',
+                  fontSize: '12px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '4px'
+                }}
+              >
+                {selectedValue}
+                <button
+                  type="button"
+                  onClick={(e) => handleRemoveValue(selectedValue, e)}
+                  style={{
+                    background: 'none',
+                    border: 'none',
+                    color: 'white',
+                    cursor: 'pointer',
+                    fontSize: '12px',
+                    padding: '0',
+                    marginLeft: '2px',
+                    width: '12px',
+                    height: '12px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center'
+                  }}
+                >
+                  ×
+                </button>
+              </span>
+            ))}
+          </>
+        )}
+
+        <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: '4px' }}>
+          {value.length > 0 && (
+            <button
+              type="button"
+              className="multiselect-clear-btn"
+              onClick={handleClear}
+              style={{
+                background: 'none',
+                border: 'none',
+                color: 'var(--text-muted)',
+                cursor: 'pointer',
+                fontSize: '14px',
+                padding: '2px'
+              }}
+            >
+              <i className="fas fa-times"></i>
+            </button>
+          )}
+          <i
+            className={`fas fa-chevron-${isOpen ? 'up' : 'down'}`}
+            style={{
+              color: 'var(--text-muted)',
+              fontSize: '12px'
+            }}
+          />
+        </div>
+      </div>
+
+      {isOpen && !disabled && (
+        <div
+          className="multiselect-dropdown"
+          style={{
+            position: 'absolute',
+            top: '100%',
+            left: 0,
+            right: 0,
+            backgroundColor: 'white',
+            border: '1px solid var(--border-color, #dee2e6)',
+            borderRadius: '4px',
+            boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+            maxHeight: '300px',
+            overflowY: 'auto',
+            zIndex: 1000,
+            marginTop: '2px'
+          }}
+        >
+          {/* Search input */}
+          <div
+            style={{
+              padding: '8px',
+              borderBottom: '1px solid var(--border-color, #f1f3f4)',
+              position: 'sticky',
+              top: 0,
+              backgroundColor: 'white',
+              zIndex: 1
+            }}
+          >
+            <input
+              type="text"
+              placeholder="Ara..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              style={{
+                width: '100%',
+                padding: '6px 8px',
+                border: '1px solid var(--border-color, #dee2e6)',
+                borderRadius: '4px',
+                fontSize: '14px'
+              }}
+              onClick={(e) => e.stopPropagation()}
+            />
+          </div>
+
+          {/* Options */}
+          {filteredOptions.length > 0 ? (
+            filteredOptions.map(option => (
+              <div
+                key={option}
+                className="multiselect-option"
+                onClick={() => handleOptionToggle(option)}
+                style={{
+                  padding: '8px 12px',
+                  cursor: 'pointer',
+                  borderBottom: '1px solid var(--border-color, #f1f3f4)',
+                  backgroundColor: value.includes(option) ? 'var(--primary-color, #007bff)' : 'white',
+                  color: value.includes(option) ? 'white' : 'inherit',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px'
+                }}
+                onMouseEnter={(e) => {
+                  if (!value.includes(option)) {
+                    e.currentTarget.style.backgroundColor = 'var(--background-secondary, #f8f9fa)';
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (!value.includes(option)) {
+                    e.currentTarget.style.backgroundColor = 'white';
+                  }
+                }}
+              >
+                <input
+                  type="checkbox"
+                  checked={value.includes(option)}
+                  onChange={() => {}}
+                  style={{ margin: 0 }}
+                />
+                {option}
+              </div>
+            ))
+          ) : (
+            <div
+              className="multiselect-no-results"
               style={{
                 padding: '12px',
                 textAlign: 'center',
@@ -632,61 +921,31 @@ function FilterPanel({ filters, onFiltersChange, totalCount }: Props) {
         {filters.category === 'konut' && (
           <>
             {/* Bina Yaşı */}
-            <div className="filter-group">
-              <label className="filter-label">
-                Bina Yaşı
-              </label>
-              <div className="checkbox-group">
-                {binaYasiOptions.map(option => (
-                  <label key={option} className="checkbox-label">
-                    <input
-                      type="checkbox"
-                      checked={filters.binaYaslari.includes(option)}
-                      onChange={() => handleArrayFilterToggle('binaYaslari', option)}
-                    />
-                    <span>{option}</span>
-                  </label>
-                ))}
-              </div>
-            </div>
+            <MultiSelectDropdown
+              options={binaYasiOptions}
+              value={filters.binaYaslari}
+              onChange={(values) => handleFilterChange('binaYaslari', values)}
+              placeholder="Bina yaşı seçin..."
+              label="Bina Yaşı"
+            />
 
             {/* Oda Sayısı */}
-            <div className="filter-group">
-              <label className="filter-label">
-                Oda Sayısı
-              </label>
-              <div className="checkbox-group">
-                {odaSayisiOptions.map(option => (
-                  <label key={option} className="checkbox-label">
-                    <input
-                      type="checkbox"
-                      checked={filters.odaSayilari.includes(option)}
-                      onChange={() => handleArrayFilterToggle('odaSayilari', option)}
-                    />
-                    <span>{option}</span>
-                  </label>
-                ))}
-              </div>
-            </div>
+            <MultiSelectDropdown
+              options={odaSayisiOptions}
+              value={filters.odaSayilari}
+              onChange={(values) => handleFilterChange('odaSayilari', values)}
+              placeholder="Oda sayısı seçin..."
+              label="Oda Sayısı"
+            />
 
             {/* Kat */}
-            <div className="filter-group">
-              <label className="filter-label">
-                Bulunduğu Kat
-              </label>
-              <div className="checkbox-group">
-                {katOptions.map(option => (
-                  <label key={option} className="checkbox-label">
-                    <input
-                      type="checkbox"
-                      checked={filters.katlar.includes(option)}
-                      onChange={() => handleArrayFilterToggle('katlar', option)}
-                    />
-                    <span>{option}</span>
-                  </label>
-                ))}
-              </div>
-            </div>
+            <MultiSelectDropdown
+              options={katOptions}
+              value={filters.katlar}
+              onChange={(values) => handleFilterChange('katlar', values)}
+              placeholder="Bulunduğu kat seçin..."
+              label="Bulunduğu Kat"
+            />
           </>
         )}
 
