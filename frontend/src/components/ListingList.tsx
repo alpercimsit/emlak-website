@@ -99,22 +99,13 @@ function ListingList({ listings, isAdmin = false, onUpdate, onEditListing }: Pro
                   <i className="fas fa-expand"></i>
                   {l.m2 ? `${l.m2} m²` : 'Belirtilmemiş'}
                 </span>
-                {l.emlak_tipi === 'Arsa' && l.m2 && l.m2 > 0 && (
+                {l.emlak_tipi === 'Arsa' && (
                   <span>
                     <i className="fas fa-calculator"></i>
-                    {Math.floor(l.fiyat / l.m2).toLocaleString('tr-TR')} TL/m²
-                  </span>
-                )}
-                {l.emlak_tipi === 'Arsa' && (
-                  <span>
-                    <i className="fas fa-map"></i>
-                    Ada: {l.ada || 'Belirtilmemiş'}
-                  </span>
-                )}
-                {l.emlak_tipi === 'Arsa' && (
-                  <span>
-                    <i className="fas fa-map-pin"></i>
-                    Parsel: {l.parsel || 'Belirtilmemiş'}
+                    {l.m2 && l.m2 > 0 
+                    ? `${Math.floor(l.fiyat / l.m2).toLocaleString('tr-TR')} TL/m²`
+                    : 'Belirtilmemiş'
+                    }
                   </span>
                 )}
                 {l.emlak_tipi !== 'Arsa' && (
