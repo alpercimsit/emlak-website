@@ -358,11 +358,18 @@ function AdminDashboard() {
                       onChange={handleChange}
                     >
                       <option value="" selected disabled>Seçiniz</option>
-                      <option value="0-5 yıl">0-5 yıl</option>
-                      <option value="6-10 yıl">6-10 yıl</option>
-                      <option value="11-15 yıl">11-15 yıl</option>
-                      <option value="16-20 yıl">16-20 yıl</option>
-                      <option value="21+ yıl">21+ yıl</option>
+                      <option value="0">0</option>
+                      <option value="1">1</option>
+                      <option value="2">2</option>
+                      <option value="3">3</option>
+                      <option value="4">4</option>
+                      <option value="5">5</option>
+                      <option value="6-10 arası">6-10 arası</option>
+                      <option value="11-15 arası">11-15 arası</option>
+                      <option value="16-20 arası">16-20 arası</option>
+                      <option value="21-25 arası">21-25 arası</option>
+                      <option value="26-30 arası">26-30 arası</option>
+                      <option value="31 ve üzeri">31 ve üzeri</option>
                     </select>
                   </div>
 

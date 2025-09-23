@@ -705,7 +705,7 @@ function FilterPanel({ filters, onFiltersChange, totalCount }: Props) {
     });
   };
 
-  const binaYasiOptions = ['0-5 yıl', '6-10 yıl', '11-15 yıl', '16-20 yıl', '21+ yıl'];
+  const binaYasiOptions = ['0','1','2','3','4','5', '6-10 arası', '11-15 arası', '16-20 arası', '21-25 arası', '26-30 arası', '31 ve üzeri'];
   const odaSayisiOptions = ['1+0', '1+1', '2+1', '3+1', '4+1', '5+1', '6+1'];
   const katOptions = [
     'Bodrum Kat',
