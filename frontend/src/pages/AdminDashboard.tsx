@@ -571,7 +571,7 @@ function AdminDashboard() {
               <div className="form-group" style={{ marginTop: 'var(--spacing-md)' }}>
                 <label className="form-label">
                   <i className="fas fa-sticky-note" style={{ marginRight: 'var(--spacing-sm)' }}></i>
-                  Not (Sadece admin görebilir)
+                  Not
                 </label>
                 <textarea
                   name="not"
@@ -582,22 +582,22 @@ function AdminDashboard() {
                   rows={2}
                 />
               </div>
+              {/* İlan Gizleme */}
+              <div className="form-group">
+                <label className="form-label">
+                  <input
+                    type="checkbox"
+                    name="gizli"
+                    checked={form.gizli}
+                    onChange={handleChange}
+                    style={{ marginRight: 'var(--spacing-sm)' }}
+                  />
+                  <i className="fas fa-eye-slash" style={{ marginRight: 'var(--spacing-sm)' }}></i>
+                  İlanı Gizle (Sadece admin görebilir)
+                </label>
+              </div>
             </div>
-
-            {/* İlan Gizleme */}
-            <div className="form-group">
-              <label className="form-label">
-                <input
-                  type="checkbox"
-                  name="gizli"
-                  checked={form.gizli}
-                  onChange={handleChange}
-                  style={{ marginRight: 'var(--spacing-sm)' }}
-                />
-                <i className="fas fa-eye-slash" style={{ marginRight: 'var(--spacing-sm)' }}></i>
-                İlanı Gizle (Sadece admin görebilir)
-              </label>
-            </div>
+            <br />
 
             {/* Fotoğraflar */}
             <PhotoUpload

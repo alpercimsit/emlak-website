@@ -361,30 +361,6 @@ function LocationSelector({ onLocationChange, initialLocation, className = '' }:
           />
         </div>
       </div>
-
-      {/* Selected Location Summary */}
-      {(il || ilce || mahalle) && (
-        <div className="selected-location" style={{
-          marginTop: 'var(--spacing-sm)',
-          padding: 'var(--spacing-sm)',
-          backgroundColor: 'var(--background-secondary, #f8f9fa)',
-          borderRadius: '4px',
-          border: '1px solid var(--border-color, #dee2e6)'
-        }}>
-          <small className="text-muted">
-            <i className="fas fa-map-marker-alt" style={{ marginRight: 'var(--spacing-xs)' }}></i>
-            Seçilen konum: {
-              il && ilce && mahalle
-                ? `${il} > ${ilce} > ${mahalle}`
-                : il && ilce
-                ? `${il} > ${ilce}`
-                : il
-                ? il
-                : ''
-            }
-          </small>
-        </div>
-      )}
     </div>
   );
 }

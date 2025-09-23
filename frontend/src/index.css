@@ -2137,3 +2137,14 @@ textarea.form-control {
     padding: var(--spacing-md);
   }
 }
+
+/* Number Input Spinner Gizleme - Tüm tarayıcılar için */
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
