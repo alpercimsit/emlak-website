@@ -527,22 +527,37 @@ function ListingDetailPage() {
             {/* Özellikler - Sadece konut tiplerinde göster */}
             {listing.emlak_tipi !== 'Arsa' && (
               <div className="features">
-                {listing.balkon && (
+                {listing.balkon ? (
                   <span className="feature">
                     <i className="fas fa-check"></i>
-                    Balkon
+                    Balkon var
+                  </span>
+                ) : (
+                  <span className="feature">
+                    <i className="fas fa-times"></i>
+                    Balkon yok
                   </span>
                 )}
-                {listing.asansor && (
+                {listing.asansor ? (
                   <span className="feature">
                     <i className="fas fa-check"></i>
-                    Asansör
+                    Asansör var
+                  </span>
+                ) : (
+                  <span className="feature">
+                    <i className="fas fa-times"></i>
+                    Asansör yok
                   </span>
                 )}
-                {listing.esyali && (
+                {listing.esyali ? (
                   <span className="feature">
                     <i className="fas fa-check"></i>
                     Eşyalı
+                  </span>
+                ) : (
+                  <span className="feature">
+                    <i className="fas fa-times"></i>
+                    Eşyasız
                   </span>
                 )}
               </div>
