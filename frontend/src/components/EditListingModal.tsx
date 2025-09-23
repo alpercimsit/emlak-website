@@ -402,13 +402,31 @@ function EditListingModal({ listing, isOpen, onClose, onUpdate }: Props) {
                       onChange={handleChange}
                     >
                       <option value="" selected disabled>Seçiniz</option>
-                      <option value="1+0">1+0</option>
+                      <option value="Stüdyo (1+0)">Stüdyo (1+0)</option>
                       <option value="1+1">1+1</option>
                       <option value="2+1">2+1</option>
+                      <option value="2+2">2+2</option>
                       <option value="3+1">3+1</option>
+                      <option value="3+2">3+2</option>
                       <option value="4+1">4+1</option>
+                      <option value="4+2">4+2</option>
+                      <option value="4+3">4+3</option>
+                      <option value="4+4">4+4</option>
                       <option value="5+1">5+1</option>
+                      <option value="5+2">5+2</option>
+                      <option value="5+3">5+3</option>
                       <option value="6+1">6+1</option>
+                      <option value="6+2">6+2</option>
+                      <option value="6+3">6+3</option>
+                      <option value="7+1">6+4</option>
+                      <option value="7+2">7+2</option>
+                      <option value="7+3">7+3</option>
+                      <option value="8+1">8+1</option>
+                      <option value="8+2">8+2</option>
+                      <option value="8+3">8+3</option>
+                      <option value="9+1">9+1</option>
+                      <option value="9+2">9+2</option>
+                      <option value="9+3">9+3</option>
                     </select>
                   </div>
 

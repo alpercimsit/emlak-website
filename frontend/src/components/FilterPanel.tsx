@@ -706,7 +706,7 @@ function FilterPanel({ filters, onFiltersChange, totalCount }: Props) {
   };
 
   const binaYasiOptions = ['0','1','2','3','4','5', '6-10 arası', '11-15 arası', '16-20 arası', '21-25 arası', '26-30 arası', '31 ve üzeri'];
-  const odaSayisiOptions = ['1+0', '1+1', '2+1', '3+1', '4+1', '5+1', '6+1'];
+  const odaSayisiOptions = ['Stüdyo (1+0)', '1+1', '2+1', '2+2', '3+1', '3+2', '4+1', '4+2', '4+3', '4+4', '5+1', '5+2', '5+3', '6+1', '6+2', '6+3', '7+1', '7+2', '7+3', '8+1', '8+2', '8+3', '9+1', '9+2', '9+3'];
   const katOptions = [
     'Bodrum Kat',
     'Zemin Kat',
