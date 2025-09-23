@@ -173,20 +173,45 @@ function EditListingModal({ listing, isOpen, onClose, onUpdate }: Props) {
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal-content" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
-          <h2 style={{ margin: 0, color: 'var(--text-primary)' }}>
+          <h2 style={{ margin: 0, color: 'var(--text-primary)', fontSize: '28px' }}>
             <i className="fas fa-edit" style={{ marginRight: 'var(--spacing-sm)' }}></i>
             İlanı Düzenle
-            <small style={{ marginLeft: 'var(--spacing-sm)', color: 'var(--text-muted)', fontWeight: 'normal' }}>
+            <small style={{ marginLeft: 'var(--spacing-sm)', color: 'var(--text-muted)', fontWeight: 'normal', fontSize: '20px' }}>
               (İlan #{listing.ilan_no})
             </small>
           </h2>
-          <button 
-            className="modal-close" 
-            onClick={onClose}
-            type="button"
-          >
-            <i className="fas fa-times"></i>
-          </button>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-md)' }}>
+            <button
+              type="submit"
+              className="btn btn-primary"
+              disabled={isSubmitting}
+              onClick={(e) => {
+                e.preventDefault();
+                const form = document.querySelector('form');
+                if (form) form.requestSubmit();
+              }}
+              style={{ fontSize: '0.9rem', padding: 'var(--spacing-sm) var(--spacing-md)' }}
+            >
+              {isSubmitting ? (
+                <>
+                  <div className="spinner" style={{ width: '14px', height: '14px', marginRight: 'var(--spacing-xs)' }}></div>
+                  Güncelleniyor...
+                </>
+              ) : (
+                <>
+                  <i className="fas fa-save" style={{ marginRight: 'var(--spacing-xs)' }}></i>
+                  Güncelle
+                </>
+              )}
+            </button>
+            <button
+              className="modal-close"
+              onClick={onClose}
+              type="button"
+            >
+              <i className="fas fa-times"></i>
+            </button>
+          </div>
         </div>
         
         <div className="modal-body">
@@ -657,35 +682,6 @@ function EditListingModal({ listing, isOpen, onClose, onUpdate }: Props) {
                 {feedback}
               </div>
             )}
-
-            <div className="d-flex gap-2 justify-end">
-              <button
-                type="button"
-                className="btn btn-secondary"
-                onClick={onClose}
-                disabled={isSubmitting}
-              >
-                <i className="fas fa-times" style={{ marginRight: 'var(--spacing-sm)' }}></i>
-                İptal
-              </button>
-              <button
-                type="submit"
-                className="btn btn-primary"
-                disabled={isSubmitting}
-              >
-                {isSubmitting ? (
-                  <>
-                    <div className="spinner" style={{ width: '16px', height: '16px', marginRight: 'var(--spacing-sm)' }}></div>
-                    Güncelleniyor...
-                  </>
-                ) : (
-                  <>
-                    <i className="fas fa-save" style={{ marginRight: 'var(--spacing-sm)' }}></i>
-                    İlanı Güncelle
-                  </>
-                )}
-              </button>
-            </div>
           </form>
         </div>
       </div>
