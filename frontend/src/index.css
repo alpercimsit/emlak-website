@@ -1307,18 +1307,39 @@ textarea.form-control {
   object-fit: contain;
   background: var(--bg-tertiary);
   opacity: 1;
-  transition: opacity 0.3s ease-in-out;
-  animation: fadeInPhoto 0.3s ease-in-out;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  transform: translateX(0) scale(1);
+  animation: slideInPhoto 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-@keyframes fadeInPhoto {
+@keyframes slideInPhoto {
   from {
     opacity: 0;
-    transform: scale(0.95);
+    transform: translateX(20px) scale(0.95);
   }
   to {
     opacity: 1;
-    transform: scale(1);
+    transform: translateX(0) scale(1);
+  }
+}
+
+/* Fotoğraf değişim animasyonu */
+.main-photo-img.change-photo {
+  animation: changePhoto 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes changePhoto {
+  0% {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+  50% {
+    opacity: 0.7;
+    transform: translateX(-10px) scale(0.98);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0) scale(1);
   }
 }
 
@@ -1370,6 +1391,8 @@ textarea.form-control {
   display: flex;
   align-items: center;
   gap: var(--spacing-sm);
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  transform: translateX(0);
 }
 
 .photo-thumbnails {
@@ -1377,6 +1400,8 @@ textarea.form-control {
   gap: var(--spacing-sm);
   flex: 1;
   justify-content: center;
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  transform: translateX(0);
 }
 
 .thumbnail-nav {
@@ -1389,9 +1414,11 @@ textarea.form-control {
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   color: var(--text-secondary);
   flex-shrink: 0;
+  z-index: 5;
+  position: relative;
 }
 
 .thumbnail-nav:hover {
@@ -1399,6 +1426,7 @@ textarea.form-control {
   color: white;
   border-color: var(--primary-color);
   transform: scale(1.1);
+  box-shadow: 0 4px 12px rgba(30, 64, 175, 0.3);
 }
 
 .thumbnail {
@@ -1434,6 +1462,8 @@ textarea.form-control {
   display: flex;
   gap: var(--spacing-xs);
   align-items: center;
+  z-index: 10;
+  position: relative;
 }
 
 .pagination-dot {
@@ -1860,18 +1890,39 @@ textarea.form-control {
   object-fit: contain;
   border-radius: var(--radius-sm);
   opacity: 1;
-  transition: opacity 0.3s ease-in-out;
-  animation: fadeInModalPhoto 0.3s ease-in-out;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  transform: translateX(0) scale(1);
+  animation: slideInModalPhoto 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-@keyframes fadeInModalPhoto {
+@keyframes slideInModalPhoto {
   from {
     opacity: 0;
-    transform: scale(0.9);
+    transform: translateX(30px) scale(0.9);
   }
   to {
     opacity: 1;
-    transform: scale(1);
+    transform: translateX(0) scale(1);
+  }
+}
+
+/* Modal fotoğraf değişim animasyonu */
+.photo-modal-img.change-photo {
+  animation: changeModalPhoto 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes changeModalPhoto {
+  0% {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+  50% {
+    opacity: 0.7;
+    transform: translateX(-15px) scale(0.98);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0) scale(1);
   }
 }
 

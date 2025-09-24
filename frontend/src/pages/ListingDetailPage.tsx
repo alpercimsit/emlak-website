@@ -18,6 +18,8 @@ function ListingDetailPage() {
   const [thumbnailStartIndex, setThumbnailStartIndex] = useState(0);
   const [thumbnailPage, setThumbnailPage] = useState(0);
   const thumbnailsPerPage = 10;
+  const [isPhotoChanging, setIsPhotoChanging] = useState(false);
+  const [thumbnailSlideDirection, setThumbnailSlideDirection] = useState<'left' | 'right' | null>(null);
 
   useEffect(() => {
     // Check if user is admin
@@ -109,6 +111,9 @@ function ListingDetailPage() {
     } else {
       newIndex = currentImageIndex === photos.length - 1 ? 0 : currentImageIndex + 1;
     }
+
+    // Animasyon için state'i güncelle
+    setIsPhotoChanging(true);
     setCurrentImageIndex(newIndex);
 
     // Update thumbnail page if needed
@@ -118,6 +123,9 @@ function ListingDetailPage() {
       setThumbnailStartIndex(newStartIndex);
       setThumbnailPage(pageIndex);
     }
+
+    // Animasyon bittikten sonra state'i sıfırla
+    setTimeout(() => setIsPhotoChanging(false), 400);
   };
 
   if (loading) {
@@ -227,10 +235,10 @@ function ListingDetailPage() {
           {photos.length > 0 ? (
             <>
               <div className="main-photo">
-                <img 
-                  src={photos[currentImageIndex]} 
+                <img
+                  src={photos[currentImageIndex]}
                   alt={listing.baslik}
-                  className="main-photo-img"
+                  className={`main-photo-img ${isPhotoChanging ? 'change-photo' : ''}`}
                   onClick={handlePhotoClick}
                 />
                 {photos.length > 1 && (
@@ -239,6 +247,7 @@ function ListingDetailPage() {
                       className="photo-nav photo-nav-prev"
                       onClick={() => {
                         const newIndex = currentImageIndex === 0 ? photos.length - 1 : currentImageIndex - 1;
+                        setIsPhotoChanging(true);
                         setCurrentImageIndex(newIndex);
                         const pageIndex = Math.floor(newIndex / thumbnailsPerPage);
                         const newStartIndex = pageIndex * thumbnailsPerPage;
@@ -246,6 +255,7 @@ function ListingDetailPage() {
                           setThumbnailStartIndex(newStartIndex);
                           setThumbnailPage(pageIndex);
                         }
+                        setTimeout(() => setIsPhotoChanging(false), 400);
                       }}
                     >
                       <i className="fas fa-chevron-left"></i>
@@ -254,6 +264,7 @@ function ListingDetailPage() {
                       className="photo-nav photo-nav-next"
                       onClick={() => {
                         const newIndex = currentImageIndex === photos.length - 1 ? 0 : currentImageIndex + 1;
+                        setIsPhotoChanging(true);
                         setCurrentImageIndex(newIndex);
                         const pageIndex = Math.floor(newIndex / thumbnailsPerPage);
                         const newStartIndex = pageIndex * thumbnailsPerPage;
@@ -261,6 +272,7 @@ function ListingDetailPage() {
                           setThumbnailStartIndex(newStartIndex);
                           setThumbnailPage(pageIndex);
                         }
+                        setTimeout(() => setIsPhotoChanging(false), 400);
                       }}
                     >
                       <i className="fas fa-chevron-right"></i>
@@ -286,8 +298,11 @@ function ListingDetailPage() {
                             className={`pagination-dot ${i === thumbnailPage ? 'active' : ''}`}
                             onClick={() => {
                               const newStartIndex = i * thumbnailsPerPage;
+                              const direction = newStartIndex > thumbnailStartIndex ? 'left' : 'right';
+                              setThumbnailSlideDirection(direction);
                               setThumbnailStartIndex(newStartIndex);
                               setThumbnailPage(i);
+                              setTimeout(() => setThumbnailSlideDirection(null), 400);
                             }}
                           />
                         ))}
@@ -295,15 +310,22 @@ function ListingDetailPage() {
                     </div>
                   )}
 
-                  <div className="photo-thumbnails-wrapper">
+                  <div
+                    className="photo-thumbnails-wrapper"
+                    style={{
+                      transform: thumbnailSlideDirection === 'left' ? 'translateX(-20px)' : thumbnailSlideDirection === 'right' ? 'translateX(20px)' : 'translateX(0)'
+                    }}
+                  >
                     {/* Sol navigasyon oku */}
                     {photos.length > thumbnailsPerPage && thumbnailStartIndex > 0 && (
                       <button
                         className="thumbnail-nav thumbnail-nav-prev"
                         onClick={() => {
                           const newStartIndex = Math.max(0, thumbnailStartIndex - thumbnailsPerPage);
+                          setThumbnailSlideDirection('right');
                           setThumbnailStartIndex(newStartIndex);
                           setThumbnailPage(Math.floor(newStartIndex / thumbnailsPerPage));
+                          setTimeout(() => setThumbnailSlideDirection(null), 400);
                         }}
                       >
                         <i className="fas fa-chevron-left"></i>
@@ -312,7 +334,7 @@ function ListingDetailPage() {
 
                     <div className="photo-thumbnails">
                       {photos
-                        .slice(thumbnailStartIndex, thumbnailStartIndex + thumbnailsPerPage)
+                        .slice(thumbnailStartIndex, Math.min(thumbnailStartIndex + thumbnailsPerPage, photos.length))
                         .map((photo, displayIndex) => {
                           const actualIndex = thumbnailStartIndex + displayIndex;
                           return (
@@ -332,9 +354,11 @@ function ListingDetailPage() {
                       <button
                         className="thumbnail-nav thumbnail-nav-next"
                         onClick={() => {
-                          const newStartIndex = Math.min(photos.length - thumbnailsPerPage, thumbnailStartIndex + thumbnailsPerPage);
+                          const newStartIndex = thumbnailStartIndex + thumbnailsPerPage;
+                          setThumbnailSlideDirection('left');
                           setThumbnailStartIndex(newStartIndex);
                           setThumbnailPage(Math.floor(newStartIndex / thumbnailsPerPage));
+                          setTimeout(() => setThumbnailSlideDirection(null), 400);
                         }}
                       >
                         <i className="fas fa-chevron-right"></i>
@@ -634,10 +658,10 @@ function ListingDetailPage() {
               <i className="fas fa-times"></i>
             </button>
             
-            <img 
-              src={photos[currentImageIndex]} 
+            <img
+              src={photos[currentImageIndex]}
               alt={`${listing.baslik} - ${currentImageIndex + 1}`}
-              className="photo-modal-img"
+              className={`photo-modal-img ${isPhotoChanging ? 'change-photo' : ''}`}
             />
             
             {photos.length > 1 && (
