@@ -161,7 +161,7 @@ function ListingsPage() {
 
       // İlan no arama
       if (filters.ilanNo) {
-        if (!listing.ilan_no.toString().includes(filters.ilanNo)) return false;
+        if (!(listing.ilan_no.toString() === filters.ilanNo)) return false;
       }
 
       // Fiyat filtresi
