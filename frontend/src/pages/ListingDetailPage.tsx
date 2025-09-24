@@ -296,13 +296,19 @@ function ListingDetailPage() {
                         <button
                           className="thumbnail-nav thumbnail-nav-prev"
                           onClick={() => {
-                            const newStartIndex = Math.max(0, thumbnailStartIndex - thumbnailsPerPage);
-                            setThumbnailSlideDirection('right');
-                            setThumbnailStartIndex(newStartIndex);
-                            setThumbnailPage(Math.floor(newStartIndex / thumbnailsPerPage));
-                            setTimeout(() => setThumbnailSlideDirection(null), 300);
+                            if (thumbnailStartIndex > 0) {
+                              const newStartIndex = Math.max(0, thumbnailStartIndex - thumbnailsPerPage);
+                              setThumbnailSlideDirection('right');
+                              setThumbnailStartIndex(newStartIndex);
+                              setThumbnailPage(Math.floor(newStartIndex / thumbnailsPerPage));
+                              setTimeout(() => setThumbnailSlideDirection(null), 300);
+                            }
                           }}
-                          style={{ visibility: thumbnailStartIndex > 0 ? 'visible' : 'hidden' }}
+                          style={{
+                            visibility: 'visible',
+                            opacity: thumbnailStartIndex > 0 ? 1 : 0.3,
+                            pointerEvents: thumbnailStartIndex > 0 ? 'auto' : 'none'
+                          }}
                         >
                           <i className="fas fa-chevron-left"></i>
                         </button>
@@ -327,13 +333,19 @@ function ListingDetailPage() {
                         <button
                           className="thumbnail-nav thumbnail-nav-next"
                           onClick={() => {
-                            const newStartIndex = thumbnailStartIndex + thumbnailsPerPage;
-                            setThumbnailSlideDirection('left');
-                            setThumbnailStartIndex(newStartIndex);
-                            setThumbnailPage(Math.floor(newStartIndex / thumbnailsPerPage));
-                            setTimeout(() => setThumbnailSlideDirection(null), 300);
+                            if (thumbnailStartIndex + thumbnailsPerPage < photos.length) {
+                              const newStartIndex = thumbnailStartIndex + thumbnailsPerPage;
+                              setThumbnailSlideDirection('left');
+                              setThumbnailStartIndex(newStartIndex);
+                              setThumbnailPage(Math.floor(newStartIndex / thumbnailsPerPage));
+                              setTimeout(() => setThumbnailSlideDirection(null), 300);
+                            }
                           }}
-                          style={{ visibility: thumbnailStartIndex + thumbnailsPerPage < photos.length ? 'visible' : 'hidden' }}
+                          style={{
+                            visibility: 'visible',
+                            opacity: thumbnailStartIndex + thumbnailsPerPage < photos.length ? 1 : 0.3,
+                            pointerEvents: thumbnailStartIndex + thumbnailsPerPage < photos.length ? 'auto' : 'none'
+                          }}
                         >
                           <i className="fas fa-chevron-right"></i>
                         </button>
