@@ -1468,6 +1468,30 @@ textarea.form-control {
   font-size: 0.75rem;
 }
 
+.thumbnail-nav-next{
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-full);
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  color: var(--text-secondary);
+  flex-shrink: 0;
+  z-index: 5;
+  position: relative;
+  /* Layout stability için */
+  contain: layout style;
+  will-change: transform, opacity;
+  /* Görünmezken de yer kaplaması için */
+  min-width: 28px;
+  min-height: 28px;
+  font-size: 0.75rem;
+}
+
 .thumbnail-nav:hover:not([style*="hidden"]) {
   background: var(--primary-color);
   color: white;

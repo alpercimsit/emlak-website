@@ -292,7 +292,7 @@ function ListingDetailPage() {
 
                     {/* Navigasyon Okları ve Pagination Dots - x/y bilgisinin sağında, aynı hizada */}
                     {photos.length > thumbnailsPerPage && (
-                      <div className="photo-navigation-compact">
+                      <div className="photo-navigation-compact" style={{ paddingLeft: '290px', paddingRight: '290px' }}>
                         <button
                           className="thumbnail-nav thumbnail-nav-prev"
                           onClick={() => {
