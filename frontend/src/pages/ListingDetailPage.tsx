@@ -282,7 +282,7 @@ function ListingDetailPage() {
               </div>
               {photos.length > 1 && (
                 <div className="photo-thumbnails-container">
-                  {/* Üst kısım - x/y fotoğraf bilgisi ve navigasyon */}
+                  {/* Üst kısım - x/y fotoğraf bilgisi, navigasyon okları ve noktalar aynı hizada */}
                   <div className="photo-thumbnails-header">
                     <div className="photo-info-left">
                       <span className="photo-counter">
@@ -290,9 +290,9 @@ function ListingDetailPage() {
                       </span>
                     </div>
 
-                    {/* Pagination Dots ve Navigasyon Okları - Aynı hizada */}
+                    {/* Navigasyon Okları ve Pagination Dots - x/y bilgisinin sağında, aynı hizada */}
                     {photos.length > thumbnailsPerPage && (
-                      <div className="photo-navigation-row">
+                      <div className="photo-navigation-compact">
                         <button
                           className="thumbnail-nav thumbnail-nav-prev"
                           onClick={() => {
