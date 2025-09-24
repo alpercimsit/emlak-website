@@ -125,7 +125,7 @@ function ListingDetailPage() {
     }
 
     // Animasyon bittikten sonra state'i sıfırla
-    setTimeout(() => setIsPhotoChanging(false), 400);
+    setTimeout(() => setIsPhotoChanging(false), 300);
   };
 
   if (loading) {
@@ -255,7 +255,7 @@ function ListingDetailPage() {
                           setThumbnailStartIndex(newStartIndex);
                           setThumbnailPage(pageIndex);
                         }
-                        setTimeout(() => setIsPhotoChanging(false), 400);
+                        setTimeout(() => setIsPhotoChanging(false), 300);
                       }}
                     >
                       <i className="fas fa-chevron-left"></i>
@@ -272,7 +272,7 @@ function ListingDetailPage() {
                           setThumbnailStartIndex(newStartIndex);
                           setThumbnailPage(pageIndex);
                         }
-                        setTimeout(() => setIsPhotoChanging(false), 400);
+                        setTimeout(() => setIsPhotoChanging(false), 300);
                       }}
                     >
                       <i className="fas fa-chevron-right"></i>
@@ -282,56 +282,67 @@ function ListingDetailPage() {
               </div>
               {photos.length > 1 && (
                 <div className="photo-thumbnails-container">
+                  {/* Üst kısım - x/y fotoğraf bilgisi ve navigasyon */}
                   <div className="photo-thumbnails-header">
-                    <span className="photo-counter">
-                      {currentImageIndex + 1} / {photos.length} fotoğraf
-                    </span>
+                    <div className="photo-info-left">
+                      <span className="photo-counter">
+                        {currentImageIndex + 1} / {photos.length} fotoğraf
+                      </span>
+                    </div>
+
+                    {/* Pagination Dots ve Navigasyon Okları - Aynı hizada */}
+                    {photos.length > thumbnailsPerPage && (
+                      <div className="photo-navigation-row">
+                        <button
+                          className="thumbnail-nav thumbnail-nav-prev"
+                          onClick={() => {
+                            const newStartIndex = Math.max(0, thumbnailStartIndex - thumbnailsPerPage);
+                            setThumbnailSlideDirection('right');
+                            setThumbnailStartIndex(newStartIndex);
+                            setThumbnailPage(Math.floor(newStartIndex / thumbnailsPerPage));
+                            setTimeout(() => setThumbnailSlideDirection(null), 300);
+                          }}
+                          style={{ visibility: thumbnailStartIndex > 0 ? 'visible' : 'hidden' }}
+                        >
+                          <i className="fas fa-chevron-left"></i>
+                        </button>
+
+                        <div className="pagination-dots">
+                          {Array.from({ length: Math.ceil(photos.length / thumbnailsPerPage) }, (_, i) => (
+                            <button
+                              key={i}
+                              className={`pagination-dot ${i === thumbnailPage ? 'active' : ''}`}
+                              onClick={() => {
+                                const newStartIndex = i * thumbnailsPerPage;
+                                const direction = newStartIndex > thumbnailStartIndex ? 'left' : 'right';
+                                setThumbnailSlideDirection(direction);
+                                setThumbnailStartIndex(newStartIndex);
+                                setThumbnailPage(i);
+                                setTimeout(() => setThumbnailSlideDirection(null), 300);
+                              }}
+                            />
+                          ))}
+                        </div>
+
+                        <button
+                          className="thumbnail-nav thumbnail-nav-next"
+                          onClick={() => {
+                            const newStartIndex = thumbnailStartIndex + thumbnailsPerPage;
+                            setThumbnailSlideDirection('left');
+                            setThumbnailStartIndex(newStartIndex);
+                            setThumbnailPage(Math.floor(newStartIndex / thumbnailsPerPage));
+                            setTimeout(() => setThumbnailSlideDirection(null), 300);
+                          }}
+                          style={{ visibility: thumbnailStartIndex + thumbnailsPerPage < photos.length ? 'visible' : 'hidden' }}
+                        >
+                          <i className="fas fa-chevron-right"></i>
+                        </button>
+                      </div>
+                    )}
                   </div>
 
-                  {/* Pagination Dots - 10'dan fazla fotoğraf varsa göster */}
-                  {photos.length > thumbnailsPerPage && (
-                    <div className="photo-pagination">
-                      <div className="pagination-dots">
-                        {Array.from({ length: Math.ceil(photos.length / thumbnailsPerPage) }, (_, i) => (
-                          <button
-                            key={i}
-                            className={`pagination-dot ${i === thumbnailPage ? 'active' : ''}`}
-                            onClick={() => {
-                              const newStartIndex = i * thumbnailsPerPage;
-                              const direction = newStartIndex > thumbnailStartIndex ? 'left' : 'right';
-                              setThumbnailSlideDirection(direction);
-                              setThumbnailStartIndex(newStartIndex);
-                              setThumbnailPage(i);
-                              setTimeout(() => setThumbnailSlideDirection(null), 400);
-                            }}
-                          />
-                        ))}
-                      </div>
-                    </div>
-                  )}
-
-                  <div
-                    className="photo-thumbnails-wrapper"
-                    style={{
-                      transform: thumbnailSlideDirection === 'left' ? 'translateX(-20px)' : thumbnailSlideDirection === 'right' ? 'translateX(20px)' : 'translateX(0)'
-                    }}
-                  >
-                    {/* Sol navigasyon oku */}
-                    {photos.length > thumbnailsPerPage && thumbnailStartIndex > 0 && (
-                      <button
-                        className="thumbnail-nav thumbnail-nav-prev"
-                        onClick={() => {
-                          const newStartIndex = Math.max(0, thumbnailStartIndex - thumbnailsPerPage);
-                          setThumbnailSlideDirection('right');
-                          setThumbnailStartIndex(newStartIndex);
-                          setThumbnailPage(Math.floor(newStartIndex / thumbnailsPerPage));
-                          setTimeout(() => setThumbnailSlideDirection(null), 400);
-                        }}
-                      >
-                        <i className="fas fa-chevron-left"></i>
-                      </button>
-                    )}
-
+                  {/* Thumbnail çubuğu - Sabit boyut */}
+                  <div className="photo-thumbnails-wrapper">
                     <div className="photo-thumbnails">
                       {photos
                         .slice(thumbnailStartIndex, Math.min(thumbnailStartIndex + thumbnailsPerPage, photos.length))
@@ -348,22 +359,6 @@ function ListingDetailPage() {
                           );
                         })}
                     </div>
-
-                    {/* Sağ navigasyon oku */}
-                    {photos.length > thumbnailsPerPage && thumbnailStartIndex + thumbnailsPerPage < photos.length && (
-                      <button
-                        className="thumbnail-nav thumbnail-nav-next"
-                        onClick={() => {
-                          const newStartIndex = thumbnailStartIndex + thumbnailsPerPage;
-                          setThumbnailSlideDirection('left');
-                          setThumbnailStartIndex(newStartIndex);
-                          setThumbnailPage(Math.floor(newStartIndex / thumbnailsPerPage));
-                          setTimeout(() => setThumbnailSlideDirection(null), 400);
-                        }}
-                      >
-                        <i className="fas fa-chevron-right"></i>
-                      </button>
-                    )}
                   </div>
                 </div>
               )}
