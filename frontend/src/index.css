@@ -1305,7 +1305,21 @@ textarea.form-control {
   width: 100%;
   height: 100%;
   object-fit: contain;
-  background: var(--gray-50);
+  background: var(--bg-tertiary);
+  opacity: 1;
+  transition: opacity 0.3s ease-in-out;
+  animation: fadeInPhoto 0.3s ease-in-out;
+}
+
+@keyframes fadeInPhoto {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
 .photo-nav {
@@ -1394,9 +1408,10 @@ textarea.form-control {
   border-radius: var(--radius-sm);
   cursor: pointer;
   opacity: 0.7;
-  transition: all var(--transition-speed);
+  transition: all 0.3s ease;
   border: 2px solid transparent;
-  background: var(--gray-50);
+  background: var(--bg-tertiary);
+  flex-shrink: 0;
 }
 
 .thumbnail:hover {
@@ -1406,6 +1421,41 @@ textarea.form-control {
 .thumbnail.active {
   opacity: 1;
   border-color: var(--primary-color);
+}
+
+/* Pagination Dots */
+.photo-pagination {
+  display: flex;
+  justify-content: center;
+  margin-bottom: var(--spacing-sm);
+}
+
+.pagination-dots {
+  display: flex;
+  gap: var(--spacing-xs);
+  align-items: center;
+}
+
+.pagination-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  border: none;
+  background: var(--border-color);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  padding: 0;
+}
+
+.pagination-dot:hover {
+  background: var(--primary-color);
+  transform: scale(1.2);
+}
+
+.pagination-dot.active {
+  background: var(--primary-color);
+  transform: scale(1.3);
+  box-shadow: 0 0 8px rgba(30, 64, 175, 0.4);
 }
 
 .no-photos {
@@ -1809,7 +1859,20 @@ textarea.form-control {
   height: 90vh;
   object-fit: contain;
   border-radius: var(--radius-sm);
-  transition: transform 0.3s ease-in-out;
+  opacity: 1;
+  transition: opacity 0.3s ease-in-out;
+  animation: fadeInModalPhoto 0.3s ease-in-out;
+}
+
+@keyframes fadeInModalPhoto {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
 .photo-modal-close {
@@ -1960,8 +2023,17 @@ textarea.form-control {
   }
 
   .thumbnail {
-    width: 50px;
-    height: 38px;
+    width: 45px;
+    height: 34px;
+  }
+
+  .pagination-dot {
+    width: 6px;
+    height: 6px;
+  }
+
+  .photo-thumbnails-wrapper {
+    gap: var(--spacing-xs);
   }
 
   .photo-modal-nav-prev {

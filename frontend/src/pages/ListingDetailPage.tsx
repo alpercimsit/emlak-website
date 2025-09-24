@@ -16,7 +16,8 @@ function ListingDetailPage() {
   const [showPhotoModal, setShowPhotoModal] = useState(false);
   const [showOwnerInfo, setShowOwnerInfo] = useState(false);
   const [thumbnailStartIndex, setThumbnailStartIndex] = useState(0);
-  const thumbnailsPerPage = 5;
+  const [thumbnailPage, setThumbnailPage] = useState(0);
+  const thumbnailsPerPage = 10;
 
   useEffect(() => {
     // Check if user is admin
@@ -109,12 +110,13 @@ function ListingDetailPage() {
       newIndex = currentImageIndex === photos.length - 1 ? 0 : currentImageIndex + 1;
     }
     setCurrentImageIndex(newIndex);
-    
+
     // Update thumbnail page if needed
     const pageIndex = Math.floor(newIndex / thumbnailsPerPage);
     const newStartIndex = pageIndex * thumbnailsPerPage;
     if (newStartIndex !== thumbnailStartIndex) {
       setThumbnailStartIndex(newStartIndex);
+      setThumbnailPage(pageIndex);
     }
   };
 
@@ -233,7 +235,7 @@ function ListingDetailPage() {
                 />
                 {photos.length > 1 && (
                   <>
-                    <button 
+                    <button
                       className="photo-nav photo-nav-prev"
                       onClick={() => {
                         const newIndex = currentImageIndex === 0 ? photos.length - 1 : currentImageIndex - 1;
@@ -242,12 +244,13 @@ function ListingDetailPage() {
                         const newStartIndex = pageIndex * thumbnailsPerPage;
                         if (newStartIndex !== thumbnailStartIndex) {
                           setThumbnailStartIndex(newStartIndex);
+                          setThumbnailPage(pageIndex);
                         }
                       }}
                     >
                       <i className="fas fa-chevron-left"></i>
                     </button>
-                    <button 
+                    <button
                       className="photo-nav photo-nav-next"
                       onClick={() => {
                         const newIndex = currentImageIndex === photos.length - 1 ? 0 : currentImageIndex + 1;
@@ -256,6 +259,7 @@ function ListingDetailPage() {
                         const newStartIndex = pageIndex * thumbnailsPerPage;
                         if (newStartIndex !== thumbnailStartIndex) {
                           setThumbnailStartIndex(newStartIndex);
+                          setThumbnailPage(pageIndex);
                         }
                       }}
                     >
@@ -271,15 +275,41 @@ function ListingDetailPage() {
                       {currentImageIndex + 1} / {photos.length} fotoğraf
                     </span>
                   </div>
+
+                  {/* Pagination Dots - 10'dan fazla fotoğraf varsa göster */}
+                  {photos.length > thumbnailsPerPage && (
+                    <div className="photo-pagination">
+                      <div className="pagination-dots">
+                        {Array.from({ length: Math.ceil(photos.length / thumbnailsPerPage) }, (_, i) => (
+                          <button
+                            key={i}
+                            className={`pagination-dot ${i === thumbnailPage ? 'active' : ''}`}
+                            onClick={() => {
+                              const newStartIndex = i * thumbnailsPerPage;
+                              setThumbnailStartIndex(newStartIndex);
+                              setThumbnailPage(i);
+                            }}
+                          />
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
                   <div className="photo-thumbnails-wrapper">
+                    {/* Sol navigasyon oku */}
                     {photos.length > thumbnailsPerPage && thumbnailStartIndex > 0 && (
-                      <button 
+                      <button
                         className="thumbnail-nav thumbnail-nav-prev"
-                        onClick={() => setThumbnailStartIndex(Math.max(0, thumbnailStartIndex - thumbnailsPerPage))}
+                        onClick={() => {
+                          const newStartIndex = Math.max(0, thumbnailStartIndex - thumbnailsPerPage);
+                          setThumbnailStartIndex(newStartIndex);
+                          setThumbnailPage(Math.floor(newStartIndex / thumbnailsPerPage));
+                        }}
                       >
                         <i className="fas fa-chevron-left"></i>
                       </button>
                     )}
+
                     <div className="photo-thumbnails">
                       {photos
                         .slice(thumbnailStartIndex, thumbnailStartIndex + thumbnailsPerPage)
@@ -296,10 +326,16 @@ function ListingDetailPage() {
                           );
                         })}
                     </div>
+
+                    {/* Sağ navigasyon oku */}
                     {photos.length > thumbnailsPerPage && thumbnailStartIndex + thumbnailsPerPage < photos.length && (
-                      <button 
+                      <button
                         className="thumbnail-nav thumbnail-nav-next"
-                        onClick={() => setThumbnailStartIndex(Math.min(photos.length - thumbnailsPerPage, thumbnailStartIndex + thumbnailsPerPage))}
+                        onClick={() => {
+                          const newStartIndex = Math.min(photos.length - thumbnailsPerPage, thumbnailStartIndex + thumbnailsPerPage);
+                          setThumbnailStartIndex(newStartIndex);
+                          setThumbnailPage(Math.floor(newStartIndex / thumbnailsPerPage));
+                        }}
                       >
                         <i className="fas fa-chevron-right"></i>
                       </button>
