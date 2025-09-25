@@ -169,32 +169,36 @@ function ListingsPage() {
       if (filters.fiyatMax && listing.fiyat > parseInt(filters.fiyatMax)) return false;
 
       // Alan filtresi
-      if (filters.alanMin && listing.m2 && listing.m2 < parseInt(filters.alanMin)) return false;
-      if (filters.alanMax && listing.m2 && listing.m2 > parseInt(filters.alanMax)) return false;
+      if (filters.alanMin && (!listing.m2 || listing.m2 < parseInt(filters.alanMin))) return false;
+      if (filters.alanMax && (!listing.m2 || listing.m2 > parseInt(filters.alanMax))) return false;
 
       // Konum filtreleri
-      if (filters.il && listing.il && !listing.il.toLowerCase().includes(filters.il.name.toLowerCase())) return false;
-      if (filters.ilce && listing.ilce && !listing.ilce.toLowerCase().includes(filters.ilce.name.toLowerCase())) return false;
-      if (filters.mahalle && listing.mahalle && !listing.mahalle.toLowerCase().includes(filters.mahalle.name.toLowerCase())) return false;
+      if (filters.il) {
+        if (!listing.il || !listing.il.toLowerCase().includes(filters.il.name.toLowerCase())) return false;
+      }
+      if (filters.ilce) {
+        if (!listing.ilce || !listing.ilce.toLowerCase().includes(filters.ilce.name.toLowerCase())) return false;
+      }
+      if (filters.mahalle) {
+        if (!listing.mahalle || !listing.mahalle.toLowerCase().includes(filters.mahalle.name.toLowerCase())) return false;
+      }
 
       // Arsa özel filtreleri
       if (filters.category === 'arsa') {
-        if (filters.adaNo && !listing.ada?.toString().includes(filters.adaNo)) return false;
-        if (filters.parselNo && !listing.parsel?.toString().includes(filters.parselNo)) return false;
+        if (filters.adaNo && (!listing.ada || !listing.ada.toString().includes(filters.adaNo))) return false;
+        if (filters.parselNo && (!listing.parsel || !listing.parsel.toString().includes(filters.parselNo))) return false;
       }
 
       // Konut özel filtreleri
       if (filters.category === 'konut') {
         // Bina yaşı filtresi
-        if (filters.binaYaslari.length > 0 && listing.bina_yasi && !filters.binaYaslari.includes(listing.bina_yasi)) return false;
+        if (filters.binaYaslari.length > 0 && (!listing.bina_yasi || !filters.binaYaslari.includes(listing.bina_yasi))) return false;
 
         // Oda sayısı filtresi
-        if (filters.odaSayilari.length > 0 && listing.oda_sayisi && !filters.odaSayilari.includes(listing.oda_sayisi)) return false;
+        if (filters.odaSayilari.length > 0 && (!listing.oda_sayisi || !filters.odaSayilari.includes(listing.oda_sayisi))) return false;
 
         // Kat filtresi
-        if (filters.katlar.length > 0 && listing.bulundugu_kat != null) {
-          if (!filters.katlar.includes(listing.bulundugu_kat)) return false;
-        }
+        if (filters.katlar.length > 0 && (listing.bulundugu_kat == null || !filters.katlar.includes(listing.bulundugu_kat))) return false;
       }
 
       return true;
