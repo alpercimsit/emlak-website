@@ -1320,13 +1320,26 @@ textarea.form-control {
 
 
 /* Fotoğraf değişim animasyonu */
-.main-photo-img.change-photo {
-  animation: changePhoto 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+.main-photo-img.change-photo-right {
+  animation: changePhotoFromRight 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-@keyframes changePhoto {
+.main-photo-img.change-photo-left {
+  animation: changePhotoFromLeft 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes changePhotoFromRight {
   0% {
     transform: translate3d(100%, 0, 0);
+  }
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes changePhotoFromLeft {
+  0% {
+    transform: translate3d(-100%, 0, 0);
   }
   100% {
     transform: translate3d(0, 0, 0);
@@ -1988,18 +2001,31 @@ textarea.form-control {
 }
 
 /* Modal fotoğraf değişim animasyonu */
-/*.photo-modal-img.change-photo {
-  animation: changeModalPhoto 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+.photo-modal-img.change-photo-right {
+  animation: changeModalPhotoFromRight 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-@keyframes changeModalPhoto {
+.photo-modal-img.change-photo-left {
+  animation: changeModalPhotoFromLeft 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes changeModalPhotoFromRight {
   0% {
     transform: translate3d(120%, 0, 0);
   }
   100% {
     transform: translate3d(0, 0, 0);
   }
-}*/
+}
+
+@keyframes changeModalPhotoFromLeft {
+  0% {
+    transform: translate3d(-120%, 0, 0);
+  }
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+}
 
 .photo-modal-close {
   position: fixed;

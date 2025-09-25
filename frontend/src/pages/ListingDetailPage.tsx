@@ -19,6 +19,7 @@ function ListingDetailPage() {
   const [thumbnailPage, setThumbnailPage] = useState(0);
   const thumbnailsPerPage = 10;
   const [isPhotoChanging, setIsPhotoChanging] = useState(false);
+  const [photoChangeDirection, setPhotoChangeDirection] = useState<'left' | 'right' | null>(null);
   const [thumbnailSlideDirection, setThumbnailSlideDirection] = useState<'left' | 'right' | null>(null);
 
   useEffect(() => {
@@ -123,11 +124,16 @@ function ListingDetailPage() {
       setThumbnailPage(pageIndex);
     }
 
-    // CSS animasyonunu tetikle
+    // CSS animasyonunu tetikle - yön bilgisi ile birlikte
+    const changeDirection = direction === 'prev' ? 'left' : 'right';
+    setPhotoChangeDirection(changeDirection);
     setIsPhotoChanging(true);
 
-    // Animasyon bittikten sonra state'i sıfırla
-    setTimeout(() => setIsPhotoChanging(false), 300);
+    // Animasyon bittikten sonra state'leri sıfırla
+    setTimeout(() => {
+      setIsPhotoChanging(false);
+      setPhotoChangeDirection(null);
+    }, 400); // Modal animasyonu 0.4s olduğu için 400ms
   };
 
   if (loading) {
@@ -240,7 +246,11 @@ function ListingDetailPage() {
                 <img
                   src={photos[currentImageIndex]}
                   alt={listing.baslik}
-                  className={`main-photo-img ${isPhotoChanging ? 'change-photo' : ''}`}
+                  className={`main-photo-img ${
+                    isPhotoChanging
+                      ? (photoChangeDirection === 'left' ? 'change-photo-left' : 'change-photo-right')
+                      : ''
+                  }`}
                   onClick={handlePhotoClick}
                 />
                 {photos.length > 1 && (
@@ -256,8 +266,12 @@ function ListingDetailPage() {
                           setThumbnailStartIndex(newStartIndex);
                           setThumbnailPage(pageIndex);
                         }
+                        setPhotoChangeDirection('left');
                         setIsPhotoChanging(true);
-                        setTimeout(() => setIsPhotoChanging(false), 300);
+                        setTimeout(() => {
+                          setIsPhotoChanging(false);
+                          setPhotoChangeDirection(null);
+                        }, 300);
                       }}
                     >
                       <i className="fas fa-chevron-left"></i>
@@ -273,8 +287,12 @@ function ListingDetailPage() {
                           setThumbnailStartIndex(newStartIndex);
                           setThumbnailPage(pageIndex);
                         }
+                        setPhotoChangeDirection('right');
                         setIsPhotoChanging(true);
-                        setTimeout(() => setIsPhotoChanging(false), 300);
+                        setTimeout(() => {
+                          setIsPhotoChanging(false);
+                          setPhotoChangeDirection(null);
+                        }, 300);
                       }}
                     >
                       <i className="fas fa-chevron-right"></i>
@@ -670,7 +688,11 @@ function ListingDetailPage() {
             <img
               src={photos[currentImageIndex]}
               alt={`${listing.baslik} - ${currentImageIndex + 1}`}
-              className="photo-modal-img"
+              className={`photo-modal-img ${
+                isPhotoChanging
+                  ? (photoChangeDirection === 'left' ? 'change-photo-left' : 'change-photo-right')
+                  : ''
+              }`}
             />
             
             {photos.length > 1 && (
