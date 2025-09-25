@@ -2379,3 +2379,177 @@ input[type="number"]::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
+
+/* Dropdown Animasyonları */
+@keyframes dropdownSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px) scale(0.95);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+  }
+}
+
+@keyframes dropdownSlideOut {
+  from {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-10px) scale(0.95);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  }
+}
+
+@keyframes fadeInScale {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes bounceIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.3) translateY(-20px);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.05) translateY(2px);
+  }
+  70% {
+    opacity: 0.9;
+    transform: scale(0.95) translateY(-1px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* Combobox Dropdown Animasyonları */
+.combobox-dropdown {
+  animation: dropdownSlideIn 0.25s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  transform-origin: top center;
+}
+
+.combobox-dropdown.closing {
+  animation: dropdownSlideOut 0.2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+/* MultiSelect Dropdown Animasyonları */
+.multiselect-dropdown {
+  animation: dropdownSlideIn 0.25s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  transform-origin: top center;
+}
+
+.multiselect-dropdown.closing {
+  animation: dropdownSlideOut 0.2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+/* Property Filter Dropdown Animasyonları */
+.property-filter-dropdown > div {
+  animation: dropdownSlideIn 0.25s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  transform-origin: top center;
+}
+
+.property-filter-dropdown > div.closing {
+  animation: dropdownSlideOut 0.2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+/* Dropdown Option Hover Animasyonları */
+.combobox-option,
+.multiselect-option {
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.combobox-option::before,
+.multiselect-option::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(30, 64, 175, 0.1), transparent);
+  transition: left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: -1;
+}
+
+.combobox-option:hover::before,
+.multiselect-option:hover::before {
+  left: 100%;
+}
+
+/* Selected option highlight animation */
+.combobox-option.selected,
+.multiselect-option.selected {
+  animation: bounceIn 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
+}
+
+/* Input focus animations */
+.filter-input:focus {
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  transform: translateY(-1px);
+}
+
+.filter-input:focus {
+  box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.1), 0 2px 8px rgba(0,0,0,0.1);
+}
+
+/* Button hover animations */
+.category-btn,
+.submenu-btn,
+.sort-button {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.category-btn:hover,
+.submenu-btn:hover,
+.sort-button:hover {
+  transform: translateY(-2px);
+}
+
+.category-btn:active,
+.submenu-btn:active,
+.sort-button:active {
+  transform: translateY(0);
+  transition: transform 0.1s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Loading spinner animation */
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.combobox-loading,
+.loading-spinner {
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+/* Smooth scroll for dropdowns */
+.combobox-dropdown,
+.multiselect-dropdown {
+  scroll-behavior: smooth;
+}
+
+/* Enhanced shadow animations */
+
+

@@ -123,6 +123,8 @@ function Combobox({
   loading = false
 }: ComboboxProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const [isClosing, setIsClosing] = useState(false);
+  const [selectedOptionId, setSelectedOptionId] = useState<number | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredOptions, setFilteredOptions] = useState<Array<{id: number, name: string}>>([]);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -204,9 +206,17 @@ function Combobox({
   };
 
   const handleOptionSelect = (option: {id: number, name: string}) => {
+    setSelectedOptionId(option.id);
     onChange(option);
     setSearchTerm(option.name);
-    setIsOpen(false);
+
+    // Close dropdown with animation after selection
+    setIsClosing(true);
+    setTimeout(() => {
+      setIsOpen(false);
+      setIsClosing(false);
+      setSelectedOptionId(null);
+    }, 300);
   };
 
   const handleInputFocus = () => {
@@ -216,10 +226,12 @@ function Combobox({
   };
 
   const handleInputBlur = () => {
-    // Delay closing to allow option click
+    // Start closing animation
+    setIsClosing(true);
     setTimeout(() => {
       setIsOpen(false);
-    }, 150);
+      setIsClosing(false);
+    }, 200);
   };
 
   const handleClear = () => {
@@ -287,7 +299,7 @@ function Combobox({
 
       {isOpen && !disabled && (
         <div
-          className="combobox-dropdown"
+          className={`combobox-dropdown ${isClosing ? 'closing' : ''}`}
           style={{
             position: 'absolute',
             [dropdownDirection === 'up' ? 'bottom' : 'top']: '100%',
@@ -306,7 +318,7 @@ function Combobox({
             filteredOptions.map(option => (
               <div
                 key={option.id}
-                className="combobox-option"
+                className={`combobox-option ${selectedOptionId === option.id ? 'selected' : ''}`}
                 onClick={() => handleOptionSelect(option)}
                 style={{
                   padding: '8px 12px',
@@ -360,6 +372,8 @@ function MultiSelectDropdown({
   disabled = false
 }: MultiSelectDropdownProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const [isClosing, setIsClosing] = useState(false);
+  const [selectedOption, setSelectedOption] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const dropdownRef = useRef<HTMLDivElement>(null);
   const dropdownDirection = useSmartDropdownPosition(dropdownRef);
@@ -412,10 +426,12 @@ function MultiSelectDropdown({
   };
 
   const handleInputBlur = () => {
-    // Delay closing to allow option click
+    // Start closing animation
+    setIsClosing(true);
     setTimeout(() => {
       setIsOpen(false);
-    }, 150);
+      setIsClosing(false);
+    }, 200);
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -427,14 +443,19 @@ function MultiSelectDropdown({
     e.preventDefault();
     e.stopPropagation();
 
+    // Add selection animation
+    setSelectedOption(option);
+
     if (value.includes(option)) {
       onChange(value.filter(item => item !== option));
     } else {
       onChange([...value, option]);
     }
 
-    // Keep dropdown open for multiple selections
-    // Don't close the dropdown
+    // Keep dropdown open for multiple selections with animation feedback
+    setTimeout(() => {
+      setSelectedOption(null);
+    }, 300);
   };
 
   const handleRemoveValue = (optionToRemove: string, e: React.MouseEvent) => {
@@ -582,7 +603,7 @@ function MultiSelectDropdown({
         {/* Dropdown */}
         {isOpen && !disabled && (
           <div
-            className="multiselect-dropdown"
+            className={`multiselect-dropdown ${isClosing ? 'closing' : ''}`}
             onClick={(e) => e.stopPropagation()}
             style={{
               position: 'absolute',
@@ -602,7 +623,7 @@ function MultiSelectDropdown({
               filteredOptions.map(option => (
                 <div
                   key={option}
-                  className="multiselect-option"
+                  className={`multiselect-option ${selectedOption === option ? 'selected' : ''}`}
                   onClick={(e) => handleOptionToggle(option, e)}
                   style={{
                     padding: '8px 12px',
@@ -659,8 +680,11 @@ function MultiSelectDropdown({
 // Property filters component for rental and sale housing
 function PropertyFilters({ filters, onFiltersChange }: { filters: FilterState; onFiltersChange: (filters: FilterState) => void }) {
   const [balkonOpen, setBalkonOpen] = useState(false);
+  const [balkonClosing, setBalkonClosing] = useState(false);
   const [asansorOpen, setAsansorOpen] = useState(false);
+  const [asansorClosing, setAsansorClosing] = useState(false);
   const [esyaliOpen, setEsyaliOpen] = useState(false);
+  const [esyaliClosing, setEsyaliClosing] = useState(false);
 
   // Click outside to close dropdowns
   useEffect(() => {
@@ -668,9 +692,27 @@ function PropertyFilters({ filters, onFiltersChange }: { filters: FilterState; o
       const target = event.target as Element;
       // Only close if clicking outside of all property filter dropdowns
       if (!target.closest('.property-filter-dropdown')) {
-        setBalkonOpen(false);
-        setAsansorOpen(false);
-        setEsyaliOpen(false);
+        if (balkonOpen) {
+          setBalkonClosing(true);
+          setTimeout(() => {
+            setBalkonOpen(false);
+            setBalkonClosing(false);
+          }, 200);
+        }
+        if (asansorOpen) {
+          setAsansorClosing(true);
+          setTimeout(() => {
+            setAsansorOpen(false);
+            setAsansorClosing(false);
+          }, 200);
+        }
+        if (esyaliOpen) {
+          setEsyaliClosing(true);
+          setTimeout(() => {
+            setEsyaliOpen(false);
+            setEsyaliClosing(false);
+          }, 200);
+        }
       }
     };
 
@@ -689,17 +731,29 @@ function PropertyFilters({ filters, onFiltersChange }: { filters: FilterState; o
 
   const handleBalkonChange = (value: string) => {
     onFiltersChange({ ...filters, balkon: value });
-    setBalkonOpen(false);
+    setBalkonClosing(true);
+    setTimeout(() => {
+      setBalkonOpen(false);
+      setBalkonClosing(false);
+    }, 200);
   };
 
   const handleAsansorChange = (value: string) => {
     onFiltersChange({ ...filters, asansor: value });
-    setAsansorOpen(false);
+    setAsansorClosing(true);
+    setTimeout(() => {
+      setAsansorOpen(false);
+      setAsansorClosing(false);
+    }, 200);
   };
 
   const handleEsyaliChange = (value: string) => {
     onFiltersChange({ ...filters, esyali: value });
-    setEsyaliOpen(false);
+    setEsyaliClosing(true);
+    setTimeout(() => {
+      setEsyaliOpen(false);
+      setEsyaliClosing(false);
+    }, 200);
   };
 
   return (
@@ -736,6 +790,7 @@ function PropertyFilters({ filters, onFiltersChange }: { filters: FilterState; o
             </button>
             {balkonOpen && (
               <div
+                className={balkonClosing ? 'closing' : ''}
                 style={{
                   position: 'absolute',
                   top: '100%',
@@ -814,6 +869,7 @@ function PropertyFilters({ filters, onFiltersChange }: { filters: FilterState; o
             </button>
             {asansorOpen && (
               <div
+                className={asansorClosing ? 'closing' : ''}
                 style={{
                   position: 'absolute',
                   top: '100%',
@@ -892,6 +948,7 @@ function PropertyFilters({ filters, onFiltersChange }: { filters: FilterState; o
             </button>
             {esyaliOpen && (
               <div
+                className={esyaliClosing ? 'closing' : ''}
                 style={{
                   position: 'absolute',
                   top: '100%',
