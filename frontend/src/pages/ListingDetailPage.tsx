@@ -112,8 +112,7 @@ function ListingDetailPage() {
       newIndex = currentImageIndex === photos.length - 1 ? 0 : currentImageIndex + 1;
     }
 
-    // Animasyon için state'i güncelle
-    setIsPhotoChanging(true);
+    // Tüm state güncellemelerini aynı anda yap
     setCurrentImageIndex(newIndex);
 
     // Update thumbnail page if needed
@@ -123,6 +122,9 @@ function ListingDetailPage() {
       setThumbnailStartIndex(newStartIndex);
       setThumbnailPage(pageIndex);
     }
+
+    // CSS animasyonunu tetikle
+    setIsPhotoChanging(true);
 
     // Animasyon bittikten sonra state'i sıfırla
     setTimeout(() => setIsPhotoChanging(false), 300);
@@ -247,7 +249,6 @@ function ListingDetailPage() {
                       className="photo-nav photo-nav-prev"
                       onClick={() => {
                         const newIndex = currentImageIndex === 0 ? photos.length - 1 : currentImageIndex - 1;
-                        setIsPhotoChanging(true);
                         setCurrentImageIndex(newIndex);
                         const pageIndex = Math.floor(newIndex / thumbnailsPerPage);
                         const newStartIndex = pageIndex * thumbnailsPerPage;
@@ -255,6 +256,7 @@ function ListingDetailPage() {
                           setThumbnailStartIndex(newStartIndex);
                           setThumbnailPage(pageIndex);
                         }
+                        setIsPhotoChanging(true);
                         setTimeout(() => setIsPhotoChanging(false), 300);
                       }}
                     >
@@ -264,7 +266,6 @@ function ListingDetailPage() {
                       className="photo-nav photo-nav-next"
                       onClick={() => {
                         const newIndex = currentImageIndex === photos.length - 1 ? 0 : currentImageIndex + 1;
-                        setIsPhotoChanging(true);
                         setCurrentImageIndex(newIndex);
                         const pageIndex = Math.floor(newIndex / thumbnailsPerPage);
                         const newStartIndex = pageIndex * thumbnailsPerPage;
@@ -272,6 +273,7 @@ function ListingDetailPage() {
                           setThumbnailStartIndex(newStartIndex);
                           setThumbnailPage(pageIndex);
                         }
+                        setIsPhotoChanging(true);
                         setTimeout(() => setIsPhotoChanging(false), 300);
                       }}
                     >
@@ -298,9 +300,9 @@ function ListingDetailPage() {
                           onClick={() => {
                             if (thumbnailStartIndex > 0) {
                               const newStartIndex = Math.max(0, thumbnailStartIndex - thumbnailsPerPage);
-                              setThumbnailSlideDirection('right');
                               setThumbnailStartIndex(newStartIndex);
                               setThumbnailPage(Math.floor(newStartIndex / thumbnailsPerPage));
+                              setThumbnailSlideDirection('right');
                               setTimeout(() => setThumbnailSlideDirection(null), 300);
                             }
                           }}
@@ -321,9 +323,9 @@ function ListingDetailPage() {
                               onClick={() => {
                                 const newStartIndex = i * thumbnailsPerPage;
                                 const direction = newStartIndex > thumbnailStartIndex ? 'left' : 'right';
-                                setThumbnailSlideDirection(direction);
                                 setThumbnailStartIndex(newStartIndex);
                                 setThumbnailPage(i);
+                                setThumbnailSlideDirection(direction);
                                 setTimeout(() => setThumbnailSlideDirection(null), 300);
                               }}
                             />
@@ -335,9 +337,9 @@ function ListingDetailPage() {
                           onClick={() => {
                             if (thumbnailStartIndex + thumbnailsPerPage < photos.length) {
                               const newStartIndex = thumbnailStartIndex + thumbnailsPerPage;
-                              setThumbnailSlideDirection('left');
                               setThumbnailStartIndex(newStartIndex);
                               setThumbnailPage(Math.floor(newStartIndex / thumbnailsPerPage));
+                              setThumbnailSlideDirection('left');
                               setTimeout(() => setThumbnailSlideDirection(null), 300);
                             }
                           }}
@@ -668,7 +670,7 @@ function ListingDetailPage() {
             <img
               src={photos[currentImageIndex]}
               alt={`${listing.baslik} - ${currentImageIndex + 1}`}
-              className={`photo-modal-img ${isPhotoChanging ? 'change-photo' : ''}`}
+              className="photo-modal-img"
             />
             
             {photos.length > 1 && (

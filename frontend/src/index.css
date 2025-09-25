@@ -1313,22 +1313,11 @@ textarea.form-control {
   opacity: 1;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   transform: translate3d(0, 0, 0) scale(1);
-  animation: slideInPhoto 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   /* Layout stability için */
   contain: layout style;
   will-change: transform, opacity;
 }
 
-@keyframes slideInPhoto {
-  from {
-    opacity: 0;
-    transform: translate3d(20px, 0, 0) scale(0.95);
-  }
-  to {
-    opacity: 1;
-    transform: translate3d(0, 0, 0) scale(1);
-  }
-}
 
 /* Fotoğraf değişim animasyonu */
 .main-photo-img.change-photo {
@@ -1337,16 +1326,10 @@ textarea.form-control {
 
 @keyframes changePhoto {
   0% {
-    opacity: 1;
-    transform: translate3d(0, 0, 0) scale(1);
-  }
-  50% {
-    opacity: 0.7;
-    transform: translate3d(-10px, 0, 0) scale(0.98);
+    transform: translate3d(100%, 0, 0);
   }
   100% {
-    opacity: 1;
-    transform: translate3d(0, 0, 0) scale(1);
+    transform: translate3d(0, 0, 0);
   }
 }
 
@@ -2005,24 +1988,18 @@ textarea.form-control {
 }
 
 /* Modal fotoğraf değişim animasyonu */
-.photo-modal-img.change-photo {
+/*.photo-modal-img.change-photo {
   animation: changeModalPhoto 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 @keyframes changeModalPhoto {
   0% {
-    opacity: 1;
-    transform: translateX(0) scale(1);
-  }
-  50% {
-    opacity: 0.7;
-    transform: translateX(-15px) scale(0.98);
+    transform: translate3d(120%, 0, 0);
   }
   100% {
-    opacity: 1;
-    transform: translateX(0) scale(1);
+    transform: translate3d(0, 0, 0);
   }
-}
+}*/
 
 .photo-modal-close {
   position: fixed;
