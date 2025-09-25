@@ -66,6 +66,10 @@ export interface FilterState {
   binaYaslari: string[];
   odaSayilari: string[];
   katlar: string[];
+  // Kiralık/Satılık konut özel filtreleri
+  balkon: string;
+  asansor: string;
+  esyali: string;
 }
 
 interface Props {
@@ -652,6 +656,293 @@ function MultiSelectDropdown({
   );
 }
 
+// Property filters component for rental and sale housing
+function PropertyFilters({ filters, onFiltersChange }: { filters: FilterState; onFiltersChange: (filters: FilterState) => void }) {
+  const [balkonOpen, setBalkonOpen] = useState(false);
+  const [asansorOpen, setAsansorOpen] = useState(false);
+  const [esyaliOpen, setEsyaliOpen] = useState(false);
+
+  // Click outside to close dropdowns
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as Element;
+      // Only close if clicking outside of all property filter dropdowns
+      if (!target.closest('.property-filter-dropdown')) {
+        setBalkonOpen(false);
+        setAsansorOpen(false);
+        setEsyaliOpen(false);
+      }
+    };
+
+    if (balkonOpen || asansorOpen || esyaliOpen) {
+      document.addEventListener('click', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('click', handleClickOutside);
+    };
+  }, [balkonOpen, asansorOpen, esyaliOpen]);
+
+  const balkonOptions = ['Tümü', 'Var', 'Yok'];
+  const asansorOptions = ['Tümü', 'Var', 'Yok'];
+  const esyaliOptions = ['Tümü', 'Eşyalı', 'Eşyasız'];
+
+  const handleBalkonChange = (value: string) => {
+    onFiltersChange({ ...filters, balkon: value });
+    setBalkonOpen(false);
+  };
+
+  const handleAsansorChange = (value: string) => {
+    onFiltersChange({ ...filters, asansor: value });
+    setAsansorOpen(false);
+  };
+
+  const handleEsyaliChange = (value: string) => {
+    onFiltersChange({ ...filters, esyali: value });
+    setEsyaliOpen(false);
+  };
+
+  return (
+    <div className="filter-group">
+      <div style={{ display: 'flex', gap: 'var(--spacing-md)', alignItems: 'flex-end' }}>
+        {/* Balkon Filter */}
+        <div style={{ flex: 1 }}>
+          <label className="filter-label">Balkon</label>
+          <div style={{ position: 'relative' }} className="property-filter-dropdown">
+            <button
+              type="button"
+              className="filter-input"
+              onClick={(e) => {
+                e.stopPropagation();
+                setBalkonOpen(!balkonOpen);
+              }}
+              style={{
+                width: '100%',
+                textAlign: 'left',
+                cursor: 'pointer',
+                backgroundColor: 'white',
+                padding: '8px 12px',
+                border: '1px solid var(--border-color, #dee2e6)',
+                borderRadius: '4px',
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center'
+              }}
+            >
+              <span style={{ color: filters.balkon ? 'inherit' : 'var(--text-muted)' }}>
+                {filters.balkon || 'Tümü'}
+              </span>
+              <i className={`fas fa-chevron-${balkonOpen ? 'up' : 'down'}`} style={{ fontSize: '12px', color: 'var(--text-muted)' }}></i>
+            </button>
+            {balkonOpen && (
+              <div
+                style={{
+                  position: 'absolute',
+                  top: '100%',
+                  left: 0,
+                  right: 0,
+                  backgroundColor: 'white',
+                  border: '1px solid var(--border-color, #dee2e6)',
+                  borderRadius: '4px',
+                  boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+                  zIndex: 1000,
+                  marginTop: '2px'
+                }}
+              >
+                {balkonOptions.map(option => (
+                  <div
+                    key={option}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleBalkonChange(option);
+                    }}
+                    style={{
+                      padding: '8px 12px',
+                      cursor: 'pointer',
+                      borderBottom: '1px solid var(--border-color, #f1f3f4)',
+                      backgroundColor: filters.balkon === option ? 'var(--primary-color, #007bff)' : 'white',
+                      color: filters.balkon === option ? 'white' : 'inherit',
+                      fontSize: '13px'
+                    }}
+                    onMouseEnter={(e) => {
+                      if (filters.balkon !== option) {
+                        e.currentTarget.style.backgroundColor = 'var(--background-secondary, #f8f9fa)';
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      if (filters.balkon !== option) {
+                        e.currentTarget.style.backgroundColor = 'white';
+                      }
+                    }}
+                  >
+                    {option}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Asansör Filter */}
+        <div style={{ flex: 1 }}>
+          <label className="filter-label">Asansör</label>
+          <div style={{ position: 'relative' }} className="property-filter-dropdown">
+            <button
+              type="button"
+              className="filter-input"
+              onClick={(e) => {
+                e.stopPropagation();
+                setAsansorOpen(!asansorOpen);
+              }}
+              style={{
+                width: '100%',
+                textAlign: 'left',
+                cursor: 'pointer',
+                backgroundColor: 'white',
+                padding: '8px 12px',
+                border: '1px solid var(--border-color, #dee2e6)',
+                borderRadius: '4px',
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center'
+              }}
+            >
+              <span style={{ color: filters.asansor ? 'inherit' : 'var(--text-muted)' }}>
+                {filters.asansor || 'Tümü'}
+              </span>
+              <i className={`fas fa-chevron-${asansorOpen ? 'up' : 'down'}`} style={{ fontSize: '12px', color: 'var(--text-muted)' }}></i>
+            </button>
+            {asansorOpen && (
+              <div
+                style={{
+                  position: 'absolute',
+                  top: '100%',
+                  left: 0,
+                  right: 0,
+                  backgroundColor: 'white',
+                  border: '1px solid var(--border-color, #dee2e6)',
+                  borderRadius: '4px',
+                  boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+                  zIndex: 1000,
+                  marginTop: '2px'
+                }}
+              >
+                {asansorOptions.map(option => (
+                  <div
+                    key={option}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleAsansorChange(option);
+                    }}
+                    style={{
+                      padding: '8px 12px',
+                      cursor: 'pointer',
+                      borderBottom: '1px solid var(--border-color, #f1f3f4)',
+                      backgroundColor: filters.asansor === option ? 'var(--primary-color, #007bff)' : 'white',
+                      color: filters.asansor === option ? 'white' : 'inherit',
+                      fontSize: '13px'
+                    }}
+                    onMouseEnter={(e) => {
+                      if (filters.asansor !== option) {
+                        e.currentTarget.style.backgroundColor = 'var(--background-secondary, #f8f9fa)';
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      if (filters.asansor !== option) {
+                        e.currentTarget.style.backgroundColor = 'white';
+                      }
+                    }}
+                  >
+                    {option}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Eşyalı Filter */}
+        <div style={{ flex: 1 }}>
+          <label className="filter-label">Eşyalı</label>
+          <div style={{ position: 'relative' }} className="property-filter-dropdown">
+            <button
+              type="button"
+              className="filter-input"
+              onClick={(e) => {
+                e.stopPropagation();
+                setEsyaliOpen(!esyaliOpen);
+              }}
+              style={{
+                width: '100%',
+                textAlign: 'left',
+                cursor: 'pointer',
+                backgroundColor: 'white',
+                padding: '8px 12px',
+                border: '1px solid var(--border-color, #dee2e6)',
+                borderRadius: '4px',
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center'
+              }}
+            >
+              <span style={{ color: filters.esyali ? 'inherit' : 'var(--text-muted)' }}>
+                {filters.esyali || 'Tümü'}
+              </span>
+              <i className={`fas fa-chevron-${esyaliOpen ? 'up' : 'down'}`} style={{ fontSize: '12px', color: 'var(--text-muted)' }}></i>
+            </button>
+            {esyaliOpen && (
+              <div
+                style={{
+                  position: 'absolute',
+                  top: '100%',
+                  left: 0,
+                  right: 0,
+                  backgroundColor: 'white',
+                  border: '1px solid var(--border-color, #dee2e6)',
+                  borderRadius: '4px',
+                  boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+                  zIndex: 1000,
+                  marginTop: '2px'
+                }}
+              >
+                {esyaliOptions.map(option => (
+                  <div
+                    key={option}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleEsyaliChange(option);
+                    }}
+                    style={{
+                      padding: '8px 12px',
+                      cursor: 'pointer',
+                      borderBottom: '1px solid var(--border-color, #f1f3f4)',
+                      backgroundColor: filters.esyali === option ? 'var(--primary-color, #007bff)' : 'white',
+                      color: filters.esyali === option ? 'white' : 'inherit',
+                      fontSize: '13px'
+                    }}
+                    onMouseEnter={(e) => {
+                      if (filters.esyali !== option) {
+                        e.currentTarget.style.backgroundColor = 'var(--background-secondary, #f8f9fa)';
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      if (filters.esyali !== option) {
+                        e.currentTarget.style.backgroundColor = 'white';
+                      }
+                    }}
+                  >
+                    {option}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function FilterPanel({ filters, onFiltersChange, totalCount }: Props) {
   const [showKonutSubmenu, setShowKonutSubmenu] = useState(false);
   const [provinces, setProvinces] = useState<Province[]>([]);
@@ -752,7 +1043,10 @@ function FilterPanel({ filters, onFiltersChange, totalCount }: Props) {
       parselNo: '',
       binaYaslari: [],
       odaSayilari: [],
-      katlar: []
+      katlar: [],
+      balkon: '',
+      asansor: '',
+      esyali: ''
     });
   };
 
@@ -1021,6 +1315,11 @@ function FilterPanel({ filters, onFiltersChange, totalCount }: Props) {
               placeholder="Bulunduğu kat seçin..."
               label="Bulunduğu Kat"
             />
+
+            {/* Kiralık/Satılık Konut Özel Filtreleri */}
+            {(filters.category === 'konut') && (
+              <PropertyFilters filters={filters} onFiltersChange={onFiltersChange} />
+            )}
           </>
         )}
 

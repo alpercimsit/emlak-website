@@ -77,14 +77,17 @@ function ListingsPage() {
       fiyatMax: '',
       alanMin: '',
       alanMax: '',
-      il: '',
-      ilce: '',
-      mahalle: '',
+      il: null,
+      ilce: null,
+      mahalle: null,
       adaNo: '',
       parselNo: '',
       binaYaslari: [],
       odaSayilari: [],
-      katlar: []
+      katlar: [],
+      balkon: '',
+      asansor: '',
+      esyali: ''
     };
   });
 
@@ -199,6 +202,30 @@ function ListingsPage() {
 
         // Kat filtresi
         if (filters.katlar.length > 0 && (listing.bulundugu_kat == null || !filters.katlar.includes(listing.bulundugu_kat))) return false;
+
+        // Kiralık/Satılık konut özel filtreleri
+        if (filters.category === 'konut') {
+          // Balkon filtresi
+          if (filters.balkon && filters.balkon !== 'Tümü') {
+            const hasBalcony = listing.balkon === true;
+            if (filters.balkon === 'Var' && !hasBalcony) return false;
+            if (filters.balkon === 'Yok' && hasBalcony) return false;
+          }
+
+          // Asansör filtresi
+          if (filters.asansor && filters.asansor !== 'Tümü') {
+            const hasElevator = listing.asansor === true;
+            if (filters.asansor === 'Var' && !hasElevator) return false;
+            if (filters.asansor === 'Yok' && hasElevator) return false;
+          }
+
+          // Eşyalı filtresi
+          if (filters.esyali && filters.esyali !== 'Tümü') {
+            const isFurnished = listing.esyali === true;
+            if (filters.esyali === 'Eşyalı' && !isFurnished) return false;
+            if (filters.esyali === 'Eşyasız' && isFurnished) return false;
+          }
+        }
       }
 
       return true;
