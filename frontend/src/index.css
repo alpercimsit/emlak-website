@@ -2371,6 +2371,7 @@ textarea.form-control {
 
 /* Number Input Spinner Gizleme - Tüm tarayıcılar için */
 input[type="number"] {
+  appearance: textfield;
   -moz-appearance: textfield;
 }
 
@@ -2517,8 +2518,7 @@ input[type="number"]::-webkit-inner-spin-button {
 }
 
 .category-btn:hover,
-.submenu-btn:hover,
-.sort-button:hover {
+.submenu-btn:hover {
   transform: translateY(-2px);
 }
 
