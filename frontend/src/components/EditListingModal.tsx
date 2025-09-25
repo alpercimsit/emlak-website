@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Listing } from '../pages/ListingsPage';
 import api from '../utils/api';
 import PhotoUpload from './PhotoUpload';
@@ -37,6 +37,7 @@ function EditListingModal({ listing, isOpen, onClose, onUpdate }: Props) {
   const [feedbackType, setFeedbackType] = useState<'success' | 'error' | ''>('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [photos, setPhotos] = useState<Array<{id: string, url: string}>>([]);
+  const modalContentRef = useRef<HTMLDivElement>(null);
   const [form, setForm] = useState<Partial<Listing>>({
     baslik: '',
     detay: '',
@@ -67,9 +68,26 @@ function EditListingModal({ listing, isOpen, onClose, onUpdate }: Props) {
     not: ''
   });
 
+  // Track if mouse was pressed inside modal
+  const [mouseDownInside, setMouseDownInside] = useState(false);
+
+  const handleOverlayClick = (e: React.MouseEvent) => {
+    // Only close if mouse was not pressed inside modal
+    if (!mouseDownInside) {
+      onClose();
+    }
+    setMouseDownInside(false);
+  };
+
+  // Handle mouse down to track where the click started
+  const handleOverlayMouseDown = (e: React.MouseEvent) => {
+    setMouseDownInside(modalContentRef.current?.contains(e.target as Node) || false);
+  };
+
   // Form'u mevcut ilan bilgileri ile doldur
   useEffect(() => {
     if (listing && isOpen) {
+      setMouseDownInside(false); // Reset click tracking when modal opens
       setForm({
         baslik: listing.baslik || '',
         detay: listing.detay || '',
@@ -191,8 +209,8 @@ function EditListingModal({ listing, isOpen, onClose, onUpdate }: Props) {
   if (!isOpen) return null;
 
   return (
-    <div className="modal-overlay" onClick={onClose}>
-      <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+    <div className="modal-overlay" onClick={handleOverlayClick} onMouseDown={handleOverlayMouseDown}>
+      <div ref={modalContentRef} className="modal-content" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
           <h2 style={{ margin: 0, color: 'var(--text-primary)', fontSize: '28px' }}>
             <i className="fas fa-edit" style={{ marginRight: 'var(--spacing-sm)' }}></i>
