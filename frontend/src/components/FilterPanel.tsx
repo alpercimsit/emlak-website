@@ -1400,7 +1400,13 @@ function FilterPanel({ filters, onFiltersChange, totalCount, isAdmin }: Props) {
             {/* Admin Filtreleri Başlığı */}
             <br />
             <div style={{ marginBottom: 'var(--spacing-sm)' }}>
-              <h4 style={{ color: 'var(--primary-color)', marginBottom: 'var(--spacing-sm)', fontSize: '14px' }}>
+              <h4 style={{
+                color: 'var(--primary-color)',
+                marginBottom: 'var(--spacing-sm)',
+                fontSize: '14px',
+                borderBottom: '1px solid var(--primary-color)',
+                paddingBottom: '8px'
+              }}>
                 <i className="fas fa-user-shield" style={{ marginRight: 'var(--spacing-xs)' }}></i>
                 Admin Filtreleri
               </h4>
