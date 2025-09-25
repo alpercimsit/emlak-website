@@ -1397,95 +1397,103 @@ function FilterPanel({ filters, onFiltersChange, totalCount, isAdmin }: Props) {
         {/* Admin-only Filtreler */}
         {isAdmin && (
           <>
-            <div className="filter-section">
+            {/* Admin Filtreleri Başlığı */}
+            <br />
+            <div style={{ marginBottom: 'var(--spacing-sm)' }}>
               <h4 style={{ color: 'var(--primary-color)', marginBottom: 'var(--spacing-sm)', fontSize: '14px' }}>
                 <i className="fas fa-user-shield" style={{ marginRight: 'var(--spacing-xs)' }}></i>
                 Admin Filtreleri
               </h4>
+            </div>
 
-              {/* Sahibi Adı */}
-              <div className="filter-group">
-                <label className="filter-label">
-                  Sahibi Adı
-                </label>
-                <input
-                  type="text"
-                  className="filter-input"
-                  placeholder="Sahibi adı ile ara..."
-                  value={filters.sahibiAd}
-                  onChange={(e) => handleFilterChange('sahibiAd', e.target.value)}
-                />
+            {/* Sahibi Adı ve Sahibi Telefon - Yan yana */}
+            <div className="filter-group">
+              <div style={{ display: 'flex', gap: 'var(--spacing-sm)', alignItems: 'flex-end' }}>
+                <div style={{ flex: 1 }}>
+                  <label className="filter-label">
+                    Sahibi Adı
+                  </label>
+                  <input
+                    type="text"
+                    className="filter-input"
+                    placeholder="Sahibi adı ile ara..."
+                    value={filters.sahibiAd}
+                    onChange={(e) => handleFilterChange('sahibiAd', e.target.value)}
+                  />
+                </div>
+                <div style={{ flex: 1 }}>
+                  <label className="filter-label">
+                    Sahibi Telefon
+                  </label>
+                  <input
+                    type="text"
+                    className="filter-input"
+                    placeholder="Sahibi telefon ile ara..."
+                    value={filters.sahibiTel}
+                    onChange={(e) => handleFilterChange('sahibiTel', e.target.value)}
+                  />
+                </div>
               </div>
+            </div>
 
-              {/* Sahibi Telefon */}
-              <div className="filter-group">
-                <label className="filter-label">
-                  Sahibi Telefon
-                </label>
-                <input
-                  type="text"
-                  className="filter-input"
-                  placeholder="Sahibi telefon ile ara..."
-                  value={filters.sahibiTel}
-                  onChange={(e) => handleFilterChange('sahibiTel', e.target.value)}
-                />
+            {/* Sahibinden No ve Sahibinden Tarih - Yan yana */}
+            <div className="filter-group">
+              <div style={{ display: 'flex', gap: 'var(--spacing-sm)', alignItems: 'flex-end' }}>
+                <div style={{ flex: 1 }}>
+                  <label className="filter-label">
+                    Sahibinden No
+                  </label>
+                  <input
+                    type="text"
+                    className="filter-input"
+                    placeholder="Sahibinden numarası..."
+                    value={filters.sahibindenNo}
+                    onChange={(e) => handleFilterChange('sahibindenNo', e.target.value)}
+                  />
+                </div>
+                <div style={{ flex: 1 }}>
+                  <label className="filter-label">
+                    Sahibinden Tarih
+                  </label>
+                  <input
+                    type="date"
+                    className="filter-input"
+                    value={filters.sahibindenTarih}
+                    onChange={(e) => handleFilterChange('sahibindenTarih', e.target.value)}
+                  />
+                </div>
               </div>
+            </div>
 
-              {/* Sahibinden No */}
-              <div className="filter-group">
-                <label className="filter-label">
-                  Sahibinden No
-                </label>
-                <input
-                  type="text"
-                  className="filter-input"
-                  placeholder="Sahibinden numarası..."
-                  value={filters.sahibindenNo}
-                  onChange={(e) => handleFilterChange('sahibindenNo', e.target.value)}
-                />
-              </div>
-
-              {/* Sahibinden Tarih */}
-              <div className="filter-group">
-                <label className="filter-label">
-                  Sahibinden Tarih
-                </label>
-                <input
-                  type="date"
-                  className="filter-input"
-                  value={filters.sahibindenTarih}
-                  onChange={(e) => handleFilterChange('sahibindenTarih', e.target.value)}
-                />
-              </div>
-
-              {/* Not */}
-              <div className="filter-group">
-                <label className="filter-label">
-                  Not
-                </label>
-                <input
-                  type="text"
-                  className="filter-input"
-                  placeholder="Not içeriği ile ara..."
-                  value={filters.not}
-                  onChange={(e) => handleFilterChange('not', e.target.value)}
-                />
-              </div>
-
-              {/* Gizli İlanlar */}
-              <div className="filter-group">
-                <label className="filter-label">
-                  Gizli İlanlar
-                </label>
-                <select
-                  className="filter-input"
-                  value={filters.gizliIlanlar}
-                  onChange={(e) => handleFilterChange('gizliIlanlar', e.target.value)}
-                >
-                  <option value="">Tümü</option>
-                  <option value="gizli">Sadece Gizli</option>
-                  <option value="acik">Sadece Açık</option>
-                </select>
+            {/* Not ve Gizli İlanlar - Yan yana (not daha geniş) */}
+            <div className="filter-group">
+              <div style={{ display: 'flex', gap: 'var(--spacing-sm)', alignItems: 'flex-end' }}>
+                <div style={{ flex: 2 }}>
+                  <label className="filter-label">
+                    Not
+                  </label>
+                  <input
+                    type="text"
+                    className="filter-input"
+                    placeholder="Not içeriği ile ara..."
+                    value={filters.not}
+                    onChange={(e) => handleFilterChange('not', e.target.value)}
+                  />
+                </div>
+                <div style={{ flex: 1 }}>
+                  <label className="filter-label">
+                    Gizli İlanlar
+                  </label>
+                  <select
+                    className="filter-input"
+                    value={filters.gizliIlanlar}
+                    onChange={(e) => handleFilterChange('gizliIlanlar', e.target.value)}
+                  >
+                    <option value="">Tümü</option>
+                    <option value="gizli">Sadece Gizli</option>
+                    <option value="acik">Sadece Açık</option>
+                  </select>
+                </div>
               </div>
             </div>
           </>
