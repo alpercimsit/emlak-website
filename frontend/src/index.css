@@ -1986,18 +1986,6 @@ textarea.form-control {
   opacity: 1;
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   transform: translateX(0) scale(1);
-  animation: slideInModalPhoto 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-@keyframes slideInModalPhoto {
-  from {
-    opacity: 0;
-    transform: translateX(30px) scale(0.9);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0) scale(1);
-  }
 }
 
 /* Modal fotoğraf değişim animasyonu */
