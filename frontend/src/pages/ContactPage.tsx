@@ -50,52 +50,13 @@ function ContactPage() {
   }, []);
 
   return (
-    <div className="container" style={{ paddingTop: 'var(--spacing-xl)', paddingBottom: 'var(--spacing-xl)' }}>
-      <div className="d-flex justify-center align-center mb-4">
-        <h1 className="text-center mb-4">
-          <i className="fas fa-phone" style={{ marginRight: 'var(--spacing-sm)', color: 'var(--primary-color)' }}></i>
-          İletişim
-        </h1>
-      </div>
+    <div className="container" style={{ paddingTop: 'var(--spacing-md)', paddingBottom: 'var(--spacing-xl)' }}>
 
       {/* Main Content - Map and Contact Info Side by Side */}
       <div className="card" style={{ maxWidth: '1200px', margin: '0 auto' }}>
         <div className="card-body">
-          <div style={{ fontSize: '4rem', color: 'var(--primary-color)', marginBottom: 'var(--spacing-lg)', textAlign: 'center' }}>
-            <i className="fas fa-building"></i>
-          </div>
-
-          <h3 style={{ marginBottom: 'var(--spacing-xl)', color: 'var(--text-primary)', textAlign: 'center' }}>
-            Öz Kafkas Emlak
-          </h3>
-
-          <div className="row" style={{ gap: 'var(--spacing-lg)' }}>
-            {/* Map Section - Left Side */}
-            <div className="col-12 col-lg-6">
-              <h4 style={{ marginBottom: 'var(--spacing-lg)', color: 'var(--text-primary)', textAlign: 'center' }}>
-                <i className="fas fa-map-marked-alt" style={{ marginRight: 'var(--spacing-sm)', color: 'var(--primary-color)' }}></i>
-                Harita'da Konumumuz
-              </h4>
-              <div id="contact-map" style={{
-                width: '100%',
-                height: '400px',
-                borderRadius: 'var(--radius-md)',
-                zIndex: 1,
-                border: '2px solid var(--border-color)'
-              }}></div>
-              <p style={{
-                marginTop: 'var(--spacing-md)',
-                color: 'var(--text-secondary)',
-                textAlign: 'center',
-                fontSize: '0.9rem'
-              }}>
-                <i className="fas fa-info-circle" style={{ marginRight: 'var(--spacing-xs)' }}></i>
-                Haritada işaretli noktada bizi bulabilirsiniz.
-              </p>
-            </div>
-
-            {/* Contact Information - Right Side */}
-            <div className="col-12 col-lg-6">
+          {/* Contact Information - Right Side */}
+          <div className="col-12 col-lg-6">
               <div style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
                 {/* Address Section */}
                 <div style={{ marginBottom: 'var(--spacing-xl)' }}>
@@ -115,7 +76,7 @@ function ContactPage() {
                     </div>
                     <div>
                       <strong style={{ fontSize: '1.1rem' }}>Adres</strong>
-                      <p style={{ margin: 'var(--spacing-xs) 0 0 0', color: 'var(--text-secondary)', lineHeight: '1.5' }}>
+                      <p style={{ margin: 'var(--spacing-xs) 0 0 0', color: 'var(--text-primary)', lineHeight: '1.5' }}>
                         Büyükyoncalı Mah. Atatürk Cad. No: 27/1B<br />
                         Saray / Tekirdağ
                       </p>
@@ -143,46 +104,25 @@ function ContactPage() {
                       <i className="fas fa-phone"></i>
                     </div>
                     <div style={{ overflow: 'hidden' }}>
-                      <strong style={{ fontSize: '1.1rem' }}>İletişim Kişileri</strong>
+                      <strong style={{ fontSize: '1.1rem' }}>İletişim</strong>
                       <div className="d-flex flex-column gap-2" style={{ marginTop: 'var(--spacing-sm)' }}>
                         <div className="d-flex align-center gap-3">
                           <span style={{ fontWeight: '500', color: 'var(--text-primary)', minWidth: '120px' }}>
                             Ünal Aytekin:
                           </span>
-                          <a href="tel:05366424752" style={{
-                            color: 'var(--primary-color)',
-                            textDecoration: 'none',
-                            fontWeight: '500',
-                            fontSize: '0.95rem'
-                          }}>
                             0536 642 47 52
-                          </a>
                         </div>
                         <div className="d-flex align-center gap-3">
                           <span style={{ fontWeight: '500', color: 'var(--text-primary)', minWidth: '120px' }}>
                             Metin Cimşit:
                           </span>
-                          <a href="tel:05320637362" style={{
-                            color: 'var(--primary-color)',
-                            textDecoration: 'none',
-                            fontWeight: '500',
-                            fontSize: '0.95rem'
-                          }}>
                             0532 063 73 62
-                          </a>
                         </div>
                         <div className="d-flex align-center gap-3">
                           <span style={{ fontWeight: '500', color: 'var(--text-primary)', minWidth: '120px' }}>
                             Akın İncedere:
                           </span>
-                          <a href="tel:05304650414" style={{
-                            color: 'var(--primary-color)',
-                            textDecoration: 'none',
-                            fontWeight: '500',
-                            fontSize: '0.95rem'
-                          }}>
                             0530 465 04 14
-                          </a>
                         </div>
                       </div>
                     </div>
@@ -190,6 +130,28 @@ function ContactPage() {
                 </div>
               </div>
             </div>
+          <div className="row" style={{ gap: 'var(--spacing-lg)' }}>
+            {/* Map Section - Left Side */}
+            <div className="col-12 col-lg-6">
+              <div id="contact-map" style={{
+                width: '100%',
+                height: '400px',
+                borderRadius: 'var(--radius-md)',
+                zIndex: 1,
+                border: '2px solid var(--border-color)'
+              }}></div>
+              <p style={{
+                marginTop: 'var(--spacing-md)',
+                color: 'var(--text-secondary)',
+                textAlign: 'center',
+                fontSize: '0.9rem'
+              }}>
+                <i className="fas fa-info-circle" style={{ marginRight: 'var(--spacing-xs)' }}></i>
+                Haritada işaretli noktada bizi bulabilirsiniz.
+              </p>
+            </div>
+
+            
           </div>
         </div>
       </div>
