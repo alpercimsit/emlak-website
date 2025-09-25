@@ -960,32 +960,34 @@ function FilterPanel({ filters, onFiltersChange, totalCount }: Props) {
         {/* Arsa Özel Filtreleri */}
         {filters.category === 'arsa' && (
           <>
-            {/* Ada No */}
+            {/* Ada No ve Parsel No - Yan yana */}
             <div className="filter-group">
-              <label className="filter-label">
-                Ada No
-              </label>
-              <input
-                type="text"
-                className="filter-input"
-                placeholder="Ada numarası..."
-                value={filters.adaNo}
-                onChange={(e) => handleFilterChange('adaNo', e.target.value)}
-              />
-            </div>
-
-            {/* Parsel No */}
-            <div className="filter-group">
-              <label className="filter-label">
-                Parsel No
-              </label>
-              <input
-                type="text"
-                className="filter-input"
-                placeholder="Parsel numarası..."
-                value={filters.parselNo}
-                onChange={(e) => handleFilterChange('parselNo', e.target.value)}
-              />
+              <div style={{ display: 'flex', gap: 'var(--spacing-sm)', alignItems: 'flex-end' }}>
+                <div style={{ flex: 1 }}>
+                  <label className="filter-label">
+                    Ada No
+                  </label>
+                  <input
+                    type="text"
+                    className="filter-input"
+                    placeholder="Ada numarası..."
+                    value={filters.adaNo}
+                    onChange={(e) => handleFilterChange('adaNo', e.target.value)}
+                  />
+                </div>
+                <div style={{ flex: 1 }}>
+                  <label className="filter-label">
+                    Parsel No
+                  </label>
+                  <input
+                    type="text"
+                    className="filter-input"
+                    placeholder="Parsel numarası..."
+                    value={filters.parselNo}
+                    onChange={(e) => handleFilterChange('parselNo', e.target.value)}
+                  />
+                </div>
+              </div>
             </div>
           </>
         )}

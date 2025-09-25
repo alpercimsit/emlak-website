@@ -185,8 +185,8 @@ function ListingsPage() {
 
       // Arsa özel filtreleri
       if (filters.category === 'arsa') {
-        if (filters.adaNo && (!listing.ada || !listing.ada.toString().includes(filters.adaNo))) return false;
-        if (filters.parselNo && (!listing.parsel || !listing.parsel.toString().includes(filters.parselNo))) return false;
+        if (filters.adaNo && (!listing.ada || !(listing.ada.toString() === filters.adaNo))) return false;
+        if (filters.parselNo && (!listing.parsel || !(listing.parsel.toString() === filters.parselNo))) return false;
       }
 
       // Konut özel filtreleri
