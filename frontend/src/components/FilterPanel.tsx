@@ -70,12 +70,20 @@ export interface FilterState {
   balkon: string;
   asansor: string;
   esyali: string;
+  // Admin-only filtreler
+  sahibiAd: string;
+  sahibiTel: string;
+  sahibindenNo: string;
+  sahibindenTarih: string;
+  not: string;
+  gizliIlanlar: string;
 }
 
 interface Props {
   filters: FilterState;
   onFiltersChange: (filters: FilterState) => void;
   totalCount: number;
+  isAdmin: boolean;
 }
 
 interface Province {
@@ -1000,7 +1008,7 @@ function PropertyFilters({ filters, onFiltersChange }: { filters: FilterState; o
   );
 }
 
-function FilterPanel({ filters, onFiltersChange, totalCount }: Props) {
+function FilterPanel({ filters, onFiltersChange, totalCount, isAdmin }: Props) {
   const [showKonutSubmenu, setShowKonutSubmenu] = useState(false);
   const [provinces, setProvinces] = useState<Province[]>([]);
   const [districts, setDistricts] = useState<District[]>([]);
@@ -1103,7 +1111,13 @@ function FilterPanel({ filters, onFiltersChange, totalCount }: Props) {
       katlar: [],
       balkon: '',
       asansor: '',
-      esyali: ''
+      esyali: '',
+      sahibiAd: '',
+      sahibiTel: '',
+      sahibindenNo: '',
+      sahibindenTarih: '',
+      not: '',
+      gizliIlanlar: ''
     });
   };
 
@@ -1377,6 +1391,103 @@ function FilterPanel({ filters, onFiltersChange, totalCount }: Props) {
             {(filters.category === 'konut') && (
               <PropertyFilters filters={filters} onFiltersChange={onFiltersChange} />
             )}
+          </>
+        )}
+
+        {/* Admin-only Filtreler */}
+        {isAdmin && (
+          <>
+            <div className="filter-section">
+              <h4 style={{ color: 'var(--primary-color)', marginBottom: 'var(--spacing-sm)', fontSize: '14px' }}>
+                <i className="fas fa-user-shield" style={{ marginRight: 'var(--spacing-xs)' }}></i>
+                Admin Filtreleri
+              </h4>
+
+              {/* Sahibi Adı */}
+              <div className="filter-group">
+                <label className="filter-label">
+                  Sahibi Adı
+                </label>
+                <input
+                  type="text"
+                  className="filter-input"
+                  placeholder="Sahibi adı ile ara..."
+                  value={filters.sahibiAd}
+                  onChange={(e) => handleFilterChange('sahibiAd', e.target.value)}
+                />
+              </div>
+
+              {/* Sahibi Telefon */}
+              <div className="filter-group">
+                <label className="filter-label">
+                  Sahibi Telefon
+                </label>
+                <input
+                  type="text"
+                  className="filter-input"
+                  placeholder="Sahibi telefon ile ara..."
+                  value={filters.sahibiTel}
+                  onChange={(e) => handleFilterChange('sahibiTel', e.target.value)}
+                />
+              </div>
+
+              {/* Sahibinden No */}
+              <div className="filter-group">
+                <label className="filter-label">
+                  Sahibinden No
+                </label>
+                <input
+                  type="text"
+                  className="filter-input"
+                  placeholder="Sahibinden numarası..."
+                  value={filters.sahibindenNo}
+                  onChange={(e) => handleFilterChange('sahibindenNo', e.target.value)}
+                />
+              </div>
+
+              {/* Sahibinden Tarih */}
+              <div className="filter-group">
+                <label className="filter-label">
+                  Sahibinden Tarih
+                </label>
+                <input
+                  type="date"
+                  className="filter-input"
+                  value={filters.sahibindenTarih}
+                  onChange={(e) => handleFilterChange('sahibindenTarih', e.target.value)}
+                />
+              </div>
+
+              {/* Not */}
+              <div className="filter-group">
+                <label className="filter-label">
+                  Not
+                </label>
+                <input
+                  type="text"
+                  className="filter-input"
+                  placeholder="Not içeriği ile ara..."
+                  value={filters.not}
+                  onChange={(e) => handleFilterChange('not', e.target.value)}
+                />
+              </div>
+
+              {/* Gizli İlanlar */}
+              <div className="filter-group">
+                <label className="filter-label">
+                  Gizli İlanlar
+                </label>
+                <select
+                  className="filter-input"
+                  value={filters.gizliIlanlar}
+                  onChange={(e) => handleFilterChange('gizliIlanlar', e.target.value)}
+                >
+                  <option value="">Tümü</option>
+                  <option value="gizli">Sadece Gizli</option>
+                  <option value="acik">Sadece Açık</option>
+                </select>
+              </div>
+            </div>
           </>
         )}
 

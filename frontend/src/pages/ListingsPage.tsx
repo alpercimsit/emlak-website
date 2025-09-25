@@ -87,7 +87,13 @@ function ListingsPage() {
       katlar: [],
       balkon: '',
       asansor: '',
-      esyali: ''
+      esyali: '',
+      sahibiAd: '',
+      sahibiTel: '',
+      sahibindenNo: '',
+      sahibindenTarih: '',
+      not: '',
+      gizliIlanlar: ''
     };
   });
 
@@ -228,6 +234,26 @@ function ListingsPage() {
         }
       }
 
+      if(filters.sahibiAd) {
+        if(!listing.sahibi_ad || !listing.sahibi_ad.toLowerCase().includes(filters.sahibiAd.toLowerCase())) return false;
+      }
+      if(filters.sahibiTel) {
+        if(!listing.sahibi_tel || !listing.sahibi_tel.toLowerCase().includes(filters.sahibiTel.toLowerCase())) return false;
+      }
+      if(filters.sahibindenNo) {
+        if(!listing.sahibinden_no || !(listing.sahibinden_no.toString() === filters.sahibindenNo)) return false;
+      }
+      if(filters.sahibindenTarih) {
+        if(!listing.sahibinden_tarih || !listing.sahibinden_tarih.toLowerCase().includes(filters.sahibindenTarih.toLowerCase())) return false;
+      }
+      if(filters.not) {
+        if(!listing.not || !listing.not.toLowerCase().includes(filters.not.toLowerCase())) return false;
+      }
+      if(filters.gizliIlanlar) {
+        if(filters.gizliIlanlar === 'gizli' && !listing.gizli) return false;
+        if(filters.gizliIlanlar === 'acik' && listing.gizli) return false;
+      }
+
       return true;
     });
 
@@ -325,6 +351,7 @@ function ListingsPage() {
               filters={filters}
               onFiltersChange={setFilters}
               totalCount={filteredListings.length}
+              isAdmin={isAdmin}
             />
           </div>
 
