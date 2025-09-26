@@ -99,7 +99,16 @@ function App() {
         <nav className="navbar">
           <div className="container">
             <div className="navbar-container">
-              <Link to="/" className="navbar-brand">
+              <Link
+                to="/"
+                className="navbar-brand"
+                onClick={(e) => {
+                  e.preventDefault();
+                  // Filtreleri temizle ve sayfayı yenile
+                  localStorage.removeItem('listingFilters');
+                  window.location.href = '/';
+                }}
+              >
                 <i className="fas fa-home"></i>
                 Öz Kafkas Emlak
               </Link>
@@ -127,7 +136,16 @@ function App() {
                 )}
                 <ul className="navbar-nav">
                   <li>
-                    <Link to="/" className="nav-link">
+                    <Link
+                      to="/"
+                      className="nav-link"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        // Filtreleri temizle ve sayfayı yenile
+                        localStorage.removeItem('listingFilters');
+                        window.location.href = '/';
+                      }}
+                    >
                       <i className="fas fa-list"></i>
                       &nbsp;
                       İlanlar
