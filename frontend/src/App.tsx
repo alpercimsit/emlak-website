@@ -56,11 +56,23 @@ function App() {
   };
 
   const handleLogout = async () => {
+    // Show confirmation dialog
+    const confirmed = window.confirm('Yönetici modundan çıkış yapıyorsun dayı.');
+
+    if (!confirmed) {
+      return;
+    }
+
     try {
       await supabase.auth.signOut();
       setIsAdmin(false);
-      // Navigate to home page after logout
+
+      // Clear filters from localStorage
+      localStorage.removeItem('listingFilters');
+
+      // Navigate to home page after logout and refresh
       navigate('/');
+      window.location.reload();
     } catch (error) {
       console.error('Logout error:', error);
       // Fallback: refresh the page
