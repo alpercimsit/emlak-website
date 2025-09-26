@@ -422,7 +422,6 @@ function ListingsPage() {
                 cursor: currentPage === 1 ? 'not-allowed' : 'pointer',
                 borderRadius: '4px',
                 fontSize: '14px',
-                backgroundColor: 'var(--bg-primary)'
               }}
             >
               «
