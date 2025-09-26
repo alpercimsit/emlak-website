@@ -71,74 +71,75 @@ function ContactPage() {
       {/* Main Content - Map and Contact Info Side by Side */}
       <div className="card" style={{ maxWidth: '1200px', margin: '0 auto' }}>
         <div className="card-body">
-          {/* Contact Information - Right Side */}
-          <div className="col-12 col-lg-6">
+          <div className="row" style={{ gap: 'var(--spacing-lg)' }}>
+            {/* Left Side - Address and Contact Info */}
+            <div className="col-12 col-lg-6">
               <div style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-                {/* Address Section */}
-                <div style={{ marginBottom: 'var(--spacing-xl)' }}>
-                  <div className="d-flex align-center gap-3" style={{ textAlign: 'left' }}>
-                    <div style={{
-                      width: '50px',
-                      height: '50px',
-                      backgroundColor: 'var(--bg-tertiary)',
-                      borderRadius: 'var(--radius-full)',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      color: 'var(--primary-color)',
-                      flexShrink: 0
-                    }}>
-                      <i className="fas fa-map-marker-alt"></i>
-                    </div>
-                    <div>
-                      <strong style={{ fontSize: '1.1rem' }}>Adres</strong>
-                      <p style={{ margin: 'var(--spacing-xs) 0 0 0', color: 'var(--text-primary)', lineHeight: '1.5' }}>
-                        Büyükyoncalı Mah. Atatürk Cad. No: 27/1B<br />
-                        Saray / Tekirdağ
-                      </p>
+                {/* Address and Contact Sections Side by Side */}
+                <div style={{ display: 'flex', gap: 'var(--spacing-lg)' }}>
+                  {/* Address Section - Left */}
+                  <div style={{ flex: 1 }}>
+                    <div className="d-flex align-center gap-3" style={{ textAlign: 'left' }}>
+                      <div style={{
+                        width: '50px',
+                        height: '50px',
+                        backgroundColor: 'var(--bg-tertiary)',
+                        borderRadius: 'var(--radius-full)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        color: 'var(--primary-color)',
+                        flexShrink: 0
+                      }}>
+                        <i className="fas fa-map-marker-alt"></i>
+                      </div>
+                      <div>
+                        <strong style={{ fontSize: '1.1rem' }}>Adres</strong>
+                        <p style={{ margin: 'var(--spacing-xs) 0 0 0', color: 'var(--text-primary)', lineHeight: '1.5' }}>
+                          Büyükyoncalı Mah. Atatürk Cad. No: 27/1B<br />
+                          Saray / Tekirdağ
+                        </p>
+                      </div>
                     </div>
                   </div>
-                </div>
 
-                {/* Contact Persons Section */}
-                <div style={{ flex: 1 }}>
-                  <div style={{ textAlign: 'left' }}>
-                    <div style={{
-                      width: '50px',
-                      height: '50px',
-                      backgroundColor: 'var(--bg-tertiary)',
-                      borderRadius: 'var(--radius-full)',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      color: 'var(--primary-color)',
-                      flexShrink: 0,
-                      float: 'left',
-                      marginRight: 'var(--spacing-md)',
-                      marginBottom: 'var(--spacing-sm)'
-                    }}>
-                      <i className="fas fa-phone"></i>
-                    </div>
-                    <div style={{ overflow: 'hidden' }}>
-                      <strong style={{ fontSize: '1.1rem' }}>İletişim</strong>
-                      <div className="d-flex flex-column gap-2" style={{ marginTop: 'var(--spacing-sm)' }}>
-                        <div className="d-flex align-center gap-3">
-                          <span style={{ fontWeight: '500', color: 'var(--text-primary)', minWidth: '120px' }}>
-                            Ünal Aytekin:
-                          </span>
-                            0536 642 47 52
-                        </div>
-                        <div className="d-flex align-center gap-3">
-                          <span style={{ fontWeight: '500', color: 'var(--text-primary)', minWidth: '120px' }}>
-                            Metin Cimşit:
-                          </span>
-                            0532 063 73 62
-                        </div>
-                        <div className="d-flex align-center gap-3">
-                          <span style={{ fontWeight: '500', color: 'var(--text-primary)', minWidth: '120px' }}>
-                            Akın İncedere:
-                          </span>
-                            0530 465 04 14
+                  {/* Contact Persons Section - Right */}
+                  <div style={{ flex: 1 }}>
+                    <div style={{ textAlign: 'left' }}>
+                      <div style={{
+                        width: '50px',
+                        height: '50px',
+                        backgroundColor: 'var(--bg-tertiary)',
+                        borderRadius: 'var(--radius-full)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        color: 'var(--primary-color)',
+                        flexShrink: 0
+                      }}>
+                        <i className="fas fa-phone"></i>
+                      </div>
+                      <div>
+                        <strong style={{ fontSize: '1.1rem' }}>İletişim</strong>
+                        <div className="d-flex flex-column gap-2" style={{ marginTop: 'var(--spacing-sm)' }}>
+                          <div className="d-flex align-center gap-3">
+                            <span style={{ fontWeight: '500', color: 'var(--text-primary)', minWidth: '120px' }}>
+                              Ünal Aytekin:
+                            </span>
+                              0536 642 47 52
+                          </div>
+                          <div className="d-flex align-center gap-3">
+                            <span style={{ fontWeight: '500', color: 'var(--text-primary)', minWidth: '120px' }}>
+                              Metin Cimşit:
+                            </span>
+                              0532 063 73 62
+                          </div>
+                          <div className="d-flex align-center gap-3">
+                            <span style={{ fontWeight: '500', color: 'var(--text-primary)', minWidth: '120px' }}>
+                              Akın İncedere:
+                            </span>
+                              0530 465 04 14
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -146,8 +147,8 @@ function ContactPage() {
                 </div>
               </div>
             </div>
-          <div className="row" style={{ gap: 'var(--spacing-lg)' }}>
-            {/* Map Section - Left Side */}
+
+            {/* Map Section - Right Side */}
             <div className="col-12 col-lg-6">
               <div id="contact-map" style={{
                 width: '100%',
@@ -166,8 +167,6 @@ function ContactPage() {
                 Haritada işaretli noktada bizi bulabilirsiniz.
               </p>
             </div>
-
-            
           </div>
         </div>
       </div>
