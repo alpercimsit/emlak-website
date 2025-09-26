@@ -124,6 +124,12 @@ function ContactPage() {
                         <div className="d-flex flex-column gap-2" style={{ marginTop: 'var(--spacing-sm)' }}>
                           <div className="d-flex align-center gap-3">
                             <span style={{ fontWeight: '500', color: 'var(--text-primary)', minWidth: '120px' }}>
+                              Akın İncedere:
+                            </span>
+                              0530 465 04 14
+                          </div>
+                          <div className="d-flex align-center gap-3">
+                            <span style={{ fontWeight: '500', color: 'var(--text-primary)', minWidth: '120px' }}>
                               Ünal Aytekin:
                             </span>
                               0536 642 47 52
@@ -133,12 +139,6 @@ function ContactPage() {
                               Metin Cimşit:
                             </span>
                               0532 063 73 62
-                          </div>
-                          <div className="d-flex align-center gap-3">
-                            <span style={{ fontWeight: '500', color: 'var(--text-primary)', minWidth: '120px' }}>
-                              Akın İncedere:
-                            </span>
-                              0530 465 04 14
                           </div>
                         </div>
                       </div>

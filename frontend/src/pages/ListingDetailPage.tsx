@@ -193,13 +193,13 @@ function ListingDetailPage() {
             </div>
             <div className="contact-item">
               <i className="fas fa-phone"></i>
+              <span>530 465 04 14</span>
+              &nbsp;&nbsp;&nbsp;&nbsp;
+              <i className="fas fa-phone"></i>
               <span>536 642 47 52</span>
               &nbsp;&nbsp;&nbsp;&nbsp;
               <i className="fas fa-phone"></i>
               <span>532 063 63 72</span>
-              &nbsp;&nbsp;&nbsp;&nbsp;
-              <i className="fas fa-phone"></i>
-              <span>530 465 04 14</span>
             </div>
 
           </div>
