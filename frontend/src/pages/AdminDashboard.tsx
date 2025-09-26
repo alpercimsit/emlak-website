@@ -150,7 +150,11 @@ function AdminDashboard() {
       console.error('Error adding listing:', err);
       if (err.message === 'Unauthorized') {
         // Token expired or invalid, redirect to login
-        localStorage.removeItem('adminToken');
+        try {
+          await api.logout();
+        } catch (logoutError) {
+          console.error('Logout error:', logoutError);
+        }
         navigate('/admin/login');
         return;
       }
@@ -161,9 +165,14 @@ function AdminDashboard() {
     }
   };
 
-  const logout = () => {
-    localStorage.removeItem('adminToken');
-    navigate('/admin/login');
+  const logout = async () => {
+    try {
+      await api.logout();
+      navigate('/admin/login');
+    } catch (error) {
+      console.error('Logout error:', error);
+      navigate('/admin/login');
+    }
   };
 
   return (

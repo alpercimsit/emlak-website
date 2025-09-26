@@ -1,6 +1,6 @@
 import { Navigate } from 'react-router-dom';
 import { ReactNode, useEffect, useState } from 'react';
-import api from '../utils/api';
+import { supabase } from '../utils/api';
 
 interface ProtectedRouteProps {
   children: ReactNode;
@@ -8,36 +8,60 @@ interface ProtectedRouteProps {
 
 function ProtectedRoute({ children }: ProtectedRouteProps) {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
-  const token = localStorage.getItem('adminToken');
-  
-  useEffect(() => {
-    if (!token) {
-      setIsAuthenticated(false);
-      return;
-    }
+  const [isAdmin, setIsAdmin] = useState<boolean>(false);
 
-    // Verify token with our API
-    api.verifyToken()
-    .then(response => {
-      if (response.valid) {
-        setIsAuthenticated(true);
-      } else {
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        const { data: { session }, error } = await supabase.auth.getSession();
+
+        if (error) {
+          setIsAuthenticated(false);
+          return;
+        }
+
+        if (session?.user) {
+          const userRole = session.user.user_metadata?.role;
+          const adminRole = userRole === 'admin';
+
+          setIsAuthenticated(true);
+          setIsAdmin(adminRole);
+        } else {
+          setIsAuthenticated(false);
+          setIsAdmin(false);
+        }
+      } catch (error) {
         setIsAuthenticated(false);
+        setIsAdmin(false);
       }
-    })
-    .catch(() => {
-      setIsAuthenticated(false);
+    };
+
+    checkAuth();
+
+    // Listen for auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === 'SIGNED_OUT') {
+        setIsAuthenticated(false);
+        setIsAdmin(false);
+      } else if (event === 'SIGNED_IN' && session?.user) {
+        const userRole = session.user.user_metadata?.role;
+        const adminRole = userRole === 'admin';
+        setIsAuthenticated(true);
+        setIsAdmin(adminRole);
+      }
     });
-  }, [token]);
+
+    return () => subscription.unsubscribe();
+  }, []);
 
   if (isAuthenticated === null) {
     return <div>Yükleniyor...</div>;
   }
-  
-  if (!isAuthenticated) {
+
+  if (!isAuthenticated || !isAdmin) {
     return <Navigate to="/admin/login" replace />;
   }
-  
+
   return <>{children}</>;
 }
 

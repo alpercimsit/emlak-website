@@ -4,7 +4,7 @@ import api from '../utils/api';
 
 function AdminLoginPage() {
   const [credentials, setCredentials] = useState({
-    username: '',
+    email: '',
     password: ''
   });
   const [feedback, setFeedback] = useState('');
@@ -18,8 +18,8 @@ function AdminLoginPage() {
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!credentials.username.trim() || !credentials.password.trim()) {
-      setFeedback('Kullanıcı adı ve şifre gerekli');
+    if (!credentials.email.trim() || !credentials.password.trim()) {
+      setFeedback('E-posta ve şifre gerekli');
       setFeedbackType('error');
       return;
     }
@@ -28,7 +28,7 @@ function AdminLoginPage() {
     setFeedback('');
 
     try {
-      const result = await api.login(credentials.username, credentials.password);
+      const result = await api.login(credentials.email, credentials.password);
 
       setFeedback('Giriş başarılı! Yönlendiriliyorsunuz...');
       setFeedbackType('success');
@@ -39,7 +39,7 @@ function AdminLoginPage() {
       }, 1000);
 
     } catch (err) {
-      setFeedback('Hata: Kullanıcı adı veya şifre yanlış ❌');
+      setFeedback('Hata: E-posta veya şifre yanlış ❌');
       setFeedbackType('error');
     } finally {
       setIsSubmitting(false);
@@ -60,15 +60,15 @@ function AdminLoginPage() {
             <form onSubmit={submit}>
               <div className="form-group">
                 <label className="form-label">
-                  <i className="fas fa-user" style={{ marginRight: 'var(--spacing-sm)' }}></i>
-                  Kullanıcı Adı
+                  <i className="fas fa-envelope" style={{ marginRight: 'var(--spacing-sm)' }}></i>
+                  E-posta
                 </label>
                 <input
-                  type="text"
-                  name="username"
+                  type="email"
+                  name="email"
                   className="form-control"
-                  placeholder="Kullanıcı adınızı girin..."
-                  value={credentials.username}
+                  placeholder="E-posta adresinizi girin..."
+                  value={credentials.email}
                   onChange={handleChange}
                   required
                 />

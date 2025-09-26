@@ -1,8 +1,12 @@
 import { createClient } from '@supabase/supabase-js';
 
-// Supabase configuration
-const supabaseUrl = 'https://qdldbgaoweqqcvdvlwfn.supabase.co';
-const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFkbGRiZ2Fvd2VxcWN2ZHZsd2ZuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTYwNjc5MTYsImV4cCI6MjA3MTY0MzkxNn0.WxUiQt7y2b89IdwjkIduLy_6dF0x66iGSIUu3dCSehM';
+// Supabase configuration from environment variables
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+
+if (!supabaseUrl || !supabaseAnonKey) {
+  throw new Error('Missing Supabase environment variables');
+}
 
 // Create Supabase client
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);
@@ -36,41 +40,57 @@ class ApiCache {
 // Helper functions for API calls
 export const api = {
   // Authentication
-  async login(username: string, password: string) {
-    // For now, we'll use a simple check against hardcoded admin credentials
-    // Later we can move this to Supabase Auth or a database table
-    if (username === 'admin' && password === 'vakvak12') {
-      const token = 'admin-token-' + Date.now(); // Simple token for demo
-      localStorage.setItem('adminToken', token);
-      return { token, username };
-    } else {
-      throw new Error('Invalid credentials');
+  async login(email: string, password: string) {
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email,
+      password
+    });
+
+    if (error) throw error;
+
+    // Check if user has admin role
+    if (data.user?.user_metadata?.role !== 'admin') {
+      await supabase.auth.signOut(); // Sign out non-admin users
+      throw new Error('Admin access required');
     }
+
+    return { user: data.user, session: data.session };
   },
 
   async verifyToken() {
-    const token = localStorage.getItem('adminToken');
-    if (token && token.startsWith('admin-token-')) {
-      return { valid: true, username: 'admin' };
-    } else {
-      localStorage.removeItem('adminToken');
-      throw new Error('Invalid token');
+    const { data: { session }, error } = await supabase.auth.getSession();
+
+    if (error || !session) {
+      throw new Error('Invalid session');
     }
+
+    // Check if user has admin role
+    if (session.user.user_metadata?.role !== 'admin') {
+      throw new Error('Admin access required');
+    }
+
+    return { valid: true, user: session.user };
+  },
+
+  async logout() {
+    const { error } = await supabase.auth.signOut();
+    if (error) throw error;
+    return true;
   },
 
   // Listings
   async getListings() {
     // Check if user is admin to determine which view to use
-    const token = localStorage.getItem('adminToken');
-    const isAdmin = token && token.startsWith('admin-token-');
-    
+    const { data: { session } } = await supabase.auth.getSession();
+    const isAdmin = session?.user?.user_metadata?.role === 'admin';
+
     if (isAdmin) {
       // Admin can see all listing details including owner info
       const { data, error } = await supabase
         .from('ilan')
         .select('*')
         .order('ilan_tarihi', { ascending: false });
-      
+
       if (error) throw error;
       return data;
     } else {
@@ -107,7 +127,7 @@ export const api = {
         `)
         .eq('gizli', false) // Only show non-hidden listings to regular users
         .order('ilan_tarihi', { ascending: false });
-      
+
       if (error) throw error;
       return data;
     }
@@ -115,9 +135,9 @@ export const api = {
 
   async getListingById(id: number) {
     // Check if user is admin to determine which view to use
-    const token = localStorage.getItem('adminToken');
-    const isAdmin = token && token.startsWith('admin-token-');
-    
+    const { data: { session } } = await supabase.auth.getSession();
+    const isAdmin = session?.user?.user_metadata?.role === 'admin';
+
     if (isAdmin) {
       // Admin can see all listing details including owner info
       const { data, error } = await supabase
@@ -125,7 +145,7 @@ export const api = {
         .select('*')
         .eq('ilan_no', id)
         .single();
-      
+
       if (error) throw error;
       return data;
     } else {
@@ -163,7 +183,7 @@ export const api = {
         .eq('ilan_no', id)
         .eq('gizli', false) // Only show non-hidden listings to regular users
         .single();
-      
+
       if (error) throw error;
       return data;
     }
@@ -171,8 +191,8 @@ export const api = {
 
   async addListing(listing: any) {
     // Check if user is admin
-    const token = localStorage.getItem('adminToken');
-    if (!token || !token.startsWith('admin-token-')) {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session || session.user.user_metadata?.role !== 'admin') {
       throw new Error('Unauthorized');
     }
 
@@ -225,8 +245,8 @@ export const api = {
 
   async updateListing(id: number, updates: any) {
     // Check if user is admin
-    const token = localStorage.getItem('adminToken');
-    if (!token || !token.startsWith('admin-token-')) {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session || session.user.user_metadata?.role !== 'admin') {
       throw new Error('Unauthorized');
     }
 
@@ -251,8 +271,8 @@ export const api = {
 
   async deleteListing(id: number) {
     // Check if user is admin
-    const token = localStorage.getItem('adminToken');
-    if (!token || !token.startsWith('admin-token-')) {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session || session.user.user_metadata?.role !== 'admin') {
       throw new Error('Unauthorized');
     }
 

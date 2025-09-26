@@ -1,6 +1,6 @@
 import { useEffect, useState, useMemo, useContext } from 'react';
 import { useNavigate, useSearchParams, useLocation } from 'react-router-dom';
-import api from '../utils/api';
+import api, { supabase } from '../utils/api';
 import ListingList from '../components/ListingList';
 import FilterPanel, { FilterState } from '../components/FilterPanel';
 import { ModalContext } from '../App';
@@ -109,9 +109,19 @@ function ListingsPage() {
   });
 
   useEffect(() => {
-    // Check if user is admin
-    const token = localStorage.getItem('adminToken');
-    setIsAdmin(token && token.startsWith('admin-token-') ? true : false);
+    // Check if user is admin using Supabase Auth
+    const checkAdminStatus = async () => {
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        const isAdminUser = session?.user?.user_metadata?.role === 'admin';
+        setIsAdmin(isAdminUser);
+      } catch (error) {
+        console.error('Error checking admin status:', error);
+        setIsAdmin(false);
+      }
+    };
+
+    checkAdminStatus();
     
     setLoading(true);
     api.getListings()
