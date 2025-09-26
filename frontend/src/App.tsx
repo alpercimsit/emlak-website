@@ -8,6 +8,7 @@ import AdminDashboard from './pages/AdminDashboard';
 import ProtectedRoute from './components/ProtectedRoute';
 import EditListingModal from './components/EditListingModal';
 import { Listing } from './pages/ListingsPage';
+import { supabase } from './utils/api';
 
 // Create context for modal operations
 export interface ModalContextType {
@@ -22,20 +23,49 @@ function App() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Check if user is admin
-    const token = localStorage.getItem('adminToken');
-    setIsAdmin(token && token.startsWith('admin-token-') ? true : false);
+    // Check if user is admin using Supabase Auth
+    const checkAdminStatus = async () => {
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        const isAdminUser = session?.user?.user_metadata?.role === 'admin';
+        setIsAdmin(isAdminUser);
+      } catch (error) {
+        console.error('Error checking admin status:', error);
+        setIsAdmin(false);
+      }
+    };
+
+    checkAdminStatus();
+
+    // Listen for auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === 'SIGNED_OUT') {
+        setIsAdmin(false);
+      } else if (event === 'SIGNED_IN' && session?.user) {
+        const userRole = session.user.user_metadata?.role;
+        const adminRole = userRole === 'admin';
+        setIsAdmin(adminRole);
+      }
+    });
+
+    return () => subscription.unsubscribe();
   }, []);
 
   const handleNewListing = () => {
     navigate('/admin/dashboard');
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem('adminToken');
-    setIsAdmin(false);
-    // Refresh the page to reload listings without admin privileges
-    window.location.reload();
+  const handleLogout = async () => {
+    try {
+      await supabase.auth.signOut();
+      setIsAdmin(false);
+      // Navigate to home page after logout
+      navigate('/');
+    } catch (error) {
+      console.error('Logout error:', error);
+      // Fallback: refresh the page
+      window.location.reload();
+    }
   };
 
   const handleEditListing = (listing: Listing) => {
