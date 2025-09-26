@@ -47,7 +47,7 @@ function ListingsPage() {
   const modalContext = useContext(ModalContext);
 
   // Sıralama seçenekleri
-  const [sortOption, setSortOption] = useState<'price-desc' | 'price-asc' | 'date-desc' | 'date-asc'>('date-desc');
+  const [sortOption, setSortOption] = useState<'price-desc' | 'price-asc' | 'date-desc' | 'date-asc' | 'm2-desc' | 'm2-asc'>('date-desc');
   const [isSortDropdownOpen, setIsSortDropdownOpen] = useState(false);
 
   // Sıralama seçenekleri tanımı
@@ -55,7 +55,9 @@ function ListingsPage() {
     { key: 'price-desc' as const, label: 'Fiyata göre önce en yüksek' },
     { key: 'price-asc' as const, label: 'Fiyata göre önce en düşük' },
     { key: 'date-desc' as const, label: 'Tarihe göre önce en yeni' },
-    { key: 'date-asc' as const, label: 'Tarihe göre önce en eski' }
+    { key: 'date-asc' as const, label: 'Tarihe göre önce en eski' },
+    { key: 'm2-desc' as const, label: 'm²\'ye göre önce en yüksek' },
+    { key: 'm2-asc' as const, label: 'm²\'ye göre önce en düşük' }
   ];
   
   // Filtre state'i - localStorage'dan yükle veya default olarak arsa seçili
@@ -264,6 +266,18 @@ function ListingsPage() {
           return b.fiyat - a.fiyat;
         case 'price-asc':
           return a.fiyat - b.fiyat;
+        case 'm2-desc':
+          // m²'ye göre önce en yüksek (null değerler en sonda)
+          if (!a.m2 && !b.m2) return 0;
+          if (!a.m2) return 1;
+          if (!b.m2) return -1;
+          return b.m2 - a.m2;
+        case 'm2-asc':
+          // m²'ye göre önce en düşük (null değerler en sonda)
+          if (!a.m2 && !b.m2) return 0;
+          if (!a.m2) return 1;
+          if (!b.m2) return -1;
+          return a.m2 - b.m2;
         case 'date-desc':
           return new Date(b.ilan_tarihi).getTime() - new Date(a.ilan_tarihi).getTime();
         case 'date-asc':
