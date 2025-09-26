@@ -50,6 +50,10 @@ function ListingsPage() {
   const [sortOption, setSortOption] = useState<'price-desc' | 'price-asc' | 'date-desc' | 'date-asc' | 'm2-desc' | 'm2-asc'>('date-desc');
   const [isSortDropdownOpen, setIsSortDropdownOpen] = useState(false);
 
+  // Pagination state'leri
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 12; // Her sayfada maksimum 12 ilan
+
   // Sıralama seçenekleri tanımı
   const sortOptions = [
     { key: 'price-desc' as const, label: 'Fiyata göre önce en yüksek' },
@@ -114,6 +118,11 @@ function ListingsPage() {
   // Filtreleri localStorage'a kaydet
   useEffect(() => {
     localStorage.setItem('listingFilters', JSON.stringify(filters));
+  }, [filters]);
+
+  // Filtreler değiştiğinde sayfayı başa al
+  useEffect(() => {
+    setCurrentPage(1);
   }, [filters]);
 
   // Dropdown dışına tıklandığında kapat
@@ -290,6 +299,16 @@ function ListingsPage() {
     return sortedListings;
   }, [listings, filters, sortOption]);
 
+  // Pagination için mevcut sayfadaki ilanları al
+  const paginatedListings = useMemo(() => {
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    return filteredListings.slice(startIndex, endIndex);
+  }, [filteredListings, currentPage, itemsPerPage]);
+
+  // Toplam sayfa sayısı
+  const totalPages = Math.ceil(filteredListings.length / itemsPerPage);
+
   // Dinamik başlık metni oluşturma
   const getPageTitle = () => {
     if (filters.category === 'arsa') {
@@ -378,7 +397,7 @@ function ListingsPage() {
               </div>
             ) : (
               <ListingList
-                listings={filteredListings}
+                listings={paginatedListings}
                 isAdmin={isAdmin}
                 onUpdate={() => window.location.reload()}
                 onEditListing={modalContext.onEditListing}
@@ -386,6 +405,35 @@ function ListingsPage() {
             )}
           </div>
         </div>
+
+        {/* Pagination Kontrolleri */}
+        {totalPages > 1 && (
+          <div className="pagination-container" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 'var(--spacing-sm)', marginTop: 'var(--spacing-xl)', padding: 'var(--spacing-lg)' }}>
+            <button
+              className="btn btn-secondary"
+              onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
+              disabled={currentPage === 1}
+              style={{ padding: 'var(--spacing-sm) var(--spacing-md)' }}
+            >
+              <i className="fas fa-chevron-left"></i>
+              Önceki
+            </button>
+
+            <div className="pagination-info" style={{ margin: '0 var(--spacing-md)', fontWeight: '500' }}>
+              Sayfa {currentPage} / {totalPages}
+            </div>
+
+            <button
+              className="btn btn-secondary"
+              onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
+              disabled={currentPage === totalPages}
+              style={{ padding: 'var(--spacing-sm) var(--spacing-md)' }}
+            >
+              Sonraki
+              <i className="fas fa-chevron-right"></i>
+            </button>
+          </div>
+        )}
       </div>
 
     </div>
