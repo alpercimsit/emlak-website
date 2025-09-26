@@ -408,29 +408,144 @@ function ListingsPage() {
 
         {/* Pagination Kontrolleri */}
         {totalPages > 1 && (
-          <div className="pagination-container" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 'var(--spacing-sm)', marginTop: 'var(--spacing-xl)', padding: 'var(--spacing-lg)' }}>
+          <div className="pagination-container" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 'var(--spacing-xs)', marginTop: 'var(--spacing-xl)', padding: 'var(--spacing-lg)' }}>
+            {/* Önceki Sayfa Butonu */}
             <button
-              className="btn btn-secondary"
+              className="pagination-btn"
               onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
               disabled={currentPage === 1}
-              style={{ padding: 'var(--spacing-sm) var(--spacing-md)' }}
+              style={{
+                padding: 'var(--spacing-sm)',
+                border: '1px solid var(--border-color)',
+                backgroundColor: currentPage === 1 ? 'var(--background-color)' : 'var(--surface-color)',
+                color: currentPage === 1 ? 'var(--text-muted)' : 'var(--text-color)',
+                cursor: currentPage === 1 ? 'not-allowed' : 'pointer',
+                borderRadius: '4px',
+                fontSize: '14px',
+                backgroundColor: 'var(--bg-primary)'
+              }}
             >
-              <i className="fas fa-chevron-left"></i>
-              Önceki
+              «
             </button>
 
-            <div className="pagination-info" style={{ margin: '0 var(--spacing-md)', fontWeight: '500' }}>
-              Sayfa {currentPage} / {totalPages}
+            {/* Sayfa Numaraları */}
+            <div style={{ display: 'flex', gap: '4px', alignItems: 'center' }}>
+              {(() => {
+                const pages = [];
+                const showPages = 8; // Maksimum gösterilecek sayfa sayısı
+                let startPage = Math.max(1, currentPage - Math.floor(showPages / 2));
+                let endPage = Math.min(totalPages, startPage + showPages - 1);
+
+                // Eğer son sayfa gösteriliyorsa, başlangıç sayfasını ayarla
+                if (endPage - startPage + 1 < showPages) {
+                  startPage = Math.max(1, endPage - showPages + 1);
+                }
+
+                // İlk sayfa her zaman göster
+                if (startPage > 1) {
+                  pages.push(
+                    <button
+                      key={1}
+                      className="pagination-btn"
+                      onClick={() => setCurrentPage(1)}
+                      style={{
+                        padding: 'var(--spacing-sm) var(--spacing-md)',
+                        border: '1px solid var(--border-color)',
+                        backgroundColor: 1 === currentPage ? 'var(--primary-color)' : 'var(--surface-color)',
+                        color: 1 === currentPage ? 'white' : 'var(--text-color)',
+                        cursor: 'pointer',
+                        borderRadius: '4px',
+                        fontSize: '14px',
+                        minWidth: '36px'
+                      }}
+                    >
+                      1
+                    </button>
+                  );
+
+                  if (startPage > 2) {
+                    pages.push(
+                      <span key="start-ellipsis" style={{ margin: '0 var(--spacing-xs)', color: 'var(--text-muted)' }}>
+                        ...
+                      </span>
+                    );
+                  }
+                }
+
+                // Sayfa numaralarını ekle
+                for (let i = startPage; i <= endPage; i++) {
+                  pages.push(
+                    <button
+                      key={i}
+                      className="pagination-btn"
+                      onClick={() => setCurrentPage(i)}
+                      style={{
+                        padding: 'var(--spacing-sm) var(--spacing-md)',
+                        border: '1px solid var(--border-color)',
+                        backgroundColor: i === currentPage ? 'var(--primary-color)' : 'var(--surface-color)',
+                        color: i === currentPage ? 'white' : 'var(--text-color)',
+                        cursor: 'pointer',
+                        borderRadius: '4px',
+                        fontSize: '14px',
+                        minWidth: '36px'
+                      }}
+                    >
+                      {i}
+                    </button>
+                  );
+                }
+
+                // Son sayfa her zaman göster
+                if (endPage < totalPages) {
+                  if (endPage < totalPages - 1) {
+                    pages.push(
+                      <span key="end-ellipsis" style={{ margin: '0 var(--spacing-xs)', color: 'var(--text-muted)' }}>
+                        ...
+                      </span>
+                    );
+                  }
+
+                  pages.push(
+                    <button
+                      key={totalPages}
+                      className="pagination-btn"
+                      onClick={() => setCurrentPage(totalPages)}
+                      style={{
+                        padding: 'var(--spacing-sm) var(--spacing-md)',
+                        border: '1px solid var(--border-color)',
+                        backgroundColor: totalPages === currentPage ? 'var(--primary-color)' : 'var(--surface-color)',
+                        color: totalPages === currentPage ? 'white' : 'var(--text-color)',
+                        cursor: 'pointer',
+                        borderRadius: '4px',
+                        fontSize: '14px',
+                        minWidth: '36px'
+                      }}
+                    >
+                      {totalPages}
+                    </button>
+                  );
+                }
+
+                return pages;
+              })()}
             </div>
 
+            {/* Sonraki Sayfa Butonu */}
             <button
-              className="btn btn-secondary"
+              className="pagination-btn"
               onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
               disabled={currentPage === totalPages}
-              style={{ padding: 'var(--spacing-sm) var(--spacing-md)' }}
+              style={{
+                padding: 'var(--spacing-sm)',
+                border: '1px solid var(--border-color)',
+                backgroundColor: currentPage === totalPages ? 'var(--background-color)' : 'var(--surface-color)',
+                color: currentPage === totalPages ? 'var(--text-muted)' : 'var(--text-color)',
+                cursor: currentPage === totalPages ? 'not-allowed' : 'pointer',
+                borderRadius: '4px',
+                fontSize: '14px'
+              }}
             >
-              Sonraki
-              <i className="fas fa-chevron-right"></i>
+              »
             </button>
           </div>
         )}
