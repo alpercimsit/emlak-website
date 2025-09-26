@@ -76,7 +76,7 @@ function ContactPage() {
             <div className="col-12 col-lg-6">
               <div style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
                 {/* Address and Contact Sections Side by Side */}
-                <div style={{ display: 'flex', gap: 'var(--spacing-lg)' }}>
+                <div style={{ display: 'flex', gap: 'var(--spacing-lg)', padding: '0 0 var(--spacing-lg) 0' }}>
                   {/* Address Section - Left */}
                   <div style={{ flex: 1 }}>
                     <div className="d-flex align-center gap-3" style={{ textAlign: 'left' }}>
@@ -105,7 +105,7 @@ function ContactPage() {
 
                   {/* Contact Persons Section - Right */}
                   <div style={{ flex: 1 }}>
-                    <div style={{ textAlign: 'left' }}>
+                    <div className="d-flex align-center gap-3" style={{ textAlign: 'left' }}>
                       <div style={{
                         width: '50px',
                         height: '50px',
