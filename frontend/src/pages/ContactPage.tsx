@@ -49,7 +49,7 @@ function ContactPage() {
         content: `
           <div style="text-align: center; font-family: Arial, sans-serif;">
             <h4 style="margin: 0 0 10px 0; color: #333;">Öz Kafkas Emlak</h4>
-            <p style="margin: 0; color: #666;">Büyükyoncalı Mah. Atatürk Cad. No: 27/1B<br>Saray / Tekirdağ</p>
+            <p style="margin: 0; color: #666;">Büyükyoncalı Merkez Mah. Atatürk Cad. No: 27/1B<br>Saray / Tekirdağ</p>
           </div>
         `
       });
@@ -96,7 +96,7 @@ function ContactPage() {
                       <div>
                         <strong style={{ fontSize: '1.1rem' }}>Adres</strong>
                         <p style={{ margin: 'var(--spacing-xs) 0 0 0', color: 'var(--text-primary)', lineHeight: '1.5' }}>
-                          Büyükyoncalı Mah. Atatürk Cad. No: 27/1B<br />
+                          Büyükyoncalı Merkez Mah. Atatürk Cad. No: 27/1B<br />
                           Saray / Tekirdağ
                         </p>
                       </div>

@@ -187,6 +187,8 @@ function ListingDetailPage() {
           <h3
             style={{ fontSize: '1.1rem', margin: 0, bottom: 13, position: 'relative', cursor: 'pointer' }}
             onClick={() => navigate('/iletisim')}
+            onMouseEnter={(e) => (e.target as HTMLElement).style.textDecoration = 'underline'}
+            onMouseLeave={(e) => (e.target as HTMLElement).style.textDecoration = 'none'}
           >
             Bizimle İletişime Geçin
           </h3>
