@@ -181,11 +181,15 @@ function ListingDetailPage() {
 
         {/* İletişim Bölümü - İlan Başlığı Yanında */}
         <div
-          className="contact-section clickable-contact contact-header contact-large"
-          style={{ cursor: 'pointer', marginLeft: 'var(--spacing-lg)' }}
-          onClick={() => navigate('/iletisim')}
+          className="contact-section contact-header contact-large"
+          style={{ marginLeft: 'var(--spacing-lg)', backgroundColor: 'var(--bg-primary)' }}
         >
-          <h3 style={{ fontSize: '1.1rem', margin: 0, bottom: 13, position: 'relative' }}>Bizimle İletişime Geçin</h3>
+          <h3
+            style={{ fontSize: '1.1rem', margin: 0, bottom: 13, position: 'relative', cursor: 'pointer' }}
+            onClick={() => navigate('/iletisim')}
+          >
+            Bizimle İletişime Geçin
+          </h3>
           <div className="contact-info-horizontal" style={{ position: 'relative', bottom: 13 }}>
             <div className="contact-item" >
               <i className="fas fa-map-marker-alt"></i>
