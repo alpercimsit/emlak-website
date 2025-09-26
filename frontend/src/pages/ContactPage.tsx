@@ -27,10 +27,12 @@ function ContactPage() {
 
       const mapOptions = {
         center: { lat: latitude, lng: longitude },
-        zoom: 15,
+        zoom: 18,
+        mapTypeId: 'hybrid',
         mapTypeControl: true,
-        streetViewControl: true,
+        streetViewControl: false,
         fullscreenControl: true
+
       };
 
       const map = new window.google.maps.Map(document.getElementById('contact-map'), mapOptions);
