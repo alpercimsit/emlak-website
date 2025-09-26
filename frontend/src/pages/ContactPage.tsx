@@ -2,22 +2,19 @@ import { useEffect } from 'react';
 
 function ContactPage() {
   useEffect(() => {
-    // Initialize map when component mounts
+    // Initialize Google Map when component mounts
     const initializeMap = () => {
-      // Check if Leaflet is already loaded
-      if (typeof window.L === 'undefined') {
-        // Load Leaflet CSS and JS if not already loaded
-        const link = document.createElement('link');
-        link.rel = 'stylesheet';
-        link.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
-        document.head.appendChild(link);
-
-        const script = document.createElement('script');
-        script.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
-        script.onload = () => {
-          createMap();
+      // Check if Google Maps is loaded
+      if (typeof window.google === 'undefined' || typeof window.google.maps === 'undefined') {
+        // Wait for Google Maps API to load
+        const checkGoogleMaps = () => {
+          if (typeof window.google !== 'undefined' && typeof window.google.maps !== 'undefined') {
+            createMap();
+          } else {
+            setTimeout(checkGoogleMaps, 100);
+          }
         };
-        document.head.appendChild(script);
+        checkGoogleMaps();
       } else {
         createMap();
       }
@@ -25,25 +22,42 @@ function ContactPage() {
 
     const createMap = () => {
       // Coordinates for Büyükyoncalı Mah. Atatürk Cad. No: 27/1B Saray Tekirdağ
-      // Approximate coordinates for Tekirdağ, Saray district
       const latitude = 41.377956;
       const longitude = 27.928578;
 
-      const map = window.L.map('contact-map').setView([latitude, longitude], 15);
+      const mapOptions = {
+        center: { lat: latitude, lng: longitude },
+        zoom: 15,
+        mapTypeControl: true,
+        streetViewControl: true,
+        fullscreenControl: true
+      };
 
-      window.L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '© OpenStreetMap contributors',
-        maxZoom: 19
-      }).addTo(map);
+      const map = new window.google.maps.Map(document.getElementById('contact-map'), mapOptions);
 
-      const marker = window.L.marker([latitude, longitude]).addTo(map);
-      marker.bindPopup(`
-        <div style="text-align: center;">
-          <strong>Öz Kafkas Emlak</strong><br/>
-          Büyükyoncalı Mah. Atatürk Cad. No: 27/1B<br/>
-          Saray / Tekirdağ
-        </div>
-      `).openPopup();
+      // Create marker
+      const marker = new window.google.maps.Marker({
+        position: { lat: latitude, lng: longitude },
+        map: map,
+        title: 'Öz Kafkas Emlak'
+      });
+
+      // Create info window
+      const infoWindow = new window.google.maps.InfoWindow({
+        content: `
+          <div style="text-align: center; font-family: Arial, sans-serif;">
+            <h4 style="margin: 0 0 10px 0; color: #333;">Öz Kafkas Emlak</h4>
+            <p style="margin: 0; color: #666;">Büyükyoncalı Mah. Atatürk Cad. No: 27/1B<br>Saray / Tekirdağ</p>
+          </div>
+        `
+      });
+
+      marker.addListener('click', () => {
+        infoWindow.open(map, marker);
+      });
+
+      // Open info window by default
+      infoWindow.open(map, marker);
     };
 
     initializeMap();
