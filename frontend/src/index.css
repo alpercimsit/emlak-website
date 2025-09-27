@@ -327,7 +327,7 @@ p {
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-xs);
+  gap: calc(var(--spacing-xs) / 2);
 }
 
 .meta-row {
@@ -496,14 +496,17 @@ textarea.form-control {
   }
 
   .navbar-container {
-    flex-direction: column;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
     gap: var(--spacing-md);
+    padding: var(--spacing-sm) 0;
   }
 
   .navbar-content {
-    flex-direction: column;
-    gap: var(--spacing-sm);
-    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
   }
 
   .admin-nav-buttons {
@@ -511,60 +514,102 @@ textarea.form-control {
   }
 
   .navbar-nav {
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: var(--spacing-sm);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
   }
 
-  h1 { font-size: 1.875rem; } 
+  h1 { font-size: 1.875rem; }
   h2 { font-size: 1.5rem; }
 
-  .listings-title-section h1.listings-page-title {
-    font-size: 20px !important;
-    padding-left: 0;
-    text-align: center;
+  /* Listings page mobil optimizasyonları - daha kapsamlı */
+  .listings-container {
+    padding: 0 !important;
   }
 
-  /* Kompakt kartlar için responsive */
+  /* Tüm filter elementlerini gizle */
+  .filter-sidebar,
+  .filter-panel {
+    display: none !important;
+  }
+
+  /* Listings grid için mobil optimizasyon */
   .listings-grid {
     gap: var(--spacing-sm);
+    padding: 0 var(--spacing-sm);
   }
 
+  /* Listing kartları için mobil optimizasyon */
   .listing-card-compact {
-    height: 120px;
+    height: auto !important;
+    min-height: 100px;
+    margin-bottom: var(--spacing-sm);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
   }
 
   .listing-image-container {
-    width: 120px;
-    height: 120px;
+    width: 100% !important;
+    height: 150px !important;
+    border-radius: var(--radius-md) var(--radius-md) 0 0;
   }
 
   .listing-info {
-    padding: var(--spacing-xs) var(--spacing-sm);
+    padding: var(--spacing-md) !important;
   }
 
   .listing-title-compact {
-    font-size: 0.9rem;
+    font-size: 0.95rem !important;
+    line-height: 1.4;
+    margin-bottom: var(--spacing-sm);
   }
 
   .listing-price-compact {
-    font-size: 1rem;
+    font-size: 1.1rem !important;
+    margin-bottom: var(--spacing-sm);
   }
 
   .meta-row {
+    flex-direction: row !important;
+    gap: var(--spacing-sm);
+    align-items: center;
     font-size: 0.8rem;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    display: flex !important;
   }
 
-  .listing-meta {
-    flex-direction: column;
-    align-items: flex-start;
+  /* Meta row içindeki span'lar için daha iyi görünüm */
+  .meta-row span {
+    display: flex !important;
+    align-items: center;
     gap: var(--spacing-xs);
+    white-space: nowrap;
+    flex-shrink: 0;
+  
+  }
+
+  /* Navigation linkleri için mobil */
+  .nav-link {
+    padding: var(--spacing-xs) var(--spacing-sm);
+    text-align: center;
+    font-size: 0.9rem;
+    white-space: nowrap;
   }
 }
 
 @media (max-width: 480px) {
   .navbar-brand {
-    font-size: 1.25rem;
+    font-size: 1.1rem;
+  }
+
+  .navbar-container {
+    gap: var(--spacing-sm);
+    padding: var(--spacing-xs) 0;
+  }
+
+  .navbar-content {
+    gap: var(--spacing-sm);
   }
 
   .btn {
@@ -574,6 +619,81 @@ textarea.form-control {
 
   .card-body {
     padding: var(--spacing-md);
+  }
+
+  /* Daha küçük ekranlar için listings optimizasyonu */
+  .container {
+    padding: 0 var(--spacing-xs) !important;
+  }
+
+  .listings-page-title {
+    font-size: 18px !important;
+    padding: 0 var(--spacing-xs);
+  }
+
+  .listing-card-compact {
+    margin-bottom: var(--spacing-xs);
+  }
+
+  .listing-image-container {
+    height: 100px !important;
+    width: 100px !important;
+  }
+
+  .listing-info {
+    padding: var(--spacing-xs) var(--spacing-sm) !important;
+    height: 100px !important;
+    gap: calc(var(--spacing-xs) / 3) !important;
+  }
+
+  .listing-card-compact {
+    height: 100px !important;
+  }
+
+  .listing-title-compact {
+    font-size: 0.85rem !important;
+    line-height: 1.1;
+    display: -webkit-box !important;
+    -webkit-line-clamp: 2 !important;
+    -webkit-box-orient: vertical !important;
+    line-clamp: 2 !important;
+    box-orient: vertical !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    max-height: calc(1.1em * 2) !important;
+    min-height: calc(1.1em * 2) !important;
+    margin-bottom: calc(var(--spacing-xs) / 2) !important;
+  }
+
+  .listing-price-compact {
+    font-size: 1rem !important;
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+
+  .meta-row span {
+    font-size: 0.75rem;
+    gap: calc(var(--spacing-xs) / 2);
+    display: flex !important;
+    align-items: center;
+    flex-shrink: 0;
+  }
+
+  /* Meta row için daha küçük ekranlarda da flex-direction row garanti et */
+  .meta-row {
+    flex-direction: row !important;
+    gap: var(--spacing-xs);
+  }
+
+  /* Navigation daha küçük ekranlarda */
+  .navbar-nav {
+    gap: var(--spacing-xs);
+  }
+
+  .nav-link {
+    padding: var(--spacing-xs);
+    font-size: 0.8rem;
+    min-width: 60px;
   }
 }
 
@@ -1111,17 +1231,21 @@ textarea.form-control {
 
 @media (max-width: 768px) {
   .listings-layout {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr !important;
     gap: var(--spacing-md);
   }
 
   .filter-sidebar {
-    position: static;
-    order: 2;
+    display: none !important; /* Mobil'de filter sidebar'ı gizle */
+  }
+
+  .filter-panel {
+    display: none !important; /* Filter panel de gizlensin */
   }
 
   .listings-content {
     order: 1;
+    width: 100% !important;
   }
 
   .listings-container {
@@ -1129,21 +1253,119 @@ textarea.form-control {
     flex-direction: column;
   }
 
+  .listings-title-section {
+    padding-left: 0 !important; /* Mobil'de padding kaldırma */
+    flex-direction: column;
+    gap: var(--spacing-md);
+    align-items: stretch !important;
+  }
+
   .listings-header {
     position: static;
-    align-self: flex-end;
+    align-self: stretch;
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .listings-page-title {
+    font-size: 20px !important;
+    text-align: center;
+    margin-bottom: var(--spacing-sm);
   }
 
   .category-buttons {
     flex-direction: column;
+    width: 100%;
   }
-  
+
+  .category-button-wrapper {
+    width: 100%;
+  }
+
+  .category-btn {
+    width: 100%;
+    justify-content: center;
+  }
+
   .submenu {
     position: static;
     margin-top: var(--spacing-sm);
     box-shadow: none;
     border: none;
     background: var(--bg-secondary);
+    width: 100%;
+  }
+
+  /* İlan kartları için mobil optimizasyon - PC gibi yatay düzen */
+  .listing-card-compact {
+    height: 120px !important;
+    flex-direction: row !important;
+    gap: 0 !important;
+    overflow: hidden !important;
+  }
+
+  .listing-image-container {
+    width: 120px !important;
+    height: 120px !important;
+    flex-shrink: 0 !important;
+  }
+
+  .listing-info {
+    padding: calc(var(--spacing-sm) / 1.7) calc(var(--spacing-md) / 1.3) !important;
+    flex: 1 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: flex-start !important;
+    height: 120px !important;
+    gap: calc(var(--spacing-xs) / 2) !important;
+  }
+
+  .listing-title-compact {
+    font-size: 0.95rem !important;
+    line-height: 1.15;
+    display: -webkit-box !important;
+    -webkit-line-clamp: 2 !important;
+    -webkit-box-orient: vertical !important;
+    line-clamp: 2 !important;
+    box-orient: vertical !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    max-height: calc(1.2em * 2) !important;
+    min-height: calc(1.1em * 2) !important;
+    margin-bottom: calc(var(--spacing-xs) / 2) !important;
+  }
+
+  .listing-price-compact {
+    font-size: 1.1rem !important;
+    margin-top: 5px;
+    margin-bottom: 0;
+  }
+
+  .listing-header {
+    margin-bottom: calc(var(--spacing-xs) / 2) !important;
+  }
+
+  .meta-row {
+    flex-direction: column;
+    gap: var(--spacing-xs);
+    align-items: flex-start;
+  }
+
+  .meta-row span {
+    font-size: 0.8rem;
+    margin-top: 0;
+  }
+
+  /* Pagination için mobil düzen */
+  .pagination-container {
+    flex-wrap: wrap;
+    gap: var(--spacing-xs);
+  }
+
+  .pagination-btn {
+    padding: var(--spacing-xs) var(--spacing-sm);
+    font-size: 12px;
+    min-width: 32px;
   }
 }
 

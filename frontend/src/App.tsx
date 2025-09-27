@@ -109,7 +109,6 @@ function App() {
                   window.location.href = '/';
                 }}
               >
-                <i className="fas fa-home"></i>
                 Öz Kafkas Emlak
               </Link>
               <div className="navbar-content">
