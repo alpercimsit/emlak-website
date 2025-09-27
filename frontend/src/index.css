@@ -2765,4 +2765,29 @@ input[type="number"]::-webkit-inner-spin-button {
 
 /* Enhanced shadow animations */
 
+/* Mobile Zoom Restrictions - Only affects mobile devices */
+@media screen and (max-width: 768px) {
+  /* Prevent zoom gestures on mobile */
+  html {
+    touch-action: manipulation;
+  }
 
+  body {
+    touch-action: manipulation;
+  }
+
+  /* Disable double-tap zoom on iOS Safari */
+  * {
+    -webkit-touch-callout: none;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* Allow text selection in form elements */
+  input, textarea, select {
+    -webkit-user-select: text;
+    -webkit-touch-callout: default;
+    user-select: text;
+  }
+}
