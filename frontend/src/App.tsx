@@ -57,7 +57,7 @@ function App() {
 
   const handleLogout = async () => {
     // Show confirmation dialog
-    const confirmed = window.confirm('Yönetici modundan çıkış yapıyorsun dayı.');
+    const confirmed = window.confirm('Yönetici modundan çıkış yapıyorsun dayı. Tekrar girmek için adres çubuğunun sonuna /admin yaz.');
 
     if (!confirmed) {
       return;
