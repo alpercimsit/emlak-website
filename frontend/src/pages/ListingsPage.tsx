@@ -3,6 +3,7 @@ import { useNavigate, useSearchParams, useLocation } from 'react-router-dom';
 import api, { supabase } from '../utils/api';
 import ListingList from '../components/ListingList';
 import FilterPanel, { FilterState } from '../components/FilterPanel';
+import FilterModal from '../components/FilterModal';
 import { ModalContext } from '../App';
 
 export interface Listing {
@@ -51,6 +52,9 @@ function ListingsPage() {
   // Sıralama seçenekleri
   const [sortOption, setSortOption] = useState<'price-desc' | 'price-asc' | 'date-desc' | 'date-asc' | 'm2-desc' | 'm2-asc'>('date-desc');
   const [isSortDropdownOpen, setIsSortDropdownOpen] = useState(false);
+
+  // Mobil filtre modal state'i
+  const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
 
   // Pagination state'leri - URL'den oku
   const [currentPage, setCurrentPage] = useState(() => {
@@ -426,6 +430,27 @@ function ListingsPage() {
                 ))}
               </div>
             </div>
+
+            {/* Mobil Filtre Butonu - Sadece mobil görünümde göster */}
+            <button
+              className="filter-button-mobile"
+              onClick={() => setIsFilterModalOpen(true)}
+              style={{
+                display: 'none',
+                marginLeft: 'var(--spacing-sm)',
+                marginBottom: 'calc(var(--spacing-lg) / 1.2)',
+                padding: 'var(--spacing-sm)',
+                border: '1px solid var(--border-color)',
+                backgroundColor: 'var(--bg-primary)',
+                borderRadius: 'var(--radius-md)',
+                cursor: 'pointer',
+                color: 'var(--text-primary)',
+                fontSize: '0.875rem'
+              }}
+            >
+              <i className="fas fa-filter"></i> &nbsp;
+              Filtrele
+            </button>
           </div>
           <div className="listings-count">
             Bulunan İlan:&nbsp; <strong>{filteredListings.length}</strong>
@@ -608,6 +633,16 @@ function ListingsPage() {
             </button>
           </div>
         )}
+
+        {/* Mobil Filtre Modal */}
+        <FilterModal
+          isOpen={isFilterModalOpen}
+          onClose={() => setIsFilterModalOpen(false)}
+          filters={filters}
+          onFiltersChange={setFilters}
+          totalCount={filteredListings.length}
+          isAdmin={isAdmin}
+        />
       </div>
 
     </div>
