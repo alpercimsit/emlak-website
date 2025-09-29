@@ -215,7 +215,7 @@ function ListingDetailPage() {
               <span>536 642 47 52</span>
               &nbsp;&nbsp;&nbsp;&nbsp;
               <i className="fas fa-phone"></i>
-              <span>532 063 63 72</span>
+              <span>532 063 73 62</span>
             </div>
 
           </div>
