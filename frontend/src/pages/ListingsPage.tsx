@@ -434,7 +434,7 @@ function ListingsPage() {
             {/* Mobil Filtre Butonu - Sadece mobil görünümde göster */}
             <button
               className="filter-button-mobile"
-              onClick={() => setIsFilterModalOpen(true)}
+              onClick={() => setIsFilterModalOpen(!isFilterModalOpen)}
               style={{
                 display: 'none',
                 marginLeft: 'var(--spacing-sm)',
