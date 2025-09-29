@@ -456,7 +456,7 @@ function ListingDetailPage() {
                     gap: 'var(--spacing-sm)'
                   }}>
                     <i className="fas fa-user" style={{ fontSize: '2rem' }}></i>
-                    <span style={{ fontWeight: 600 }}>İlan sahibi bilgileri için tıklayın</span>
+                    <span style={{ fontWeight: 600 }}>Diğer bilgiler için tıklayın</span>
                   </div>
 
                   {/* Arka Yüz */}
