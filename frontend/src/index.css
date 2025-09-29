@@ -2619,14 +2619,23 @@ textarea.form-control {
     max-height: 80vh !important;
     height: auto !important;
     border-radius: var(--radius-lg) !important;
-    margin: var(--spacing-md) auto !important;
-    position: relative !important;
-    top: 57px !important;
+    margin: 0 auto !important;
+    position: absolute !important;
+    top: 157px !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    z-index: 1003 !important;
   }
 
   .filter-modal-body {
     max-height: calc(80vh - 90px) !important;
     padding: var(--spacing-sm) !important;
+  }
+
+  /* Mobil liste konteyneri için modal konumlandırma desteği */
+  .listings-container {
+    position: relative !important;
+    min-height: 200px !important;
   }
 }
 
