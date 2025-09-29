@@ -620,13 +620,23 @@ function FilterModal({ isOpen, onClose, filters, onFiltersChange, totalCount, is
             <i className="fas fa-filter" style={{ marginRight: 'var(--spacing-sm)' }}></i>
             Filtreler
           </h3>
-          <button
-            className="modal-close"
-            onClick={onClose}
-            type="button"
-          >
-            <i className="fas fa-times"></i>
-          </button>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-sm)' }}>
+            <button
+              className="btn btn-secondary btn-sm"
+              onClick={clearFilters}
+              style={{ fontSize: '0.8rem', padding: 'calc(var(--spacing-xs)) var(--spacing-sm)' }}
+            >
+              <i className="fas fa-eraser" style={{ marginRight: 'calc(var(--spacing-xs))' }}></i>
+              Temizle
+            </button>
+            <button
+              className="modal-close"
+              onClick={onClose}
+              type="button"
+            >
+              <i className="fas fa-times"></i>
+            </button>
+          </div>
         </div>
 
         <div className="modal-body filter-modal-body">
@@ -866,17 +876,6 @@ function FilterModal({ isOpen, onClose, filters, onFiltersChange, totalCount, is
               </>
             )}
 
-            {/* Temizle Butonu */}
-            <div className="filter-actions" style={{ marginTop: 'var(--spacing-md)', paddingTop: 'var(--spacing-md)', borderTop: '1px solid var(--border-color)' }}>
-              <button
-                className="btn btn-secondary btn-sm"
-                onClick={clearFilters}
-                style={{ width: '100%' }}
-              >
-                <i className="fas fa-eraser"></i>
-                Filtreleri Temizle
-              </button>
-            </div>
           </div>
         </div>
       </div>
