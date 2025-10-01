@@ -2386,6 +2386,13 @@ textarea.form-control {
     flex-direction: column;
     gap: var(--spacing-sm);
     align-items: center;
+    max-width: 100%;
+    overflow: hidden;
+  }
+
+  .photo-navigation-compact {
+    max-width: 100%;
+    overflow: hidden;
   }
 
   .photo-info-left {
@@ -2420,8 +2427,8 @@ textarea.form-control {
   }
 
   .thumbnail {
-    width: 45px;
-    height: 34px;
+    width: 35px;
+    height: 26px;
   }
 
   .pagination-dot {
@@ -2465,12 +2472,12 @@ textarea.form-control {
   }
 
   .photo-thumbnails {
-    gap: var(--spacing-xs);
+    gap: 4px;
   }
 
   .thumbnail {
-    width: 50px;
-    height: 38px;
+    width: 36px;
+    height: 30px;
   }
 }
 
