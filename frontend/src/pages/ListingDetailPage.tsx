@@ -22,6 +22,11 @@ function ListingDetailPage() {
   const [photoChangeDirection, setPhotoChangeDirection] = useState<'left' | 'right' | null>(null);
   const [thumbnailSlideDirection, setThumbnailSlideDirection] = useState<'left' | 'right' | null>(null);
 
+  // Touch/swipe gesture state'leri
+  const [touchStartX, setTouchStartX] = useState<number | null>(null);
+  const [touchStartY, setTouchStartY] = useState<number | null>(null);
+  const [isSwiping, setIsSwiping] = useState(false);
+
   useEffect(() => {
     // Check if user is admin using Supabase Auth
     const checkAdminStatus = async () => {
@@ -146,6 +151,103 @@ function ListingDetailPage() {
     }, 400); // Modal animasyonu 0.4s olduğu için 400ms
   };
 
+  // Touch event handlers for mobile swipe gestures
+  const handleTouchStart = (e: React.TouchEvent) => {
+    if (photos.length <= 1) return;
+
+    const touch = e.touches[0];
+    setTouchStartX(touch.clientX);
+    setTouchStartY(touch.clientY);
+    setIsSwiping(true);
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (!touchStartX || !touchStartY || !isSwiping || photos.length <= 1) return;
+
+    const touch = e.touches[0];
+    const deltaX = touch.clientX - (touchStartX || 0);
+    const deltaY = touch.clientY - (touchStartY || 0);
+
+    // Eğer dikey hareket çok fazla ise (yatay hareketten daha fazla ise), swipe olarak kabul etme
+    if (Math.abs(deltaY) > Math.abs(deltaX)) {
+      return;
+    }
+
+    // Minimum 30px hareket gerektir
+    if (Math.abs(deltaX) < 30) return;
+
+    // Kullanıcı hareketi sırasında görsel feedback için swipe durumunu güncelle
+    e.preventDefault();
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (!touchStartX || !isSwiping || photos.length <= 1) {
+      setTouchStartX(null);
+      setTouchStartY(null);
+      setIsSwiping(false);
+      return;
+    }
+
+    const touch = e.changedTouches[0];
+    const deltaX = touch.clientX - (touchStartX || 0);
+    const deltaY = touch.clientY - (touchStartY || 0);
+
+    // Eğer dikey hareket çok fazla ise (yatay hareketten daha fazla ise), swipe olarak kabul etme
+    if (Math.abs(deltaY) > Math.abs(deltaX)) {
+      setTouchStartX(null);
+      setTouchStartY(null);
+      setIsSwiping(false);
+      return;
+    }
+
+    // Minimum 50px hareket gerektir
+    if (Math.abs(deltaX) < 50) {
+      setTouchStartX(null);
+      setTouchStartY(null);
+      setIsSwiping(false);
+      return;
+    }
+
+    // Swipe yönüne göre navigasyon yap
+    if (deltaX > 0) {
+      // Sağdan sola swipe - önceki fotoğraf
+      const newIndex = currentImageIndex === 0 ? photos.length - 1 : currentImageIndex - 1;
+      setCurrentImageIndex(newIndex);
+      const pageIndex = Math.floor(newIndex / thumbnailsPerPage);
+      const newStartIndex = pageIndex * thumbnailsPerPage;
+      if (newStartIndex !== thumbnailStartIndex) {
+        setThumbnailStartIndex(newStartIndex);
+        setThumbnailPage(pageIndex);
+      }
+      setPhotoChangeDirection('left');
+      setIsPhotoChanging(true);
+      setTimeout(() => {
+        setIsPhotoChanging(false);
+        setPhotoChangeDirection(null);
+      }, 300);
+    } else {
+      // Soldan sağa swipe - sonraki fotoğraf
+      const newIndex = currentImageIndex === photos.length - 1 ? 0 : currentImageIndex + 1;
+      setCurrentImageIndex(newIndex);
+      const pageIndex = Math.floor(newIndex / thumbnailsPerPage);
+      const newStartIndex = pageIndex * thumbnailsPerPage;
+      if (newStartIndex !== thumbnailStartIndex) {
+        setThumbnailStartIndex(newStartIndex);
+        setThumbnailPage(pageIndex);
+      }
+      setPhotoChangeDirection('right');
+      setIsPhotoChanging(true);
+      setTimeout(() => {
+        setIsPhotoChanging(false);
+        setPhotoChangeDirection(null);
+      }, 300);
+    }
+
+    setTouchStartX(null);
+    setTouchStartY(null);
+    setIsSwiping(false);
+  };
+
   if (loading) {
     return (
       <div className="container" style={{ paddingTop: 'var(--spacing-xl)' }}>
@@ -268,6 +370,9 @@ function ListingDetailPage() {
                       : ''
                   }`}
                   onClick={handlePhotoClick}
+                  onTouchStart={handleTouchStart}
+                  onTouchMove={handleTouchMove}
+                  onTouchEnd={handleTouchEnd}
                 />
                 {photos.length > 1 && (
                   <>
