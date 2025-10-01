@@ -797,7 +797,25 @@ function ListingDetailPage() {
 
       {/* Photo Modal */}
       {showPhotoModal && photos.length > 0 && (
-        <div className="photo-modal" onClick={handleClosePhotoModal}>
+        <div
+          className="photo-modal"
+          onClick={handleClosePhotoModal}
+          onTouchStart={(e) => {
+            // Modal'da swipe hareketi varsa, modal kapanmasın diye touch start'ı engelle
+            if (photos.length <= 1) return;
+            e.stopPropagation();
+          }}
+          onTouchMove={(e) => {
+            // Modal'da swipe hareketi varsa, modal kapanmasın diye touch move'u engelle
+            if (photos.length <= 1) return;
+            e.stopPropagation();
+          }}
+          onTouchEnd={(e) => {
+            // Modal'da swipe hareketi varsa, modal kapanmasın diye touch end'i engelle
+            if (photos.length <= 1) return;
+            e.stopPropagation();
+          }}
+        >
           <div className="photo-modal-content" onClick={(e) => e.stopPropagation()}>
             <button 
               className="photo-modal-close"
@@ -814,6 +832,9 @@ function ListingDetailPage() {
                   ? (photoChangeDirection === 'left' ? 'change-photo-left' : 'change-photo-right')
                   : ''
               }`}
+              onTouchStart={handleTouchStart}
+              onTouchMove={handleTouchMove}
+              onTouchEnd={handleTouchEnd}
             />
             
             {photos.length > 1 && (
