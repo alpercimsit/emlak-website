@@ -2450,17 +2450,6 @@ textarea.form-control {
     text-align: center;
   }
 
-  /* Admin butonları için responsive */
-  @media (max-width: 900px) {
-    .contact-section.contact-header {
-      display: none;
-    }
-
-    .admin-buttons-fixed {
-      display: none;
-    }
-  }
-
   /* Tablet için responsive */
   @media (max-width: 1200px) {
     .admin-buttons-fixed {

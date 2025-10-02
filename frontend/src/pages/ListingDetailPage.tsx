@@ -775,7 +775,7 @@ function ListingDetailPage() {
             </div>
           </div>
         </div>
-
+        
         {/* İletişim Kutusu - Mobil için en altta */}
         <div className="mobile-contact-section">
           <div
