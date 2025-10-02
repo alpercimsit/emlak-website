@@ -2336,7 +2336,58 @@ textarea.form-control {
   }
 }
 
+/* Mobil İlan Detay Sayfası */
+.mobile-listing-title {
+  display: none;
+}
+
+.desktop-listing-header {
+  display: block;
+}
+
+.mobile-listing-content {
+  display: none;
+}
+
+.desktop-listing-content {
+  display: block;
+}
+
 @media (max-width: 768px) {
+  /* Mobil İlan Detay Sayfası - Responsive */
+  .mobile-listing-title {
+    display: block;
+    margin-bottom: var(--spacing-lg);
+  }
+
+  .desktop-listing-header {
+    display: none;
+  }
+
+  .mobile-listing-content {
+    display: block;
+  }
+
+  .desktop-listing-content {
+    display: none;
+  }
+
+  .mobile-listing-photos {
+    margin-bottom: var(--spacing-lg);
+  }
+
+  .mobile-listing-info {
+    margin-bottom: var(--spacing-lg);
+  }
+
+  .mobile-listing-description {
+    margin-bottom: var(--spacing-lg);
+  }
+
+  .mobile-contact-section {
+    margin-top: var(--spacing-lg);
+  }
+
   .listing-detail-title {
     font-size: 1.2rem;
   }

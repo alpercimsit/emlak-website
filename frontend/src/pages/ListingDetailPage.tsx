@@ -282,44 +282,53 @@ function ListingDetailPage() {
 
   return (
     <div style={{ paddingTop: 'var(--spacing-xl)', paddingBottom: 'var(--spacing-xl)', position: 'relative' }}>
-      
+
       <div className="container">
 
-      {/* Üst Kısım - İlan Başlığı ve İletişim */}
-      <div className="d-flex justify-between align-start mb-4" style={{ marginTop: 0 }}>
-        <h1 style={{ color: 'var(--text-primary)', position: 'relative', top: 20, fontSize: '1.5rem', fontWeight: 600, flex: 1 }}>
+      {/* Mobil İlan Başlığı - Sadece mobil görünümde göster */}
+      <div className="mobile-listing-title">
+        <h1 style={{ color: 'var(--text-primary)', fontSize: '1.5rem', fontWeight: 600, margin: 0 }}>
           {listing.baslik || 'Başlık belirtilmemiş'}
         </h1>
+      </div>
 
-        {/* İletişim Bölümü - İlan Başlığı Yanında */}
-        <div
-          className="contact-section contact-header contact-large"
-          style={{ marginLeft: 'var(--spacing-lg)', backgroundColor: 'var(--bg-primary)' }}
-        >
-          <h3
-            style={{ fontSize: '1.1rem', margin: 0, bottom: 13, position: 'relative', cursor: 'pointer' }}
-            onClick={() => navigate('/iletisim')}
-            onMouseEnter={(e) => (e.target as HTMLElement).style.textDecoration = 'underline'}
-            onMouseLeave={(e) => (e.target as HTMLElement).style.textDecoration = 'none'}
+      {/* Desktop İlan Başlığı ve İletişim - Sadece desktop görünümde göster */}
+      <div className="desktop-listing-header">
+        <div className="d-flex justify-between align-start mb-4" style={{ marginTop: 0 }}>
+          <h1 style={{ color: 'var(--text-primary)', position: 'relative', top: 20, fontSize: '1.5rem', fontWeight: 600, flex: 1 }}>
+            {listing.baslik || 'Başlık belirtilmemiş'}
+          </h1>
+
+          {/* İletişim Bölümü - İlan Başlığı Yanında */}
+          <div
+            className="contact-section contact-header contact-large"
+            style={{ marginLeft: 'var(--spacing-lg)', backgroundColor: 'var(--bg-primary)' }}
           >
-            Bizimle İletişime Geçin
-          </h3>
-          <div className="contact-info-horizontal" style={{ position: 'relative', bottom: 13 }}>
-            <div className="contact-item" >
-              <i className="fas fa-map-marker-alt"></i>
-              <span>Büyükyoncalı Mah. Atatürk Cad. No: 27/1B Saray Tekirdağ</span>
-            </div>
-            <div className="contact-item">
-              <i className="fas fa-phone"></i>
-              <span>530 465 04 14</span>
-              &nbsp;&nbsp;&nbsp;&nbsp;
-              <i className="fas fa-phone"></i>
-              <span>536 642 47 52</span>
-              &nbsp;&nbsp;&nbsp;&nbsp;
-              <i className="fas fa-phone"></i>
-              <span>532 063 73 62</span>
-            </div>
+            <h3
+              style={{ fontSize: '1.1rem', margin: 0, bottom: 13, position: 'relative', cursor: 'pointer' }}
+              onClick={() => navigate('/iletisim')}
+              onMouseEnter={(e) => (e.target as HTMLElement).style.textDecoration = 'underline'}
+              onMouseLeave={(e) => (e.target as HTMLElement).style.textDecoration = 'none'}
+            >
+              Bizimle İletişime Geçin
+            </h3>
+            <div className="contact-info-horizontal" style={{ position: 'relative', bottom: 13 }}>
+              <div className="contact-item" >
+                <i className="fas fa-map-marker-alt"></i>
+                <span>Büyükyoncalı Mah. Atatürk Cad. No: 27/1B Saray Tekirdağ</span>
+              </div>
+              <div className="contact-item">
+                <i className="fas fa-phone"></i>
+                <span>530 465 04 14</span>
+                &nbsp;&nbsp;&nbsp;&nbsp;
+                <i className="fas fa-phone"></i>
+                <span>536 642 47 52</span>
+                &nbsp;&nbsp;&nbsp;&nbsp;
+                <i className="fas fa-phone"></i>
+                <span>532 063 73 62</span>
+              </div>
 
+            </div>
           </div>
         </div>
       </div>
@@ -355,9 +364,10 @@ function ListingDetailPage() {
         </div>
       )}
 
-      <div className="listing-detail-layout">
-        {/* Sol Taraf - Fotoğraflar ve Açıklama */}
-        <div className="listing-detail-photos">
+      {/* Mobil İlan İçeriği - Sadece mobil görünümde göster */}
+      <div className="mobile-listing-content">
+        {/* Fotoğraflar */}
+        <div className="mobile-listing-photos">
           {photos.length > 0 ? (
             <>
               <div className="main-photo">
@@ -423,7 +433,6 @@ function ListingDetailPage() {
               </div>
               {photos.length > 1 && (
                 <div className="photo-thumbnails-container">
-                  {/* Üst kısım - x/y fotoğraf bilgisi, navigasyon okları ve noktalar aynı hizada */}
                   <div className="photo-thumbnails-header">
                     <div className="photo-info-left">
                       <span className="photo-counter">
@@ -431,9 +440,8 @@ function ListingDetailPage() {
                       </span>
                     </div>
 
-                    {/* Navigasyon Okları ve Pagination Dots - x/y bilgisinin sağında, aynı hizada */}
                     {photos.length > thumbnailsPerPage && (
-                      <div className="photo-navigation-compact" style={{ paddingLeft: '290px', paddingRight: '290px' }}>
+                      <div className="photo-navigation-compact" style={{ paddingLeft: 'var(--spacing-sm)', paddingRight: 'var(--spacing-sm)' }}>
                         <button
                           className="thumbnail-nav thumbnail-nav-prev"
                           onClick={() => {
@@ -494,7 +502,6 @@ function ListingDetailPage() {
                     )}
                   </div>
 
-                  {/* Thumbnail çubuğu - Sabit boyut */}
                   <div className="photo-thumbnails-wrapper">
                     <div className="photo-thumbnails">
                       {photos
@@ -522,119 +529,108 @@ function ListingDetailPage() {
               <p>Bu ilan için fotoğraf bulunmuyor</p>
             </div>
           )}
-          
-          {/* İlan Sahibi Bilgileri - Fotoğrafların altında */}
-          {isAdmin && (
-            <div className="owner-card-container" style={{ marginTop: 'var(--spacing-lg)' }}>
-              <div
-                className={`owner-flip-card ${showOwnerInfo ? 'flipped' : ''}`}
-                onClick={() => setShowOwnerInfo(!showOwnerInfo)}
-                style={{
-                  width: '100%',
-                  height: '140px',
-                  perspective: '1000px',
-                  cursor: 'pointer'
-                }}
-              >
+        </div>
+
+        {/* İlan Sahibi Bilgileri - Fotoğrafların altında, sadece admin için */}
+        {isAdmin && (
+          <div className="owner-card-container" style={{ marginTop: 'var(--spacing-lg)' }}>
+            <div
+              className={`owner-flip-card ${showOwnerInfo ? 'flipped' : ''}`}
+              onClick={() => setShowOwnerInfo(!showOwnerInfo)}
+              style={{
+                width: '100%',
+                height: '140px',
+                perspective: '1000px',
+                cursor: 'pointer'
+              }}
+            >
+              <div style={{
+                position: 'relative',
+                width: '100%',
+                height: '100%',
+                textAlign: 'center',
+                transition: 'transform 0.6s',
+                transformStyle: 'preserve-3d',
+                transform: showOwnerInfo ? 'rotateY(180deg)' : 'rotateY(0deg)'
+              }}>
                 <div style={{
-                  position: 'relative',
+                  position: 'absolute',
                   width: '100%',
                   height: '100%',
-                  textAlign: 'center',
-                  transition: 'transform 0.6s',
-                  transformStyle: 'preserve-3d',
-                  transform: showOwnerInfo ? 'rotateY(180deg)' : 'rotateY(0deg)'
+                  backfaceVisibility: 'hidden',
+                  background: 'var(--primary-color)',
+                  color: 'white',
+                  borderRadius: 'var(--radius-md)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  flexDirection: 'column',
+                  gap: 'var(--spacing-sm)'
                 }}>
-                  {/* Ön Yüz */}
-                  <div style={{
-                    position: 'absolute',
-                    width: '100%',
-                    height: '100%',
-                    backfaceVisibility: 'hidden',
-                    background: 'var(--primary-color)',
-                    color: 'white',
-                    borderRadius: 'var(--radius-md)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    flexDirection: 'column',
-                    gap: 'var(--spacing-sm)'
-                  }}>
-                    <i className="fas fa-user" style={{ fontSize: '2rem' }}></i>
-                    <span style={{ fontWeight: 600 }}>Diğer bilgiler için tıklayın</span>
+                  <i className="fas fa-user" style={{ fontSize: '2rem' }}></i>
+                  <span style={{ fontWeight: 600 }}>Diğer bilgiler için tıklayın</span>
+                </div>
+
+                <div style={{
+                  position: 'absolute',
+                  width: '100%',
+                  height: '100%',
+                  backfaceVisibility: 'hidden',
+                  background: 'var(--bg-primary)',
+                  border: '2px solid var(--primary-color)',
+                  borderRadius: 'var(--radius-md)',
+                  transform: 'rotateY(180deg)',
+                  padding: 'var(--spacing-md)',
+                  display: 'grid',
+                  gridTemplateColumns: '1fr 1fr',
+                  gridTemplateRows: '1fr 1fr auto',
+                  gap: 'var(--spacing-xs)',
+                  alignItems: 'center'
+                }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-xs)', fontSize: '0.85rem', gridColumn: '1', gridRow: '1' }}>
+                    <i className="fas fa-user" style={{ color: 'var(--primary-color)', width: '12px' }}></i>
+                    <span className="label"> Sahibi Adı:</span>
+                    <span>{listing.sahibi_ad || 'Belirtilmemiş'}</span>
                   </div>
 
-                  {/* Arka Yüz */}
-                  <div style={{
-                    position: 'absolute',
-                    width: '100%',
-                    height: '100%',
-                    backfaceVisibility: 'hidden',
-                    background: 'var(--bg-primary)',
-                    border: '2px solid var(--primary-color)',
-                    borderRadius: 'var(--radius-md)',
-                    transform: 'rotateY(180deg)',
-                    padding: 'var(--spacing-md)',
-                    display: 'grid',
-                    gridTemplateColumns: '1fr 1fr',
-                    gridTemplateRows: '1fr 1fr auto',
-                    gap: 'var(--spacing-xs)',
-                    alignItems: 'center'
-                  }}>
-                    {/* Sol üst - Sahibi adı */}
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-xs)', fontSize: '0.85rem', gridColumn: '1', gridRow: '1' }}>
-                      <i className="fas fa-user" style={{ color: 'var(--primary-color)', width: '12px' }}></i>
-                      <span className="label"> Sahibi Adı:</span>
-                      <span>{listing.sahibi_ad || 'Belirtilmemiş'}</span>
-                    </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-xs)', fontSize: '0.85rem', gridColumn: '2', gridRow: '1' }}>
+                    <i className="fas fa-hashtag" style={{ color: 'var(--primary-color)', width: '12px' }}></i>
+                    <span className="label"> Sahibinden No:</span>
+                    <span>{listing.sahibinden_no || 'Belirtilmemiş'}</span>
+                  </div>
 
-                    {/* Sağ üst - Sahibinden ilan no */}
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-xs)', fontSize: '0.85rem', gridColumn: '2', gridRow: '1' }}>
-                      <i className="fas fa-hashtag" style={{ color: 'var(--primary-color)', width: '12px' }}></i>
-                      <span className="label"> Sahibinden No:</span>
-                      <span>{listing.sahibinden_no || 'Belirtilmemiş'}</span>
-                    </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-xs)', fontSize: '0.85rem', gridColumn: '1', gridRow: '2' }}>
+                    <i className="fas fa-phone" style={{ color: 'var(--primary-color)', width: '12px' }}></i>
+                    <span className="label"> Sahibi Tel:</span>
+                    <span>{listing.sahibi_tel || 'Belirtilmemiş'}</span>
+                  </div>
 
-                    {/* Sol alt - Sahibi tel */}
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-xs)', fontSize: '0.85rem', gridColumn: '1', gridRow: '2' }}>
-                      <i className="fas fa-phone" style={{ color: 'var(--primary-color)', width: '12px' }}></i>
-                      <span className="label"> Sahibi Tel:</span>
-                      <span>{listing.sahibi_tel || 'Belirtilmemiş'}</span>
-                    </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-xs)', fontSize: '0.85rem', gridColumn: '2', gridRow: '2' }}>
+                    <i className="fas fa-calendar" style={{ color: 'var(--primary-color)', width: '12px' }}></i>
+                    <span className="label"> Sahibinden Tarih:</span>
+                    <span>{listing.sahibinden_tarih ? new Date(listing.sahibinden_tarih).toLocaleDateString('tr-TR') : 'Belirtilmemiş'}</span>
+                  </div>
 
-                    {/* Sağ alt - Sahibinden tarih */}
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-xs)', fontSize: '0.85rem', gridColumn: '2', gridRow: '2' }}>
-                      <i className="fas fa-calendar" style={{ color: 'var(--primary-color)', width: '12px' }}></i>
-                      <span className="label"> Sahibinden Tarih:</span>
-                      <span>{listing.sahibinden_tarih ? new Date(listing.sahibinden_tarih).toLocaleDateString('tr-TR') : 'Belirtilmemiş'}</span>
-                    </div>
-
-                    {/* Alt - Not */}
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-xs)', fontSize: '0.8rem', gridColumn: '1 / 3', gridRow: '3', borderTop: '1px solid var(--border-color)', paddingTop: 'var(--spacing-xs)' }}>
-                      <i className="fas fa-sticky-note" style={{ color: 'var(--primary-color)', width: '12px' }}></i>
-                      <span style={{ wordBreak: 'break-word' }}>{listing.not || 'Not yok'}</span>
-                    </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-xs)', fontSize: '0.8rem', gridColumn: '1 / 3', gridRow: '3', borderTop: '1px solid var(--border-color)', paddingTop: 'var(--spacing-xs)' }}>
+                    <i className="fas fa-sticky-note" style={{ color: 'var(--primary-color)', width: '12px' }}></i>
+                    <span style={{ wordBreak: 'break-word' }}>{listing.not || 'Not yok'}</span>
                   </div>
                 </div>
               </div>
             </div>
-          )}
-        </div>
+          </div>
+        )}
 
-        {/* Sağ Taraf - Bilgiler */}
-        <div className="listing-detail-info">
-
-          {/* Bilgiler - Üstte */}
+        {/* Bilgiler */}
+        <div className="mobile-listing-info">
           <div className="info-section">
             <div className="info-grid">
-              {/* Fiyat */}
               <div className="info-item">
                 <i className="fas fa-money-bill-wave"></i>
                 <span className="label">Fiyat:</span>
                 <span className="value">{listing.fiyat.toLocaleString('tr-TR')} TL</span>
               </div>
 
-              {/* Konum */}
               <div className="info-item">
                 <i className="fas fa-map-marker-alt"></i>
                 <span className="label">Konum:</span>
@@ -662,7 +658,6 @@ function ListingDetailPage() {
                 <span className="value">{listing.m2 ? `${listing.m2} m²` : 'Belirtilmemiş'}</span>
               </div>
 
-              {/* Arsa tipli ilanlar için m² fiyatı */}
               {listing.emlak_tipi === 'Arsa' && (
                 <div className="info-item">
                   <i className="fas fa-calculator"></i>
@@ -690,7 +685,6 @@ function ListingDetailPage() {
                 </div>
               )}
 
-              {/* Sadece konut tiplerinde göster */}
               {listing.emlak_tipi !== 'Arsa' && (
                 <>
                   <div className="info-item">
@@ -732,7 +726,6 @@ function ListingDetailPage() {
               )}
             </div>
 
-            {/* Özellikler - Sadece konut tiplerinde göster */}
             {listing.emlak_tipi !== 'Arsa' && (
               <div className="features">
                 {listing.balkon ? (
@@ -771,16 +764,458 @@ function ListingDetailPage() {
               </div>
             )}
           </div>
+        </div>
 
-          {/* İlan Açıklaması - Bilgi bölümünün altında */}
-          <div className="description-section" style={{ marginBottom: 'var(--spacing-md)' }}>
+        {/* Açıklama */}
+        <div className="mobile-listing-description">
+          <div className="description-section">
             <h3>İlan Açıklaması</h3>
             <div className="description-content">
               {listing.detay || 'Açıklama belirtilmemiş'}
             </div>
           </div>
+        </div>
 
-          
+        {/* İletişim Kutusu - Mobil için en altta */}
+        <div className="mobile-contact-section">
+          <div
+            className="contact-section contact-header contact-large"
+            style={{ backgroundColor: 'var(--bg-primary)', width: '100%' }}
+          >
+            <h3
+              style={{ fontSize: '1.1rem', margin: 0, bottom: 13, position: 'relative', cursor: 'pointer' }}
+              onClick={() => navigate('/iletisim')}
+              onMouseEnter={(e) => (e.target as HTMLElement).style.textDecoration = 'underline'}
+              onMouseLeave={(e) => (e.target as HTMLElement).style.textDecoration = 'none'}
+            >
+              Bizimle İletişime Geçin
+            </h3>
+            <div className="contact-info-horizontal" style={{ position: 'relative', bottom: 13 }}>
+              <div className="contact-item" >
+                <i className="fas fa-map-marker-alt"></i>
+                <span>Büyükyoncalı Mah. Atatürk Cad. No: 27/1B Saray Tekirdağ</span>
+              </div>
+              <div className="contact-item">
+                <i className="fas fa-phone"></i>
+                <span>530 465 04 14</span>
+                &nbsp;&nbsp;&nbsp;&nbsp;
+                <i className="fas fa-phone"></i>
+                <span>536 642 47 52</span>
+                &nbsp;&nbsp;&nbsp;&nbsp;
+                <i className="fas fa-phone"></i>
+                <span>532 063 73 62</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Desktop İlan İçeriği - Sadece desktop görünümde göster */}
+      <div className="desktop-listing-content">
+        <div className="listing-detail-layout">
+          <div className="listing-detail-photos">
+            {photos.length > 0 ? (
+              <>
+                <div className="main-photo">
+                  <img
+                    src={photos[currentImageIndex]}
+                    alt={listing.baslik}
+                    className={`main-photo-img ${
+                      isPhotoChanging
+                        ? (photoChangeDirection === 'left' ? 'change-photo-left' : 'change-photo-right')
+                        : ''
+                    }`}
+                    onClick={handlePhotoClick}
+                    onTouchStart={handleTouchStart}
+                    onTouchMove={handleTouchMove}
+                    onTouchEnd={handleTouchEnd}
+                  />
+                  {photos.length > 1 && (
+                    <>
+                      <button
+                        className="photo-nav photo-nav-prev"
+                        onClick={() => {
+                          const newIndex = currentImageIndex === 0 ? photos.length - 1 : currentImageIndex - 1;
+                          setCurrentImageIndex(newIndex);
+                          const pageIndex = Math.floor(newIndex / thumbnailsPerPage);
+                          const newStartIndex = pageIndex * thumbnailsPerPage;
+                          if (newStartIndex !== thumbnailStartIndex) {
+                            setThumbnailStartIndex(newStartIndex);
+                            setThumbnailPage(pageIndex);
+                          }
+                          setPhotoChangeDirection('left');
+                          setIsPhotoChanging(true);
+                          setTimeout(() => {
+                            setIsPhotoChanging(false);
+                            setPhotoChangeDirection(null);
+                          }, 300);
+                        }}
+                      >
+                        <i className="fas fa-chevron-left"></i>
+                      </button>
+                      <button
+                        className="photo-nav photo-nav-next"
+                        onClick={() => {
+                          const newIndex = currentImageIndex === photos.length - 1 ? 0 : currentImageIndex + 1;
+                          setCurrentImageIndex(newIndex);
+                          const pageIndex = Math.floor(newIndex / thumbnailsPerPage);
+                          const newStartIndex = pageIndex * thumbnailsPerPage;
+                          if (newStartIndex !== thumbnailStartIndex) {
+                            setThumbnailStartIndex(newStartIndex);
+                            setThumbnailPage(pageIndex);
+                          }
+                          setPhotoChangeDirection('right');
+                          setIsPhotoChanging(true);
+                          setTimeout(() => {
+                            setIsPhotoChanging(false);
+                            setPhotoChangeDirection(null);
+                          }, 300);
+                        }}
+                      >
+                        <i className="fas fa-chevron-right"></i>
+                      </button>
+                    </>
+                  )}
+                </div>
+                {photos.length > 1 && (
+                  <div className="photo-thumbnails-container">
+                    <div className="photo-thumbnails-header">
+                      <div className="photo-info-left">
+                        <span className="photo-counter">
+                          {currentImageIndex + 1} / {photos.length} fotoğraf
+                        </span>
+                      </div>
+
+                      {photos.length > thumbnailsPerPage && (
+                        <div className="photo-navigation-compact" style={{ paddingLeft: '290px', paddingRight: '290px' }}>
+                          <button
+                            className="thumbnail-nav thumbnail-nav-prev"
+                            onClick={() => {
+                              if (thumbnailStartIndex > 0) {
+                                const newStartIndex = Math.max(0, thumbnailStartIndex - thumbnailsPerPage);
+                                setThumbnailStartIndex(newStartIndex);
+                                setThumbnailPage(Math.floor(newStartIndex / thumbnailsPerPage));
+                                setThumbnailSlideDirection('right');
+                                setTimeout(() => setThumbnailSlideDirection(null), 300);
+                              }
+                            }}
+                            style={{
+                              visibility: 'visible',
+                              opacity: thumbnailStartIndex > 0 ? 1 : 0.3,
+                              pointerEvents: thumbnailStartIndex > 0 ? 'auto' : 'none'
+                            }}
+                          >
+                            <i className="fas fa-chevron-left"></i>
+                          </button>
+
+                          <div className="pagination-dots">
+                            {Array.from({ length: Math.ceil(photos.length / thumbnailsPerPage) }, (_, i) => (
+                              <button
+                                key={i}
+                                className={`pagination-dot ${i === thumbnailPage ? 'active' : ''}`}
+                                onClick={() => {
+                                  const newStartIndex = i * thumbnailsPerPage;
+                                  const direction = newStartIndex > thumbnailStartIndex ? 'left' : 'right';
+                                  setThumbnailStartIndex(newStartIndex);
+                                  setThumbnailPage(i);
+                                  setThumbnailSlideDirection(direction);
+                                  setTimeout(() => setThumbnailSlideDirection(null), 300);
+                                }}
+                              />
+                            ))}
+                          </div>
+
+                          <button
+                            className="thumbnail-nav thumbnail-nav-next"
+                            onClick={() => {
+                              if (thumbnailStartIndex + thumbnailsPerPage < photos.length) {
+                                const newStartIndex = thumbnailStartIndex + thumbnailsPerPage;
+                                setThumbnailStartIndex(newStartIndex);
+                                setThumbnailPage(Math.floor(newStartIndex / thumbnailsPerPage));
+                                setThumbnailSlideDirection('left');
+                                setTimeout(() => setThumbnailSlideDirection(null), 300);
+                              }
+                            }}
+                            style={{
+                              visibility: 'visible',
+                              opacity: thumbnailStartIndex + thumbnailsPerPage < photos.length ? 1 : 0.3,
+                              pointerEvents: thumbnailStartIndex + thumbnailsPerPage < photos.length ? 'auto' : 'none'
+                            }}
+                          >
+                            <i className="fas fa-chevron-right"></i>
+                          </button>
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="photo-thumbnails-wrapper">
+                      <div className="photo-thumbnails">
+                        {photos
+                          .slice(thumbnailStartIndex, Math.min(thumbnailStartIndex + thumbnailsPerPage, photos.length))
+                          .map((photo, displayIndex) => {
+                            const actualIndex = thumbnailStartIndex + displayIndex;
+                            return (
+                              <img
+                                key={actualIndex}
+                                src={photo}
+                                alt={`${listing.baslik} - ${actualIndex + 1}`}
+                                className={`thumbnail ${actualIndex === currentImageIndex ? 'active' : ''}`}
+                                onClick={() => setCurrentImageIndex(actualIndex)}
+                              />
+                            );
+                          })}
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </>
+            ) : (
+              <div className="no-photos">
+                <i className="fas fa-image"></i>
+                <p>Bu ilan için fotoğraf bulunmuyor</p>
+              </div>
+            )}
+
+            {isAdmin && (
+              <div className="owner-card-container" style={{ marginTop: 'var(--spacing-lg)' }}>
+                <div
+                  className={`owner-flip-card ${showOwnerInfo ? 'flipped' : ''}`}
+                  onClick={() => setShowOwnerInfo(!showOwnerInfo)}
+                  style={{
+                    width: '100%',
+                    height: '140px',
+                    perspective: '1000px',
+                    cursor: 'pointer'
+                  }}
+                >
+                  <div style={{
+                    position: 'relative',
+                    width: '100%',
+                    height: '100%',
+                    textAlign: 'center',
+                    transition: 'transform 0.6s',
+                    transformStyle: 'preserve-3d',
+                    transform: showOwnerInfo ? 'rotateY(180deg)' : 'rotateY(0deg)'
+                  }}>
+                    <div style={{
+                      position: 'absolute',
+                      width: '100%',
+                      height: '100%',
+                      backfaceVisibility: 'hidden',
+                      background: 'var(--primary-color)',
+                      color: 'white',
+                      borderRadius: 'var(--radius-md)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      flexDirection: 'column',
+                      gap: 'var(--spacing-sm)'
+                    }}>
+                      <i className="fas fa-user" style={{ fontSize: '2rem' }}></i>
+                      <span style={{ fontWeight: 600 }}>Diğer bilgiler için tıklayın</span>
+                    </div>
+
+                    <div style={{
+                      position: 'absolute',
+                      width: '100%',
+                      height: '100%',
+                      backfaceVisibility: 'hidden',
+                      background: 'var(--bg-primary)',
+                      border: '2px solid var(--primary-color)',
+                      borderRadius: 'var(--radius-md)',
+                      transform: 'rotateY(180deg)',
+                      padding: 'var(--spacing-md)',
+                      display: 'grid',
+                      gridTemplateColumns: '1fr 1fr',
+                      gridTemplateRows: '1fr 1fr auto',
+                      gap: 'var(--spacing-xs)',
+                      alignItems: 'center'
+                    }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-xs)', fontSize: '0.85rem', gridColumn: '1', gridRow: '1' }}>
+                        <i className="fas fa-user" style={{ color: 'var(--primary-color)', width: '12px' }}></i>
+                        <span className="label"> Sahibi Adı:</span>
+                        <span>{listing.sahibi_ad || 'Belirtilmemiş'}</span>
+                      </div>
+
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-xs)', fontSize: '0.85rem', gridColumn: '2', gridRow: '1' }}>
+                        <i className="fas fa-hashtag" style={{ color: 'var(--primary-color)', width: '12px' }}></i>
+                        <span className="label"> Sahibinden No:</span>
+                        <span>{listing.sahibinden_no || 'Belirtilmemiş'}</span>
+                      </div>
+
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-xs)', fontSize: '0.85rem', gridColumn: '1', gridRow: '2' }}>
+                        <i className="fas fa-phone" style={{ color: 'var(--primary-color)', width: '12px' }}></i>
+                        <span className="label"> Sahibi Tel:</span>
+                        <span>{listing.sahibi_tel || 'Belirtilmemiş'}</span>
+                      </div>
+
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-xs)', fontSize: '0.85rem', gridColumn: '2', gridRow: '2' }}>
+                        <i className="fas fa-calendar" style={{ color: 'var(--primary-color)', width: '12px' }}></i>
+                        <span className="label"> Sahibinden Tarih:</span>
+                        <span>{listing.sahibinden_tarih ? new Date(listing.sahibinden_tarih).toLocaleDateString('tr-TR') : 'Belirtilmemiş'}</span>
+                      </div>
+
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-xs)', fontSize: '0.8rem', gridColumn: '1 / 3', gridRow: '3', borderTop: '1px solid var(--border-color)', paddingTop: 'var(--spacing-xs)' }}>
+                        <i className="fas fa-sticky-note" style={{ color: 'var(--primary-color)', width: '12px' }}></i>
+                        <span style={{ wordBreak: 'break-word' }}>{listing.not || 'Not yok'}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+
+          <div className="listing-detail-info">
+            <div className="info-section">
+              <div className="info-grid">
+                <div className="info-item">
+                  <i className="fas fa-money-bill-wave"></i>
+                  <span className="label">Fiyat:</span>
+                  <span className="value">{listing.fiyat.toLocaleString('tr-TR')} TL</span>
+                </div>
+
+                <div className="info-item">
+                  <i className="fas fa-map-marker-alt"></i>
+                  <span className="label">Konum:</span>
+                  <span className="value">{[listing.il, listing.ilce, listing.mahalle].filter(Boolean).join(' / ') || 'Konum belirtilmemiş'}</span>
+                </div>
+
+                <div className="info-item">
+                  <i className="fas fa-hashtag"></i>
+                  <span className="label">İlan No:</span>
+                  <span className="value">{listing.ilan_no}</span>
+                </div>
+                <div className="info-item">
+                  <i className="fas fa-home"></i>
+                  <span className="label">Tip:</span>
+                  <span className="value">{formatEmlakTipi(listing.emlak_tipi)}</span>
+                </div>
+                <div className="info-item">
+                  <i className="fas fa-calendar-plus"></i>
+                  <span className="label">İlan Tarihi:</span>
+                  <span className="value">{listing.ilan_tarihi ? new Date(listing.ilan_tarihi).toLocaleDateString('tr-TR') : 'Belirtilmemiş'}</span>
+                </div>
+                <div className="info-item">
+                  <i className="fas fa-expand"></i>
+                  <span className="label">Alan:</span>
+                  <span className="value">{listing.m2 ? `${listing.m2} m²` : 'Belirtilmemiş'}</span>
+                </div>
+
+                {listing.emlak_tipi === 'Arsa' && (
+                  <div className="info-item">
+                    <i className="fas fa-calculator"></i>
+                    <span className="label">m² Fiyatı:</span>
+                    <span className="value">
+                      {listing.m2 && listing.m2 > 0
+                        ? `${Math.floor(listing.fiyat / listing.m2).toLocaleString('tr-TR')} TL/m²`
+                        : 'Belirtilmemiş'
+                      }
+                    </span>
+                  </div>
+                )}
+                {listing.emlak_tipi === 'Arsa' && (
+                  <div className="info-item">
+                    <i className="fas fa-map"></i>
+                    <span className="label">Ada No:</span>
+                    <span className="value">{listing.ada || 'Belirtilmemiş'}</span>
+                  </div>
+                )}
+                {listing.emlak_tipi === 'Arsa' && (
+                  <div className="info-item">
+                    <i className="fas fa-map-pin"></i>
+                    <span className="label">Parsel No:</span>
+                    <span className="value">{listing.parsel || 'Belirtilmemiş'}</span>
+                  </div>
+                )}
+
+                {listing.emlak_tipi !== 'Arsa' && (
+                  <>
+                    <div className="info-item">
+                      <i className="fas fa-bed"></i>
+                      <span className="label">Oda Sayısı:</span>
+                      <span className="value">{listing.oda_sayisi || 'Belirtilmemiş'}</span>
+                    </div>
+                    <div className="info-item">
+                      <i className="fas fa-building"></i>
+                      <span className="label">Bina Yaşı:</span>
+                      <span className="value">{listing.bina_yasi || 'Belirtilmemiş'}</span>
+                    </div>
+                    <div className="info-item">
+                      <i className="fas fa-layer-group"></i>
+                      <span className="label">Bulunduğu Kat:</span>
+                      <span className="value">{listing.bulundugu_kat != null ? listing.bulundugu_kat : 'Belirtilmemiş'}</span>
+                    </div>
+                    <div className="info-item">
+                      <i className="fas fa-building"></i>
+                      <span className="label">Kat Sayısı:</span>
+                      <span className="value">{listing.kat_sayisi != null ? listing.kat_sayisi : 'Belirtilmemiş'}</span>
+                    </div>
+                    <div className="info-item">
+                      <i className="fas fa-fire"></i>
+                      <span className="label">Isıtma:</span>
+                      <span className="value">{listing.isitma || 'Belirtilmemiş'}</span>
+                    </div>
+                    <div className="info-item">
+                      <i className="fas fa-bath"></i>
+                      <span className="label">Banyo:</span>
+                      <span className="value">{listing.banyo_sayisi != null ? listing.banyo_sayisi : 'Belirtilmemiş'}</span>
+                    </div>
+                    <div className="info-item">
+                      <i className="fas fa-money-bill-wave"></i>
+                      <span className="label">Aidat:</span>
+                      <span className="value">{listing.aidat != null && listing.aidat > 0 ? `${listing.aidat} TL` : 'Belirtilmemiş'}</span>
+                    </div>
+                  </>
+                )}
+              </div>
+
+              {listing.emlak_tipi !== 'Arsa' && (
+                <div className="features">
+                  {listing.balkon ? (
+                    <span className="feature">
+                      <i className="fas fa-check"></i>
+                      Balkon var
+                    </span>
+                  ) : (
+                    <span className="feature">
+                      <i className="fas fa-times"></i>
+                      Balkon yok
+                    </span>
+                  )}
+                  {listing.asansor ? (
+                    <span className="feature">
+                      <i className="fas fa-check"></i>
+                      Asansör var
+                    </span>
+                  ) : (
+                    <span className="feature">
+                      <i className="fas fa-times"></i>
+                      Asansör yok
+                    </span>
+                  )}
+                  {listing.esyali ? (
+                    <span className="feature">
+                      <i className="fas fa-check"></i>
+                      Eşyalı
+                    </span>
+                  ) : (
+                    <span className="feature">
+                      <i className="fas fa-times"></i>
+                      Eşyasız
+                    </span>
+                  )}
+                </div>
+              )}
+            </div>
+
+            <div className="description-section" style={{ marginBottom: 'var(--spacing-md)' }}>
+              <h3>İlan Açıklaması</h3>
+              <div className="description-content">
+                {listing.detay || 'Açıklama belirtilmemiş'}
+              </div>
+            </div>
+          </div>
         </div>
       </div>
       </div>
