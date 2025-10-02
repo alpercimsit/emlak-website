@@ -795,7 +795,7 @@ function ListingDetailPage() {
                 <i className="fas fa-map-marker-alt"></i>
                 <span>Büyükyoncalı Mah. Atatürk Cad. No: 27/1B Saray Tekirdağ</span>
               </div>
-              <div className="contact-item">
+              <div className="contact-item mobile-phone-contact-numbers">
                 <i className="fas fa-phone"></i>
                 <span>530 465 04 14</span>
                 &nbsp;&nbsp;&nbsp;&nbsp;

@@ -2384,10 +2384,6 @@ textarea.form-control {
     margin-bottom: var(--spacing-lg);
   }
 
-  .mobile-contact-section {
-    margin-top: var(--spacing-lg);
-  }
-
   .listing-detail-title {
     font-size: 1.2rem;
   }
@@ -2422,7 +2418,8 @@ textarea.form-control {
     width: 100% !important;
     margin-left: 0;
     height: auto !important;
-    box-sizing: border-box;
+    box-sizing: border-box !important;
+    padding: var(--spacing-lg) 0 0 var(--spacing-xs) !important;
   }
 
 
@@ -3040,12 +3037,9 @@ input[type="number"]::-webkit-inner-spin-button {
     padding-top: var(--spacing-md) !important;
   }
 
-  .mobile-contact-section {
-    width: 100% !important;
-    max-width: none !important;
-    box-sizing: border-box;
-    margin: var(--spacing-sm) 0;
-    padding: var(--spacing-md);
+  .mobile-phone-contact-numbers{
+    white-space: nowrap !important;
+    font-size: 3.3vw !important;
   }
 }
 
