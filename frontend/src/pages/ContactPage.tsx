@@ -80,7 +80,7 @@ function ContactPage() {
                   {/* Address Section - Left */}
                   <div style={{ flex: 1 }}>
                     <div className="d-flex align-center gap-3" style={{ textAlign: 'left' }}>
-                      <div style={{
+                      <div className="contact-icons" style={{
                         width: '50px',
                         height: '50px',
                         backgroundColor: 'var(--bg-tertiary)',
@@ -94,6 +94,10 @@ function ContactPage() {
                         <i className="fas fa-map-marker-alt"></i>
                       </div>
                       <div>
+                        <div className="contact-small-icons">
+                          <i className="fas fa-map-marker-alt"></i>
+                          &nbsp;
+                        </div> 
                         <strong style={{ fontSize: '1.1rem' }}>Adres</strong>
                         <p style={{ margin: 'var(--spacing-xs) 0 0 0', color: 'var(--text-primary)', lineHeight: '1.5' }}>
                           Büyükyoncalı Merkez Mah. Atatürk Cad. No: 27/1B<br />
@@ -104,9 +108,9 @@ function ContactPage() {
                   </div>
 
                   {/* Contact Persons Section - Right */}
-                  <div style={{ flex: 1 }}>
+                  <div className='contacts-info-in-contact-page' style={{ flex: 1 }}>
                     <div className="d-flex align-center gap-3" style={{ textAlign: 'left' }}>
-                      <div style={{
+                      <div className="contact-icons" style={{
                         width: '50px',
                         height: '50px',
                         backgroundColor: 'var(--bg-tertiary)',
@@ -120,6 +124,10 @@ function ContactPage() {
                         <i className="fas fa-phone"></i>
                       </div>
                       <div>
+                        <div className="contact-small-icons">
+                          <i className="fas fa-phone"></i>
+                          &nbsp;
+                        </div> 
                         <strong style={{ fontSize: '1.1rem' }}>İletişim</strong>
                         <div className="d-flex flex-column gap-2" style={{ marginTop: 'var(--spacing-sm)' }}>
                           <div className="d-flex align-center gap-3">
