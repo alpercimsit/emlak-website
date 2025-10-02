@@ -2431,7 +2431,7 @@ textarea.form-control {
   }
 
   .contact-section.contact-header .contact-info-horizontal {
-    gap: var(--spacing-xs);
+    gap: var(--spacing-xs) !important;
   }
 
   /* Fotoğraf navigasyon çubuğu mobil optimizasyonu */
@@ -3012,7 +3012,6 @@ input[type="number"]::-webkit-inner-spin-button {
   /* Contact Page: Stack address and contact info vertically on mobile */
   .contact-info-horizontal {
     flex-direction: column !important;
-    gap: var(--spacing-lg) !important;
     align-items: flex-start !important;
   }
 
