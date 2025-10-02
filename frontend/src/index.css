@@ -2957,3 +2957,13 @@ input[type="number"]::-webkit-inner-spin-button {
     }
   }
 }
+
+/* Mobile Contact Page Styles */
+@media (max-width: 768px) {
+  /* Contact Page: Stack address and contact info vertically on mobile */
+  .contact-info-horizontal {
+    flex-direction: column !important;
+    gap: var(--spacing-lg) !important;
+    padding: 20px 0 var(--spacing-lg) 0 !important;
+  }
+}
