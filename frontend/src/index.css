@@ -2964,10 +2964,11 @@ input[type="number"]::-webkit-inner-spin-button {
   .contact-info-horizontal {
     flex-direction: column !important;
     gap: var(--spacing-lg) !important;
+    align-items: flex-start !important;
   }
 
   .contacts-info-in-contact-page{
-    padding: 0 27vw 0 0;
+    padding: 0;
   }
 
   .contact-icons{
