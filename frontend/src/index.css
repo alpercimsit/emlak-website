@@ -2978,6 +2978,10 @@ input[type="number"]::-webkit-inner-spin-button {
     display: inline !important;
     color: var(--primary-color) !important;
   }
+
+  .contact-page-contact-people-n-numbers{
+    white-space: nowrap !important;
+  }
 }
 
 @media (min-width: 769px){

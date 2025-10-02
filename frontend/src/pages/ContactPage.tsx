@@ -129,7 +129,7 @@ function ContactPage() {
                           &nbsp;
                         </div> 
                         <strong style={{ fontSize: '1.1rem' }}>İletişim</strong>
-                        <div className="d-flex flex-column gap-2" style={{ marginTop: 'var(--spacing-sm)' }}>
+                        <div className="d-flex flex-column gap-2 contact-page-contact-people-n-numbers" style={{ marginTop: 'var(--spacing-sm)' }}>
                           <div className="d-flex align-center gap-3">
                             <span style={{ fontWeight: '500', color: 'var(--text-primary)', minWidth: '120px' }}>
                               Akın İncedere:
