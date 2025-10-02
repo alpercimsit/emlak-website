@@ -2417,9 +2417,20 @@ textarea.form-control {
   }
 
   .contact-section.contact-header {
-    min-width: auto;
-    max-width: none;
-    margin-left: var(--spacing-sm);
+    min-width: auto !important;
+    max-width: none !important;
+    width: 100% !important;
+    margin-left: 0;
+    height: auto !important;
+    box-sizing: border-box;
+  }
+
+
+  .contact-section {
+    width: 100% !important;
+    max-width: none !important;
+    box-sizing: border-box !important;
+    padding: var(--spacing-md) 0 0 0 !important;
   }
 
   .contact-section.contact-header .contact-info-horizontal {
@@ -2457,8 +2468,9 @@ textarea.form-control {
     }
 
     .contact-section.contact-large {
-      min-width: 250px;
-      max-width: 300px;
+      min-width: auto;
+      max-width: none;
+      width: 100%;
     }
   }
 
@@ -3026,6 +3038,14 @@ input[type="number"]::-webkit-inner-spin-button {
 
   .listing-detail-whole-page{
     padding-top: var(--spacing-md) !important;
+  }
+
+  .mobile-contact-section {
+    width: 100% !important;
+    max-width: none !important;
+    box-sizing: border-box;
+    margin: var(--spacing-sm) 0;
+    padding: var(--spacing-md);
   }
 }
 
