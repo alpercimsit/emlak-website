@@ -281,7 +281,7 @@ function ListingDetailPage() {
   const photos = listing.fotolar ? listing.fotolar.split(',').filter(url => url.trim()) : [];
 
   return (
-    <div style={{ paddingTop: 'var(--spacing-xl)', paddingBottom: 'var(--spacing-xl)', position: 'relative' }}>
+    <div className = 'listing-detail-whole-page' style={{ paddingTop: 'var(--spacing-xl)', paddingBottom: 'var(--spacing-xl)', position: 'relative' }}>
 
       <div className="container">
 

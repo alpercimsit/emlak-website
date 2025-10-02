@@ -3034,6 +3034,10 @@ input[type="number"]::-webkit-inner-spin-button {
   .contact-page-contact-people-n-numbers{
     white-space: nowrap !important;
   }
+
+  .listing-detail-whole-page{
+    padding-top: var(--spacing-md) !important;
+  }
 }
 
 @media (min-width: 769px){
