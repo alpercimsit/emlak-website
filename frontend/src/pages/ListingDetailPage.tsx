@@ -769,7 +769,7 @@ function ListingDetailPage() {
         {/* Açıklama */}
         <div className="mobile-listing-description">
           <div className="description-section">
-            <h3>İlan Açıklaması</h3>
+            <h3 style={{ fontSize: '20px', marginTop: '7px'}}>İlan Açıklaması</h3>
             <div className="description-content">
               {listing.detay || 'Açıklama belirtilmemiş'}
             </div>
@@ -798,10 +798,10 @@ function ListingDetailPage() {
               <div className="contact-item mobile-phone-contact-numbers">
                 <i className="fas fa-phone"></i>
                 <span>530 465 04 14</span>
-                &nbsp;&nbsp;&nbsp;&nbsp;
+                &nbsp;&nbsp;&nbsp;
                 <i className="fas fa-phone"></i>
                 <span>536 642 47 52</span>
-                &nbsp;&nbsp;&nbsp;&nbsp;
+                &nbsp;&nbsp;&nbsp;
                 <i className="fas fa-phone"></i>
                 <span>532 063 73 62</span>
               </div>
@@ -1210,7 +1210,7 @@ function ListingDetailPage() {
             </div>
 
             <div className="description-section" style={{ marginBottom: 'var(--spacing-md)' }}>
-              <h3>İlan Açıklaması</h3>
+              <h3 style={{ fontSize: '20px' }}>İlan Açıklaması</h3>
               <div className="description-content">
                 {listing.detay || 'Açıklama belirtilmemiş'}
               </div>
