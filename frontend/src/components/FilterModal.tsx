@@ -798,7 +798,7 @@ function FilterModal({ isOpen, onClose, filters, onFiltersChange, totalCount, is
             {/* Konum Filtreleri */}
             <div className="filter-group">
               <label className="filter-label">
-                Adres
+                Konum
               </label>
 
               <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
