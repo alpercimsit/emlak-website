@@ -59,7 +59,7 @@ function ListingDetailPage() {
     }
   }, [id, navigate]);
 
-  // Fotoğraf modal için geri tuşu dinleme ve URL query parameter kontrolü
+  // Fotoğraf modal için geri tuşu dinleme ve hash fragment kontrolü
   useEffect(() => {
     const handlePopState = (event: PopStateEvent) => {
       // Eğer modal açıkken geri tuşuna basıldıysa, modal'ı kapat
@@ -68,19 +68,18 @@ function ListingDetailPage() {
       }
     };
 
-    // Sayfa yüklendiğinde veya URL değiştiğinde modal durumunu kontrol et
-    const checkUrlForModal = () => {
-      const urlParams = new URLSearchParams(window.location.search);
-      if (urlParams.get('photo') === 'modal' && !showPhotoModal) {
+    // Sayfa yüklendiğinde veya hash değiştiğinde modal durumunu kontrol et
+    const checkHashForModal = () => {
+      if (window.location.hash === '#photo-modal' && !showPhotoModal) {
         setShowPhotoModal(true);
-      } else if (urlParams.get('photo') !== 'modal' && showPhotoModal) {
+      } else if (window.location.hash !== '#photo-modal' && showPhotoModal) {
         setShowPhotoModal(false);
       }
     };
 
     if (showPhotoModal) {
       window.addEventListener('popstate', handlePopState);
-      checkUrlForModal();
+      checkHashForModal();
       return () => {
         window.removeEventListener('popstate', handlePopState);
       };
@@ -141,18 +140,14 @@ function ListingDetailPage() {
 
   const handlePhotoClick = () => {
     setShowPhotoModal(true);
-    // Modal açıldığında URL'yi değiştirerek yeni history entry oluştur
-    const url = new URL(window.location.href);
-    url.searchParams.set('photo', 'modal');
-    window.history.pushState({ modalOpen: true, listingId: id }, '', url.toString());
+    // Modal açıldığında hash fragment ile yeni history entry oluştur
+    window.history.pushState({ modalOpen: true, listingId: id }, '', '#photo-modal');
   };
 
   const handleClosePhotoModal = () => {
     setShowPhotoModal(false);
-    // Modal kapandığında URL'deki photo parameter'ını kaldır
-    const url = new URL(window.location.href);
-    url.searchParams.delete('photo');
-    window.history.replaceState({ listingId: id }, '', url.toString());
+    // Modal kapandığında hash fragment'ı kaldır
+    window.history.replaceState({ listingId: id }, '', window.location.pathname + window.location.search);
   };
 
   const handleShare = async () => {
