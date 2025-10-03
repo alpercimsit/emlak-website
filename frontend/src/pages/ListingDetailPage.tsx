@@ -30,6 +30,7 @@ function ListingDetailPage() {
   const [currentTranslateX, setCurrentTranslateX] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
   const [velocity, setVelocity] = useState(0);
+  const [modalTranslateX, setModalTranslateX] = useState(0);
 
   useEffect(() => {
     // Check if user is admin using Supabase Auth
@@ -136,6 +137,7 @@ function ListingDetailPage() {
 
   const handlePhotoClick = () => {
     setShowPhotoModal(true);
+    setModalTranslateX(0); // Modal açıldığında translateX'i sıfırla
     // Modal açıldığında hash fragment ile yeni history entry oluştur
     window.history.pushState({ modalOpen: true, listingId: id }, '', '#photo-modal');
   };
@@ -291,6 +293,7 @@ function ListingDetailPage() {
     setIsSwiping(true);
     setIsDragging(true);
     setCurrentTranslateX(0);
+    setModalTranslateX(0); // Modal için de sıfırla
     setVelocity(0);
     e.preventDefault();
   };
@@ -315,6 +318,7 @@ function ListingDetailPage() {
     const clampedDeltaX = Math.max(-maxTranslate, Math.min(maxTranslate, deltaX));
 
     setCurrentTranslateX(clampedDeltaX);
+    setModalTranslateX(clampedDeltaX); // Modal için de güncelle
 
     // Hız hesapla (son 100ms'deki hareket)
     if (touchStartTime) {
@@ -336,6 +340,7 @@ function ListingDetailPage() {
       setIsSwiping(false);
       setIsDragging(false);
       setCurrentTranslateX(0);
+      setModalTranslateX(0);
       setVelocity(0);
       return;
     }
@@ -367,6 +372,7 @@ function ListingDetailPage() {
       setIsSwiping(false);
       setIsDragging(false);
       setCurrentTranslateX(0);
+      setModalTranslateX(0);
       setVelocity(0);
       return;
     }
@@ -421,6 +427,7 @@ function ListingDetailPage() {
     setIsSwiping(false);
     setIsDragging(false);
     setCurrentTranslateX(0);
+    setModalTranslateX(0);
     setVelocity(0);
   };
 
@@ -1531,56 +1538,57 @@ function ListingDetailPage() {
               <i className="fas fa-times"></i>
             </button>
             
-            <div className="carousel-container">
-              {photos.length > 0 && (
-                <>
-                  {/* Önceki fotoğraf */}
-                  <img
-                    key={`modal-prev-${currentImageIndex}`}
-                    src={photos[(currentImageIndex - 1 + photos.length) % photos.length]}
-                    alt={`${listing.baslik} - Önceki`}
-                    className="carousel-img"
-                    style={{
-                      transform: `translateX(${currentTranslateX - window.innerWidth}px)`,
-                      transition: isDragging ? 'none' : 'transform 0.3s ease',
-                      opacity: isPhotoChanging ? 0.6 : 1,
-                    }}
-                  />
+            {photos.length > 0 && (
+              <div className="carousel-container">
+                {/* Önceki fotoğraf - Modal'da sadece mevcut fotoğraf görünür */}
+                {isDragging && (
+                  <>
+                    <img
+                      key={`modal-prev-${currentImageIndex}`}
+                      src={photos[(currentImageIndex - 1 + photos.length) % photos.length]}
+                      alt={`${listing.baslik} - Önceki`}
+                      className="carousel-img"
+                      style={{
+                        transform: `translateX(${modalTranslateX - window.innerWidth}px)`,
+                        transition: 'none',
+                        opacity: 0.7,
+                      }}
+                    />
 
-                  {/* Mevcut fotoğraf */}
-                  <img
-                    key={`modal-current-${currentImageIndex}`}
-                    src={photos[currentImageIndex]}
-                    alt={`${listing.baslik} - ${currentImageIndex + 1}`}
-                    className={`carousel-img ${
-                      isPhotoChanging
-                        ? (photoChangeDirection === 'left' ? 'change-photo-left' : 'change-photo-right')
-                        : ''
-                    }`}
-                    style={{
-                      transform: `translateX(${currentTranslateX}px)`,
-                      transition: isDragging ? 'none' : 'transform 0.3s ease',
-                    }}
-                    onTouchStart={handleTouchStart}
-                    onTouchMove={handleTouchMove}
-                    onTouchEnd={handleTouchEnd}
-                  />
+                    <img
+                      key={`modal-next-${currentImageIndex}`}
+                      src={photos[(currentImageIndex + 1) % photos.length]}
+                      alt={`${listing.baslik} - Sonraki`}
+                      className="carousel-img"
+                      style={{
+                        transform: `translateX(${modalTranslateX + window.innerWidth}px)`,
+                        transition: 'none',
+                        opacity: 0.7,
+                      }}
+                    />
+                  </>
+                )}
 
-                  {/* Sonraki fotoğraf */}
-                  <img
-                    key={`modal-next-${currentImageIndex}`}
-                    src={photos[(currentImageIndex + 1) % photos.length]}
-                    alt={`${listing.baslik} - Sonraki`}
-                    className="carousel-img"
-                    style={{
-                      transform: `translateX(${currentTranslateX + window.innerWidth}px)`,
-                      transition: isDragging ? 'none' : 'transform 0.3s ease',
-                      opacity: isPhotoChanging ? 0.6 : 1,
-                    }}
-                  />
-                </>
-              )}
-            </div>
+                {/* Mevcut fotoğraf */}
+                <img
+                  key={`modal-current-${currentImageIndex}`}
+                  src={photos[currentImageIndex]}
+                  alt={`${listing.baslik} - ${currentImageIndex + 1}`}
+                  className={`carousel-img ${
+                    isPhotoChanging
+                      ? (photoChangeDirection === 'left' ? 'change-photo-left' : 'change-photo-right')
+                      : ''
+                  }`}
+                  style={{
+                    transform: `translateX(${modalTranslateX}px)`,
+                    transition: isDragging ? 'none' : 'transform 0.3s ease',
+                  }}
+                  onTouchStart={handleTouchStart}
+                  onTouchMove={handleTouchMove}
+                  onTouchEnd={handleTouchEnd}
+                />
+              </div>
+            )}
             
             {photos.length > 1 && (
               <>

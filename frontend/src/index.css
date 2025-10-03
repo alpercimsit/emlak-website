@@ -2254,11 +2254,20 @@ textarea.form-control {
   transform: translateX(0) scale(1);
 }
 
+.photo-modal .carousel-container {
+  width: 90vw;
+  height: 90vh;
+  position: relative;
+}
+
 .photo-modal .carousel-img {
   width: 90vw;
   height: 90vh;
   object-fit: contain;
   border-radius: var(--radius-sm);
+  position: absolute;
+  top: 0;
+  left: 0;
 }
 
 /* Modal fotoğraf değişim animasyonu - Daha doğal kaydırma efekti */
