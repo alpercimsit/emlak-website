@@ -2268,6 +2268,7 @@ textarea.form-control {
   position: absolute;
   top: 0;
   left: 0;
+  background: transparent !important;
 }
 
 /* Modal fotoğraf değişim animasyonu - Daha doğal kaydırma efekti */
