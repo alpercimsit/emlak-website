@@ -2902,19 +2902,19 @@ input[type="number"]::-webkit-inner-spin-button {
     touch-action: manipulation;
   }
 
-  /* Disable double-tap zoom on iOS Safari */
-  * {
-    -webkit-touch-callout: none;
-    user-select: none;
-    -webkit-user-select: none;
-    -webkit-tap-highlight-color: transparent;
-  }
-
   /* Allow text selection in form elements */
   input, textarea, select {
     -webkit-user-select: text;
     -webkit-touch-callout: default;
     user-select: text;
+  }
+
+  /* Allow text selection on mobile devices - diğer siteler gibi çalışsın */
+  * {
+    -webkit-touch-callout: default;
+    user-select: text;
+    -webkit-user-select: text;
+    -webkit-tap-highlight-color: rgba(30, 64, 175, 0.1);
   }
 
   /* Touch gesture feedback for mobile photo gallery */
