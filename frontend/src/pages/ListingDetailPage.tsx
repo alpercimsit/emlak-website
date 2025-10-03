@@ -25,7 +25,11 @@ function ListingDetailPage() {
   // Touch/swipe gesture state'leri
   const [touchStartX, setTouchStartX] = useState<number | null>(null);
   const [touchStartY, setTouchStartY] = useState<number | null>(null);
+  const [touchStartTime, setTouchStartTime] = useState<number | null>(null);
   const [isSwiping, setIsSwiping] = useState(false);
+  const [currentTranslateX, setCurrentTranslateX] = useState(0);
+  const [isDragging, setIsDragging] = useState(false);
+  const [velocity, setVelocity] = useState(0);
 
   useEffect(() => {
     // Check if user is admin using Supabase Auth
@@ -283,7 +287,12 @@ function ListingDetailPage() {
     const touch = e.touches[0];
     setTouchStartX(touch.clientX);
     setTouchStartY(touch.clientY);
+    setTouchStartTime(Date.now());
     setIsSwiping(true);
+    setIsDragging(true);
+    setCurrentTranslateX(0);
+    setVelocity(0);
+    e.preventDefault();
   };
 
   const handleTouchMove = (e: React.TouchEvent) => {
@@ -298,10 +307,24 @@ function ListingDetailPage() {
       return;
     }
 
-    // Minimum 30px hareket gerektir
-    if (Math.abs(deltaX) < 30) return;
+    // Minimum hareket gerektir
+    if (Math.abs(deltaX) < 10) return;
 
-    // Kullanıcı hareketi sırasında görsel feedback için swipe durumunu güncelle
+    // Fotoğrafın maksimum hareket mesafesi (ekran genişliğinin %80'i)
+    const maxTranslate = window.innerWidth * 0.8;
+    const clampedDeltaX = Math.max(-maxTranslate, Math.min(maxTranslate, deltaX));
+
+    setCurrentTranslateX(clampedDeltaX);
+
+    // Hız hesapla (son 100ms'deki hareket)
+    if (touchStartTime) {
+      const currentTime = Date.now();
+      const timeDiff = currentTime - touchStartTime;
+      if (timeDiff > 0) {
+        setVelocity(deltaX / timeDiff);
+      }
+    }
+
     e.preventDefault();
   };
 
@@ -309,7 +332,11 @@ function ListingDetailPage() {
     if (!touchStartX || !isSwiping || photos.length <= 1) {
       setTouchStartX(null);
       setTouchStartY(null);
+      setTouchStartTime(null);
       setIsSwiping(false);
+      setIsDragging(false);
+      setCurrentTranslateX(0);
+      setVelocity(0);
       return;
     }
 
@@ -321,56 +348,83 @@ function ListingDetailPage() {
     if (Math.abs(deltaY) > Math.abs(deltaX)) {
       setTouchStartX(null);
       setTouchStartY(null);
+      setTouchStartTime(null);
       setIsSwiping(false);
+      setIsDragging(false);
+      setCurrentTranslateX(0);
+      setVelocity(0);
       return;
     }
 
-    // Minimum 50px hareket gerektir
-    if (Math.abs(deltaX) < 50) {
+    const threshold = window.innerWidth * 0.2; // Minimum 20% ekran genişliği hareket gerektir
+    const minVelocity = 0.5; // Minimum hız eşik değeri
+
+    // Eğer yeterli hareket veya hız yoksa, fotoğrafı geri getir
+    if (Math.abs(deltaX) < threshold && Math.abs(velocity) < minVelocity) {
       setTouchStartX(null);
       setTouchStartY(null);
+      setTouchStartTime(null);
       setIsSwiping(false);
+      setIsDragging(false);
+      setCurrentTranslateX(0);
+      setVelocity(0);
       return;
     }
 
-    // Swipe yönüne göre navigasyon yap
-    if (deltaX > 0) {
-      // Sağdan sola swipe - önceki fotoğraf
-      const newIndex = currentImageIndex === 0 ? photos.length - 1 : currentImageIndex - 1;
-      setCurrentImageIndex(newIndex);
-      const pageIndex = Math.floor(newIndex / thumbnailsPerPage);
-      const newStartIndex = pageIndex * thumbnailsPerPage;
-      if (newStartIndex !== thumbnailStartIndex) {
-        setThumbnailStartIndex(newStartIndex);
-        setThumbnailPage(pageIndex);
+    // Momentum efekti için fotoğrafın mevcut konumunu ve hızını kullan
+    let willChangePhoto = false;
+    let direction: 'left' | 'right' = 'right';
+
+    if (Math.abs(deltaX) > threshold || Math.abs(velocity) > minVelocity) {
+      willChangePhoto = true;
+
+      // Hız ve mesafe kombinasyonuna göre yön belirle
+      if (deltaX > 0 || velocity > 0) {
+        direction = 'left'; // Sağdan sola - önceki fotoğraf
+      } else {
+        direction = 'right'; // Soldan sağa - sonraki fotoğraf
       }
-      setPhotoChangeDirection('left');
+    }
+
+    if (willChangePhoto) {
+      // Fotoğraf değiştirme işlemi
+      if (direction === 'left') {
+        // Sağdan sola swipe - önceki fotoğraf
+        const newIndex = currentImageIndex === 0 ? photos.length - 1 : currentImageIndex - 1;
+        setCurrentImageIndex(newIndex);
+        const pageIndex = Math.floor(newIndex / thumbnailsPerPage);
+        const newStartIndex = pageIndex * thumbnailsPerPage;
+        if (newStartIndex !== thumbnailStartIndex) {
+          setThumbnailStartIndex(newStartIndex);
+          setThumbnailPage(pageIndex);
+        }
+      } else {
+        // Soldan sağa swipe - sonraki fotoğraf
+        const newIndex = currentImageIndex === photos.length - 1 ? 0 : currentImageIndex + 1;
+        setCurrentImageIndex(newIndex);
+        const pageIndex = Math.floor(newIndex / thumbnailsPerPage);
+        const newStartIndex = pageIndex * thumbnailsPerPage;
+        if (newStartIndex !== thumbnailStartIndex) {
+          setThumbnailStartIndex(newStartIndex);
+          setThumbnailPage(pageIndex);
+        }
+      }
+
+      setPhotoChangeDirection(direction);
       setIsPhotoChanging(true);
       setTimeout(() => {
         setIsPhotoChanging(false);
         setPhotoChangeDirection(null);
-      }, 300);
-    } else {
-      // Soldan sağa swipe - sonraki fotoğraf
-      const newIndex = currentImageIndex === photos.length - 1 ? 0 : currentImageIndex + 1;
-      setCurrentImageIndex(newIndex);
-      const pageIndex = Math.floor(newIndex / thumbnailsPerPage);
-      const newStartIndex = pageIndex * thumbnailsPerPage;
-      if (newStartIndex !== thumbnailStartIndex) {
-        setThumbnailStartIndex(newStartIndex);
-        setThumbnailPage(pageIndex);
-      }
-      setPhotoChangeDirection('right');
-      setIsPhotoChanging(true);
-      setTimeout(() => {
-        setIsPhotoChanging(false);
-        setPhotoChangeDirection(null);
-      }, 300);
+      }, 350);
     }
 
     setTouchStartX(null);
     setTouchStartY(null);
+    setTouchStartTime(null);
     setIsSwiping(false);
+    setIsDragging(false);
+    setCurrentTranslateX(0);
+    setVelocity(0);
   };
 
   if (loading) {
@@ -504,6 +558,10 @@ function ListingDetailPage() {
                       ? (photoChangeDirection === 'left' ? 'change-photo-left' : 'change-photo-right')
                       : ''
                   }`}
+                  style={{
+                    transform: isDragging ? `translateX(${currentTranslateX}px)` : undefined,
+                    transition: isDragging ? 'none' : undefined,
+                  }}
                   onClick={handlePhotoClick}
                   onTouchStart={handleTouchStart}
                   onTouchMove={handleTouchMove}
@@ -960,6 +1018,10 @@ function ListingDetailPage() {
                         ? (photoChangeDirection === 'left' ? 'change-photo-left' : 'change-photo-right')
                         : ''
                     }`}
+                    style={{
+                      transform: isDragging ? `translateX(${currentTranslateX}px)` : undefined,
+                      transition: isDragging ? 'none' : undefined,
+                    }}
                     onClick={handlePhotoClick}
                     onTouchStart={handleTouchStart}
                     onTouchMove={handleTouchMove}
@@ -1412,6 +1474,10 @@ function ListingDetailPage() {
                   ? (photoChangeDirection === 'left' ? 'change-photo-left' : 'change-photo-right')
                   : ''
               }`}
+              style={{
+                transform: isDragging ? `translateX(${currentTranslateX}px)` : undefined,
+                transition: isDragging ? 'none' : undefined,
+              }}
               onTouchStart={handleTouchStart}
               onTouchMove={handleTouchMove}
               onTouchEnd={handleTouchEnd}
