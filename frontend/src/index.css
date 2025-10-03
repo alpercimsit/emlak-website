@@ -3071,7 +3071,7 @@ input[type="number"]::-webkit-inner-spin-button {
 }
 
 .share-button:hover {
-  background: rgba(0, 0, 0, 0.9);
+  background: var(--primary-color);
   transform: scale(1.1);
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
 }
