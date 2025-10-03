@@ -388,30 +388,27 @@ function ListingDetailPage() {
 
     if (willChangePhoto) {
       // Fotoğraf değiştirme işlemi
+      let newIndex;
       if (direction === 'left') {
         // Sağdan sola swipe - önceki fotoğraf
-        const newIndex = currentImageIndex === 0 ? photos.length - 1 : currentImageIndex - 1;
-        setCurrentImageIndex(newIndex);
-        const pageIndex = Math.floor(newIndex / thumbnailsPerPage);
-        const newStartIndex = pageIndex * thumbnailsPerPage;
-        if (newStartIndex !== thumbnailStartIndex) {
-          setThumbnailStartIndex(newStartIndex);
-          setThumbnailPage(pageIndex);
-        }
+        newIndex = currentImageIndex === 0 ? photos.length - 1 : currentImageIndex - 1;
       } else {
         // Soldan sağa swipe - sonraki fotoğraf
-        const newIndex = currentImageIndex === photos.length - 1 ? 0 : currentImageIndex + 1;
-        setCurrentImageIndex(newIndex);
-        const pageIndex = Math.floor(newIndex / thumbnailsPerPage);
-        const newStartIndex = pageIndex * thumbnailsPerPage;
-        if (newStartIndex !== thumbnailStartIndex) {
-          setThumbnailStartIndex(newStartIndex);
-          setThumbnailPage(pageIndex);
-        }
+        newIndex = currentImageIndex === photos.length - 1 ? 0 : currentImageIndex + 1;
+      }
+
+      setCurrentImageIndex(newIndex);
+      const pageIndex = Math.floor(newIndex / thumbnailsPerPage);
+      const newStartIndex = pageIndex * thumbnailsPerPage;
+      if (newStartIndex !== thumbnailStartIndex) {
+        setThumbnailStartIndex(newStartIndex);
+        setThumbnailPage(pageIndex);
       }
 
       setPhotoChangeDirection(direction);
       setIsPhotoChanging(true);
+
+      // Tüm fotoğrafların yeni pozisyonlarını ayarla ve animasyonu başlat
       setTimeout(() => {
         setIsPhotoChanging(false);
         setPhotoChangeDirection(null);
@@ -550,23 +547,57 @@ function ListingDetailPage() {
           {photos.length > 0 ? (
             <>
               <div className="main-photo">
-                <img
-                  src={photos[currentImageIndex]}
-                  alt={listing.baslik}
-                  className={`main-photo-img ${
-                    isPhotoChanging
-                      ? (photoChangeDirection === 'left' ? 'change-photo-left' : 'change-photo-right')
-                      : ''
-                  }`}
-                  style={{
-                    transform: isDragging ? `translateX(${currentTranslateX}px)` : undefined,
-                    transition: isDragging ? 'none' : undefined,
-                  }}
-                  onClick={handlePhotoClick}
-                  onTouchStart={handleTouchStart}
-                  onTouchMove={handleTouchMove}
-                  onTouchEnd={handleTouchEnd}
-                />
+                <div className="carousel-container">
+                  {photos.length > 0 && (
+                    <>
+                      {/* Önceki fotoğraf */}
+                      <img
+                        key={`prev-${currentImageIndex}`}
+                        src={photos[(currentImageIndex - 1 + photos.length) % photos.length]}
+                        alt={`${listing.baslik} - Önceki`}
+                        className="carousel-img"
+                        style={{
+                          transform: `translateX(${currentTranslateX - window.innerWidth}px)`,
+                          transition: isDragging ? 'none' : 'transform 0.3s ease',
+                          opacity: isPhotoChanging ? 0.7 : 1,
+                        }}
+                      />
+
+                      {/* Mevcut fotoğraf */}
+                      <img
+                        key={`current-${currentImageIndex}`}
+                        src={photos[currentImageIndex]}
+                        alt={listing.baslik}
+                        className={`carousel-img ${
+                          isPhotoChanging
+                            ? (photoChangeDirection === 'left' ? 'change-photo-left' : 'change-photo-right')
+                            : ''
+                        }`}
+                        style={{
+                          transform: `translateX(${currentTranslateX}px)`,
+                          transition: isDragging ? 'none' : 'transform 0.3s ease',
+                        }}
+                        onClick={handlePhotoClick}
+                        onTouchStart={handleTouchStart}
+                        onTouchMove={handleTouchMove}
+                        onTouchEnd={handleTouchEnd}
+                      />
+
+                      {/* Sonraki fotoğraf */}
+                      <img
+                        key={`next-${currentImageIndex}`}
+                        src={photos[(currentImageIndex + 1) % photos.length]}
+                        alt={`${listing.baslik} - Sonraki`}
+                        className="carousel-img"
+                        style={{
+                          transform: `translateX(${currentTranslateX + window.innerWidth}px)`,
+                          transition: isDragging ? 'none' : 'transform 0.3s ease',
+                          opacity: isPhotoChanging ? 0.7 : 1,
+                        }}
+                      />
+                    </>
+                  )}
+                </div>
                 <button
                   className="share-button"
                   onClick={(e) => {
@@ -1010,23 +1041,57 @@ function ListingDetailPage() {
             {photos.length > 0 ? (
               <>
                 <div className="main-photo">
-                  <img
-                    src={photos[currentImageIndex]}
-                    alt={listing.baslik}
-                    className={`main-photo-img ${
-                      isPhotoChanging
-                        ? (photoChangeDirection === 'left' ? 'change-photo-left' : 'change-photo-right')
-                        : ''
-                    }`}
-                    style={{
-                      transform: isDragging ? `translateX(${currentTranslateX}px)` : undefined,
-                      transition: isDragging ? 'none' : undefined,
-                    }}
-                    onClick={handlePhotoClick}
-                    onTouchStart={handleTouchStart}
-                    onTouchMove={handleTouchMove}
-                    onTouchEnd={handleTouchEnd}
-                  />
+                  <div className="carousel-container">
+                    {photos.length > 0 && (
+                      <>
+                        {/* Önceki fotoğraf */}
+                        <img
+                          key={`prev-${currentImageIndex}`}
+                          src={photos[(currentImageIndex - 1 + photos.length) % photos.length]}
+                          alt={`${listing.baslik} - Önceki`}
+                          className="carousel-img"
+                          style={{
+                            transform: `translateX(${currentTranslateX - window.innerWidth}px)`,
+                            transition: isDragging ? 'none' : 'transform 0.3s ease',
+                            opacity: isPhotoChanging ? 0.7 : 1,
+                          }}
+                        />
+
+                        {/* Mevcut fotoğraf */}
+                        <img
+                          key={`current-${currentImageIndex}`}
+                          src={photos[currentImageIndex]}
+                          alt={listing.baslik}
+                          className={`carousel-img ${
+                            isPhotoChanging
+                              ? (photoChangeDirection === 'left' ? 'change-photo-left' : 'change-photo-right')
+                              : ''
+                          }`}
+                          style={{
+                            transform: `translateX(${currentTranslateX}px)`,
+                            transition: isDragging ? 'none' : 'transform 0.3s ease',
+                          }}
+                          onClick={handlePhotoClick}
+                          onTouchStart={handleTouchStart}
+                          onTouchMove={handleTouchMove}
+                          onTouchEnd={handleTouchEnd}
+                        />
+
+                        {/* Sonraki fotoğraf */}
+                        <img
+                          key={`next-${currentImageIndex}`}
+                          src={photos[(currentImageIndex + 1) % photos.length]}
+                          alt={`${listing.baslik} - Sonraki`}
+                          className="carousel-img"
+                          style={{
+                            transform: `translateX(${currentTranslateX + window.innerWidth}px)`,
+                            transition: isDragging ? 'none' : 'transform 0.3s ease',
+                            opacity: isPhotoChanging ? 0.7 : 1,
+                          }}
+                        />
+                      </>
+                    )}
+                  </div>
                   <button
                     className="share-button"
                     onClick={(e) => {
@@ -1466,22 +1531,56 @@ function ListingDetailPage() {
               <i className="fas fa-times"></i>
             </button>
             
-            <img
-              src={photos[currentImageIndex]}
-              alt={`${listing.baslik} - ${currentImageIndex + 1}`}
-              className={`photo-modal-img ${
-                isPhotoChanging
-                  ? (photoChangeDirection === 'left' ? 'change-photo-left' : 'change-photo-right')
-                  : ''
-              }`}
-              style={{
-                transform: isDragging ? `translateX(${currentTranslateX}px)` : undefined,
-                transition: isDragging ? 'none' : undefined,
-              }}
-              onTouchStart={handleTouchStart}
-              onTouchMove={handleTouchMove}
-              onTouchEnd={handleTouchEnd}
-            />
+            <div className="carousel-container">
+              {photos.length > 0 && (
+                <>
+                  {/* Önceki fotoğraf */}
+                  <img
+                    key={`modal-prev-${currentImageIndex}`}
+                    src={photos[(currentImageIndex - 1 + photos.length) % photos.length]}
+                    alt={`${listing.baslik} - Önceki`}
+                    className="carousel-img"
+                    style={{
+                      transform: `translateX(${currentTranslateX - window.innerWidth}px)`,
+                      transition: isDragging ? 'none' : 'transform 0.3s ease',
+                      opacity: isPhotoChanging ? 0.6 : 1,
+                    }}
+                  />
+
+                  {/* Mevcut fotoğraf */}
+                  <img
+                    key={`modal-current-${currentImageIndex}`}
+                    src={photos[currentImageIndex]}
+                    alt={`${listing.baslik} - ${currentImageIndex + 1}`}
+                    className={`carousel-img ${
+                      isPhotoChanging
+                        ? (photoChangeDirection === 'left' ? 'change-photo-left' : 'change-photo-right')
+                        : ''
+                    }`}
+                    style={{
+                      transform: `translateX(${currentTranslateX}px)`,
+                      transition: isDragging ? 'none' : 'transform 0.3s ease',
+                    }}
+                    onTouchStart={handleTouchStart}
+                    onTouchMove={handleTouchMove}
+                    onTouchEnd={handleTouchEnd}
+                  />
+
+                  {/* Sonraki fotoğraf */}
+                  <img
+                    key={`modal-next-${currentImageIndex}`}
+                    src={photos[(currentImageIndex + 1) % photos.length]}
+                    alt={`${listing.baslik} - Sonraki`}
+                    className="carousel-img"
+                    style={{
+                      transform: `translateX(${currentTranslateX + window.innerWidth}px)`,
+                      transition: isDragging ? 'none' : 'transform 0.3s ease',
+                      opacity: isPhotoChanging ? 0.6 : 1,
+                    }}
+                  />
+                </>
+              )}
+            </div>
             
             {photos.length > 1 && (
               <>

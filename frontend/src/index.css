@@ -1534,6 +1534,26 @@ textarea.form-control {
   contain: layout style;
 }
 
+.carousel-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.carousel-img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  background: var(--bg-tertiary);
+  opacity: 1;
+  transition: transform 0.3s ease;
+  transform-origin: center;
+}
+
 .main-photo {
   position: relative;
   border-radius: var(--radius-sm);
@@ -1560,12 +1580,12 @@ textarea.form-control {
 
 
 /* Fotoğraf değişim animasyonu - Daha doğal kaydırma efekti */
-.main-photo-img.change-photo-right {
+.carousel-img.change-photo-right {
   animation: changePhotoFromRight 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   transform-origin: center;
 }
 
-.main-photo-img.change-photo-left {
+.carousel-img.change-photo-left {
   animation: changePhotoFromLeft 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   transform-origin: center;
 }
@@ -2234,13 +2254,20 @@ textarea.form-control {
   transform: translateX(0) scale(1);
 }
 
+.photo-modal .carousel-img {
+  width: 90vw;
+  height: 90vh;
+  object-fit: contain;
+  border-radius: var(--radius-sm);
+}
+
 /* Modal fotoğraf değişim animasyonu - Daha doğal kaydırma efekti */
-.photo-modal-img.change-photo-right {
+.photo-modal .carousel-img.change-photo-right {
   animation: changeModalPhotoFromRight 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   transform-origin: center;
 }
 
-.photo-modal-img.change-photo-left {
+.photo-modal .carousel-img.change-photo-left {
   animation: changeModalPhotoFromLeft 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   transform-origin: center;
 }
