@@ -119,6 +119,108 @@ function ListingDetailPage() {
     setShowPhotoModal(false);
   };
 
+  const handleShare = async () => {
+    if (!listing) return;
+
+    const shareUrl = window.location.href;
+    const shareTitle = listing.baslik || 'Emlak İlanı';
+    let shareText = `Bu ilana göz atın: ${shareTitle} - ${listing.fiyat.toLocaleString('tr-TR')} TL`;
+    if(listing.emlak_tipi === 'Arsa'){
+      shareText = `Bu arsa ilanına göz atın: ${shareTitle} - ${listing.fiyat.toLocaleString('tr-TR')} TL`;
+    }
+    else{
+      shareText = `Bu konut ilanına göz atın: ${shareTitle} - ${listing.fiyat.toLocaleString('tr-TR')} TL`;
+    }
+
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: shareTitle,
+          text: shareText,
+          url: shareUrl,
+        });
+      } catch (error) {
+        const err = error as { name?: string };
+        if (err.name !== 'AbortError') {
+          console.error('Paylaşma hatası:', error);
+          fallbackShare(shareUrl);
+        }
+      }
+    } else {
+      fallbackShare(shareUrl);
+    }
+  };
+
+  const fallbackShare = async (url: string) => {
+    try {
+      await navigator.clipboard.writeText(url);
+      // Basit bir toast notification göstermek için
+      showNotification('İlan linki panoya kopyalandı!');
+    } catch (error) {
+      console.error('Kopyalama hatası:', error);
+      // Fallback için seç ve kopyala metodu
+      const textArea = document.createElement('textarea');
+      textArea.value = url;
+      document.body.appendChild(textArea);
+      textArea.select();
+      try {
+        document.execCommand('copy');
+        showNotification('İlan linki panoya kopyalandı!');
+      } catch (err) {
+        console.error('Fallback kopyalama hatası:', err);
+        alert('Link kopyalanamadı: ' + url);
+      }
+      document.body.removeChild(textArea);
+    }
+  };
+
+  const showNotification = (message: string) => {
+    // Basit bir notification elementi oluştur
+    const notification = document.createElement('div');
+    notification.textContent = message;
+    notification.style.cssText = `
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: var(--success-color, #28a745);
+      color: white;
+      padding: 12px 20px;
+      border-radius: var(--radius-md, 8px);
+      box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+      z-index: 10000;
+      font-size: 14px;
+      font-weight: 500;
+      animation: slideIn 0.3s ease-out;
+    `;
+
+    document.body.appendChild(notification);
+
+    // Animasyon için CSS ekle
+    if (!document.querySelector('#notification-styles')) {
+      const style = document.createElement('style');
+      style.id = 'notification-styles';
+      style.textContent = `
+        @keyframes slideIn {
+          from { transform: translateX(100%); opacity: 0; }
+          to { transform: translateX(0); opacity: 1; }
+        }
+        @keyframes slideOut {
+          from { transform: translateX(0); opacity: 1; }
+          to { transform: translateX(100%); opacity: 0; }
+        }
+      `;
+      document.head.appendChild(style);
+    }
+
+    // 3 saniye sonra notification'ı kaldır
+    setTimeout(() => {
+      notification.style.animation = 'slideOut 0.3s ease-in forwards';
+      setTimeout(() => {
+        document.body.removeChild(notification);
+      }, 300);
+    }, 3000);
+  };
+
   const handlePhotoModalNav = (direction: 'prev' | 'next') => {
     const photos = listing?.fotolar ? listing.fotolar.split(',').filter(url => url.trim()) : [];
     let newIndex;
@@ -384,6 +486,16 @@ function ListingDetailPage() {
                   onTouchMove={handleTouchMove}
                   onTouchEnd={handleTouchEnd}
                 />
+                <button
+                  className="share-button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleShare();
+                  }}
+                  title="İlanı paylaş"
+                >
+                  <i className="fas fa-share-alt"></i>
+                </button>
                 {photos.length > 1 && (
                   <>
                     <button
@@ -830,6 +942,16 @@ function ListingDetailPage() {
                     onTouchMove={handleTouchMove}
                     onTouchEnd={handleTouchEnd}
                   />
+                  <button
+                    className="share-button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleShare();
+                    }}
+                    title="İlanı paylaş"
+                  >
+                    <i className="fas fa-share-alt"></i>
+                  </button>
                   {photos.length > 1 && (
                     <>
                       <button
