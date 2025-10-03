@@ -41,7 +41,7 @@ function ListingDetailPage() {
     };
 
     checkAdminStatus();
-    
+
     // Load the specific listing
     if (id) {
       setLoading(true);
@@ -58,6 +58,34 @@ function ListingDetailPage() {
       navigate('/', { replace: true });
     }
   }, [id, navigate]);
+
+  // Fotoğraf modal için geri tuşu dinleme ve URL query parameter kontrolü
+  useEffect(() => {
+    const handlePopState = (event: PopStateEvent) => {
+      // Eğer modal açıkken geri tuşuna basıldıysa, modal'ı kapat
+      if (showPhotoModal) {
+        handleClosePhotoModal();
+      }
+    };
+
+    // Sayfa yüklendiğinde veya URL değiştiğinde modal durumunu kontrol et
+    const checkUrlForModal = () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.get('photo') === 'modal' && !showPhotoModal) {
+        setShowPhotoModal(true);
+      } else if (urlParams.get('photo') !== 'modal' && showPhotoModal) {
+        setShowPhotoModal(false);
+      }
+    };
+
+    if (showPhotoModal) {
+      window.addEventListener('popstate', handlePopState);
+      checkUrlForModal();
+      return () => {
+        window.removeEventListener('popstate', handlePopState);
+      };
+    }
+  }, [showPhotoModal, id]);
 
   // Emlak tipi görüntüleme için helper fonksiyon
   const formatEmlakTipi = (emlakTipi: string) => {
@@ -113,10 +141,18 @@ function ListingDetailPage() {
 
   const handlePhotoClick = () => {
     setShowPhotoModal(true);
+    // Modal açıldığında URL'yi değiştirerek yeni history entry oluştur
+    const url = new URL(window.location.href);
+    url.searchParams.set('photo', 'modal');
+    window.history.pushState({ modalOpen: true, listingId: id }, '', url.toString());
   };
 
   const handleClosePhotoModal = () => {
     setShowPhotoModal(false);
+    // Modal kapandığında URL'deki photo parameter'ını kaldır
+    const url = new URL(window.location.href);
+    url.searchParams.delete('photo');
+    window.history.replaceState({ listingId: id }, '', url.toString());
   };
 
   const handleShare = async () => {
