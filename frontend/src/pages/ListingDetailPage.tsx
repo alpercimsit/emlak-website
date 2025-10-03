@@ -61,30 +61,22 @@ function ListingDetailPage() {
 
   // Fotoğraf modal için geri tuşu dinleme ve hash fragment kontrolü
   useEffect(() => {
-    const handlePopState = (event: PopStateEvent) => {
-      // Eğer modal açıkken geri tuşuna basıldıysa, modal'ı kapat
-      if (showPhotoModal) {
-        handleClosePhotoModal();
-      }
-    };
-
-    // Sayfa yüklendiğinde veya hash değiştiğinde modal durumunu kontrol et
-    const checkHashForModal = () => {
-      if (window.location.hash === '#photo-modal' && !showPhotoModal) {
+    const handlePopState = () => {
+      if (window.location.hash === '#photo-modal') {
         setShowPhotoModal(true);
-      } else if (window.location.hash !== '#photo-modal' && showPhotoModal) {
+      } else {
         setShowPhotoModal(false);
       }
     };
+  
+    window.addEventListener('popstate', handlePopState);
+    handlePopState(); // ilk yüklemede kontrol et
+  
+    return () => {
+      window.removeEventListener('popstate', handlePopState);
+    };
+  }, [id]);
 
-    if (showPhotoModal) {
-      window.addEventListener('popstate', handlePopState);
-      checkHashForModal();
-      return () => {
-        window.removeEventListener('popstate', handlePopState);
-      };
-    }
-  }, [showPhotoModal, id]);
 
   // Emlak tipi görüntüleme için helper fonksiyon
   const formatEmlakTipi = (emlakTipi: string) => {
@@ -147,7 +139,7 @@ function ListingDetailPage() {
   const handleClosePhotoModal = () => {
     setShowPhotoModal(false);
     // Modal kapandığında hash fragment'ı kaldır
-    window.history.replaceState({ listingId: id }, '', window.location.pathname + window.location.search);
+    window.history.back();
   };
 
   const handleShare = async () => {
