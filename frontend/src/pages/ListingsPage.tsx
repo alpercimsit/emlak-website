@@ -50,7 +50,7 @@ function ListingsPage() {
   const modalContext = useContext(ModalContext);
 
   // Sıralama seçenekleri
-  const [sortOption, setSortOption] = useState<'price-desc' | 'price-asc' | 'date-desc' | 'date-asc' | 'm2-desc' | 'm2-asc'>('date-desc');
+  const [sortOption, setSortOption] = useState<'price-desc' | 'price-asc' | 'date-desc' | 'date-asc' | 'm2-desc' | 'm2-asc' | 'pricePerM2-desc' | 'pricePerM2-asc'>('date-desc');
   const [isSortDropdownOpen, setIsSortDropdownOpen] = useState(false);
 
   // Mobil filtre modal state'i
@@ -70,7 +70,9 @@ function ListingsPage() {
     { key: 'date-desc' as const, label: 'Tarihe göre önce en yeni' },
     { key: 'date-asc' as const, label: 'Tarihe göre önce en eski' },
     { key: 'm2-desc' as const, label: 'm²\'ye göre önce en yüksek' },
-    { key: 'm2-asc' as const, label: 'm²\'ye göre önce en düşük' }
+    { key: 'm2-asc' as const, label: 'm²\'ye göre önce en düşük' },
+    { key: 'pricePerM2-desc' as const, label: 'm²/TL fiyatına göre önce en yüksek' },
+    { key: 'pricePerM2-asc' as const, label: 'm²/TL fiyatına göre önce en düşük' }
   ];
   
   // Filtre state'i - localStorage'dan yükle veya default olarak arsa seçili
@@ -333,6 +335,22 @@ function ListingsPage() {
           if (!a.m2) return 1;
           if (!b.m2) return -1;
           return a.m2 - b.m2;
+        case 'pricePerM2-desc':
+          // m²/TL fiyatına göre önce en yüksek (m² başına en pahalı, null değerler en sonda)
+          if (!a.m2 && !b.m2) return 0;
+          if (!a.m2) return 1;
+          if (!b.m2) return -1;
+          const pricePerM2A = a.fiyat / a.m2;
+          const pricePerM2B = b.fiyat / b.m2;
+          return pricePerM2B - pricePerM2A;
+        case 'pricePerM2-asc':
+          // m²/TL fiyatına göre önce en düşük (m² başına en ucuz, null değerler en sonda)
+          if (!a.m2 && !b.m2) return 0;
+          if (!a.m2) return 1;
+          if (!b.m2) return -1;
+          const pricePerM2A_asc = a.fiyat / a.m2;
+          const pricePerM2B_asc = b.fiyat / b.m2;
+          return pricePerM2A_asc - pricePerM2B_asc;
         case 'date-desc':
           return new Date(b.ilan_tarihi).getTime() - new Date(a.ilan_tarihi).getTime();
         case 'date-asc':
