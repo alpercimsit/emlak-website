@@ -22,7 +22,7 @@ function PhotoUpload({ photos, onPhotosChange, maxPhotos = 30, listingId }: Prop
   const generatePhotoId = () => `photo_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 
   // WhatsApp tarzı fotoğraf sıkıştırma fonksiyonu
-  const compressImage = (file: File, maxWidth = 900, maxHeight = 900, quality = 0.5): Promise<File> => {
+  const compressImage = (file: File, maxWidth = 900, maxHeight = 900, quality = 0.75): Promise<File> => {
     return new Promise((resolve) => {
       const canvas = document.createElement('canvas');
       const ctx = canvas.getContext('2d');
