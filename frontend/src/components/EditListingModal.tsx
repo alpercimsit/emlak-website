@@ -335,7 +335,7 @@ function EditListingModal({ listing, isOpen, onClose, onUpdate }: Props) {
               <div className="form-group" style={{ flex: 1, minWidth: '150px' }}>
                 <label className="form-label">
                   <i className="fas fa-expand" style={{ marginRight: 'var(--spacing-sm)' }}></i>
-                  Metrekare
+                  Alan (m²)
                 </label>
                 <input
                   type="number"
