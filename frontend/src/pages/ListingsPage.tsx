@@ -1,5 +1,5 @@
 import { useEffect, useState, useMemo, useContext } from 'react';
-import { useNavigate, useSearchParams, useLocation } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import api, { supabase } from '../utils/api';
 import ListingList from '../components/ListingList';
 import FilterPanel, { FilterState } from '../components/FilterPanel';
@@ -42,9 +42,7 @@ function ListingsPage() {
   const [listings, setListings] = useState<Listing[]>([]);
   const [loading, setLoading] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
-  const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
-  const location = useLocation();
+  const [searchParams, setSearchParams] = useSearchParams();
 
   // Get modal context
   const modalContext = useContext(ModalContext);
@@ -57,12 +55,10 @@ function ListingsPage() {
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
 
   // Pagination state'leri - URL'den oku
-  const [currentPage, setCurrentPage] = useState(() => {
-    const pageParam = searchParams.get('page');
-    return pageParam ? parseInt(pageParam, 10) : 1;
-  });
+  const pageParam = searchParams.get("page");
+  const currentPage = pageParam ? parseInt(pageParam, 10) : 1;
   const itemsPerPage = 12; // Her sayfada maksimum 12 ilan
-
+  
   // Sıralama seçenekleri tanımı
   const sortOptions = [
     { key: 'price-desc' as const, label: 'Fiyata göre önce en yüksek' },
@@ -141,37 +137,6 @@ function ListingsPage() {
     localStorage.setItem('listingFilters', JSON.stringify(filters));
   }, [filters]);
 
-  // Browser navigation için URL değişikliklerini dinle
-  useEffect(() => {
-    const handlePopState = () => {
-      const pageParam = searchParams.get('page');
-      const pageNumber = pageParam ? parseInt(pageParam, 10) : 1;
-      setCurrentPage(pageNumber);
-    };
-
-    // Component mount olduğunda URL'den page parametresini oku
-    const pageParam = searchParams.get('page');
-    const pageNumber = pageParam ? parseInt(pageParam, 10) : 1;
-    setCurrentPage(pageNumber);
-
-    // Browser navigation event'ini dinle
-    window.addEventListener('popstate', handlePopState);
-
-    return () => {
-      window.removeEventListener('popstate', handlePopState);
-    };
-  }, [location.pathname, searchParams]); // location.pathname ile sadece bu sayfadayken dinle
-
-  // Filtreler değiştiğinde sayfayı başa al
-  useEffect(() => {
-    setCurrentPage(1);
-    // URL'den sayfa parametresini kaldır - navigate ile yapacağız
-    if (window.location.pathname === '/') {
-      const url = new URL(window.location.href);
-      url.searchParams.delete('page');
-      window.history.replaceState({}, '', url.toString());
-    }
-  }, [filters]);
 
   // Dropdown dışına tıklandığında kapat
   useEffect(() => {
@@ -375,20 +340,13 @@ function ListingsPage() {
 
   // Sayfa değişikliği için fonksiyon
   const handlePageChange = (page: number) => {
-    setCurrentPage(page);
-
-    // URL'yi güncelle
-    if (window.location.pathname === '/') {
-      const url = new URL(window.location.href);
-      if (page === 1) {
-        // Sayfa 1 ise parametreyi kaldır
-        url.searchParams.delete('page');
-        window.history.replaceState({}, '', url.toString());
-      } else {
-        url.searchParams.set('page', page.toString());
-        window.history.pushState({}, '', url.toString());
-      }
+    const params = new URLSearchParams(searchParams);
+    if (page === 1) {
+      params.delete("page");
+    } else {
+      params.set("page", page.toString());
     }
+    setSearchParams(params);
   };
 
   // Dinamik başlık metni oluşturma
