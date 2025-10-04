@@ -159,18 +159,8 @@ function ListingsPage() {
 
   // Filtrelenmiş ve sıralanmış ilanları hesapla
   const filteredListings = useMemo((): Listing[] => {
-    console.log('Filtering listings:', {
-      totalListings: listings.length,
-      currentCategory: filters.category,
-      currentSubCategory: filters.subCategory,
-      filters
-    });
-
     // Önce filtreleme yap
     const filtered = listings.filter(listing => {
-      // Debug: Her ilan için emlak_tipi'ni logla
-      console.log('Listing emlak_tipi:', listing.emlak_tipi, 'Filter category:', filters.category);
-
       // Kategori filtresi
       if (filters.category === 'arsa') {
         if (listing.emlak_tipi !== 'Arsa') return false;

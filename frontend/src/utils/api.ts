@@ -227,8 +227,6 @@ export const api = {
       gizli: listing.gizli || false // Default to false (not hidden)
     };
 
-    console.log('Inserting listing data:', listingData);
-
     const { data, error } = await supabase
       .from('ilan')
       .insert([listingData])
@@ -239,7 +237,6 @@ export const api = {
       throw error;
     }
     
-    console.log('Successfully inserted:', data);
     return data[0];
   },
 
@@ -333,18 +330,14 @@ export const api = {
   },
 
   async uploadPhoto(file: File, listingId?: number): Promise<string> {
-    console.log('Starting photo upload:', { fileName: file.name, fileSize: file.size, fileType: file.type });
     
     const fileExt = file.name.split('.').pop();
     const fileName = `${listingId || 'temp'}_${Date.now()}_${Math.random().toString(36).substr(2, 9)}.${fileExt}`;
     const filePath = fileName;
 
-    console.log('Upload path:', filePath);
-
     // First, test if we can access the storage bucket
     try {
       const { data: buckets, error: listError } = await supabase.storage.listBuckets();
-      console.log('Available buckets:', buckets);
       if (listError) {
         console.error('Cannot list buckets:', listError);
         throw new Error(`Storage erişim hatası: ${listError.message}`);
@@ -378,14 +371,10 @@ export const api = {
       }
     }
 
-    console.log('Upload successful:', data);
-
     // Get public URL
     const { data: { publicUrl } } = supabase.storage
       .from('ilan_fotolari')
       .getPublicUrl(filePath);
-
-    console.log('Generated public URL:', publicUrl);
     return publicUrl;
   },
 

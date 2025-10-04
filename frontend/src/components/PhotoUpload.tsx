@@ -116,7 +116,6 @@ function PhotoUpload({ photos, onPhotosChange, maxPhotos = 30, listingId }: Prop
       try {
         const compressedFile = await compressImage(file);
         compressedFiles.push(compressedFile);
-        console.log(`${file.name}: ${(file.size / 1024 / 1024).toFixed(2)}MB → ${(compressedFile.size / 1024 / 1024).toFixed(2)}MB`);
       } catch (error) {
         console.error('Compression failed for:', file.name, error);
         compressedFiles.push(file); // Use original if compression fails
