@@ -71,8 +71,8 @@ function ListingsPage() {
     { key: 'date-asc' as const, label: 'Tarihe göre önce en eski' },
     { key: 'm2-desc' as const, label: 'm²\'ye göre önce en yüksek' },
     { key: 'm2-asc' as const, label: 'm²\'ye göre önce en düşük' },
-    { key: 'pricePerM2-desc' as const, label: 'm²/TL fiyatına göre önce en yüksek' },
-    { key: 'pricePerM2-asc' as const, label: 'm²/TL fiyatına göre önce en düşük' }
+    { key: 'pricePerM2-desc' as const, label: 'TL/m² fiyatına göre önce en yüksek' },
+    { key: 'pricePerM2-asc' as const, label: 'TL/m² fiyatına göre önce en düşük' }
   ];
   
   // Filtre state'i - localStorage'dan yükle veya default olarak arsa seçili
