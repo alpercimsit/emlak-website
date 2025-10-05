@@ -425,7 +425,8 @@ export const api = {
     }
 
     try {
-      const response = await fetch('https://turkiyeapi.dev/api/v1/provinces');
+      // Use proxy in development
+      const response = await fetch('/api/turkey/provinces');
       const result = await response.json();
 
       if (result.status === 'OK') {
@@ -475,7 +476,7 @@ export const api = {
     }
 
     try {
-      const response = await fetch(`https://turkiyeapi.dev/api/v1/provinces/${provinceId}`);
+      const response = await fetch(`/api/turkey/provinces/${provinceId}`);
       const result = await response.json();
 
       if (result.status === 'OK') {
@@ -507,7 +508,7 @@ export const api = {
     }
 
     try {
-      const response = await fetch(`https://turkiyeapi.dev/api/v1/districts/${districtId}`);
+      const response = await fetch(`/api/turkey/districts/${districtId}`);
       const result = await response.json();
 
       if (result.status === 'OK') {
