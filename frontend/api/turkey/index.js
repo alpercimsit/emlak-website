@@ -1,7 +1,7 @@
 // Vercel serverless function to proxy Türkiye API requests
 // This bypasses CORS issues in production
 
-export default async function handler(req, res) {
+module.exports = async (req, res) => {
   // Sadece GET isteklerine izin ver
   if (req.method !== 'GET') {
     return res.status(405).json({ error: 'Method not allowed' });
@@ -9,11 +9,12 @@ export default async function handler(req, res) {
 
   try {
     // İstek URL'ini al ve Türkiye API'ye yönlendir
-    const { pathname, search } = new URL(req.url, `https://${req.headers.host}`);
-    const apiPath = pathname.replace('/api/turkey', '');
+    const url = new URL(req.url, `https://${req.headers.host}`);
+    const apiPath = url.pathname.replace('/api/turkey', '');
+    const queryString = url.search;
 
     // Türkiye API base URL'i
-    const targetUrl = `https://turkiyeapi.dev/api/v1${apiPath}${search}`;
+    const targetUrl = `https://turkiyeapi.dev/api/v1${apiPath}${queryString}`;
 
     console.log('Proxying request to:', targetUrl);
 
@@ -53,4 +54,4 @@ export default async function handler(req, res) {
       message: error.message
     });
   }
-}
+};
