@@ -48,7 +48,17 @@ function ListingsPage() {
   const modalContext = useContext(ModalContext);
 
   // Sıralama seçenekleri
-  const [sortOption, setSortOption] = useState<'price-desc' | 'price-asc' | 'date-desc' | 'date-asc' | 'm2-desc' | 'm2-asc' | 'pricePerM2-desc' | 'pricePerM2-asc'>('date-desc');
+  const [sortOption, setSortOption] = useState<'price-desc' | 'price-asc' | 'date-desc' | 'date-asc' | 'm2-desc' | 'm2-asc' | 'pricePerM2-desc' | 'pricePerM2-asc'>(() => {
+    const savedSort = localStorage.getItem('sortOption');
+    if (savedSort && [
+      'price-desc', 'price-asc', 'date-desc', 'date-asc',
+      'm2-desc', 'm2-asc', 'pricePerM2-desc', 'pricePerM2-asc'
+    ].includes(savedSort)) {
+      return savedSort as any;
+    }
+    return 'date-desc';
+  });
+  
   const [isSortDropdownOpen, setIsSortDropdownOpen] = useState(false);
 
   // Mobil filtre modal state'i
@@ -63,7 +73,7 @@ function ListingsPage() {
   const sortOptions = [
     { key: 'price-desc' as const, label: 'Fiyata göre önce en yüksek' },
     { key: 'price-asc' as const, label: 'Fiyata göre önce en düşük' },
-    { key: 'date-desc' as const, label: 'Tarihe göre önce en yeni' },
+    { key: 'date-desc' as const, label: 'Tarihe göre önce en yeni (varsayılan)' },
     { key: 'date-asc' as const, label: 'Tarihe göre önce en eski' },
     { key: 'm2-desc' as const, label: 'm²\'ye göre önce en yüksek' },
     { key: 'm2-asc' as const, label: 'm²\'ye göre önce en düşük' },
@@ -138,6 +148,12 @@ function ListingsPage() {
   }, [filters]);
 
 
+  useEffect(() => {
+    localStorage.setItem('sortOption', sortOption);
+  }, [sortOption]);
+
+
+  
   // Dropdown dışına tıklandığında kapat
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
