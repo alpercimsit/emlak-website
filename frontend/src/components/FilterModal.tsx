@@ -746,7 +746,7 @@ function FilterModal({ isOpen, onClose, filters, onFiltersChange, totalCount, is
             {/* Fiyat Aralığı */}
             <div className="filter-group">
               <label className="filter-label">
-                Fiyat Aralığı
+                Fiyat (TL)
               </label>
               <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-sm)' }}>
                 <input

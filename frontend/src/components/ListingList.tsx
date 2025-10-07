@@ -20,12 +20,12 @@ function ActiveFilters({
 
   // Aktif filtreleri tespit et
   if (filters.fiyatMin || filters.fiyatMax) {
-    const fiyatLabel = `Fiyat: ${filters.fiyatMin || '0'}${filters.fiyatMin && filters.fiyatMax ? '-' : filters.fiyatMin ? ' ve üzeri' : ''}${filters.fiyatMax ? filters.fiyatMin ? `-${filters.fiyatMax}` : `0-${filters.fiyatMax}` : ''}`;
+    const fiyatLabel = `Fiyat (TL): ${filters.fiyatMin || '0'}${filters.fiyatMin && filters.fiyatMax ? '-' : filters.fiyatMin ? ' ve üzeri' : ''}${filters.fiyatMax ? filters.fiyatMin ? `${filters.fiyatMax}` : `-${filters.fiyatMax}` : ''}`;
     activeFilters.push({ key: 'fiyatMin', label: fiyatLabel, value: 'fiyat' });
   }
 
   if (filters.alanMin || filters.alanMax) {
-    const alanLabel = `Alan: ${filters.alanMin || '0'}${filters.alanMin && filters.alanMax ? '-' : filters.alanMin ? 'm² ve üzeri' : ''}${filters.alanMax ? `0-${filters.alanMax}m²` : ''}`;
+    const alanLabel = `Alan (m²): ${filters.alanMin || '0'}${filters.alanMin && filters.alanMax ? '-' : filters.alanMin ? ' ve üzeri' : '-'}${filters.alanMax ? `${filters.alanMax}` : ''}`;
     activeFilters.push({ key: 'alanMin', label: alanLabel, value: 'alan' });
   }
 

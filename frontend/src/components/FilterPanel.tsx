@@ -1238,7 +1238,7 @@ function FilterPanel({ filters, onFiltersChange, totalCount, isAdmin }: Props) {
         {/* Fiyat Aralığı */}
         <div className="filter-group">
           <label className="filter-label">
-            Fiyat Aralığı
+            Fiyat (TL)
           </label>
           <div className="range-inputs">
             <input
