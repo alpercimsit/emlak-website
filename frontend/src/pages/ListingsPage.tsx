@@ -456,6 +456,7 @@ function ListingsPage() {
               <button
                 id="sort-button"
                 className="sort-button"
+                style={{whiteSpace: 'nowrap'}}
               onClick={(e) => {
                 e.stopPropagation();
                 setIsSortDropdownOpen(!isSortDropdownOpen);
@@ -497,14 +498,15 @@ function ListingsPage() {
                 borderRadius: 'var(--radius-md)',
                 cursor: 'pointer',
                 color: 'var(--text-primary)',
-                fontSize: '0.875rem'
+                fontSize: '0.875rem',
+                whiteSpace: 'nowrap'
               }}
             >
               <i className="fas fa-filter"></i> &nbsp;
               Filtrele
             </button>
           </div>
-          <div className="listings-count">
+          <div className="listings-count" style={{whiteSpace: 'nowrap'}}>
             Bulunan İlan:&nbsp; <strong>{filteredListings.length}</strong>
           </div>
         </div>
