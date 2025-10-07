@@ -37,16 +37,28 @@ function ActiveFilters({
     activeFilters.push({ key: 'ilanNo', label: `İlan No: ${filters.ilanNo}`, value: 'ilanNo' });
   }
 
-  if (filters.il) {
-    activeFilters.push({ key: 'il', label: `İl: ${filters.il.name}`, value: 'il' });
-  }
+  // Konum filtrelerini birleştir
+  const konumParts: string[] = [];
+  let konumKey: keyof FilterState = 'il'; // Default olarak il
 
-  if (filters.ilce) {
-    activeFilters.push({ key: 'ilce', label: `İlçe: ${filters.ilce.name}`, value: 'ilce' });
-  }
+  if (filters.il) konumParts.push(filters.il.name);
+  if (filters.ilce) konumParts.push(filters.ilce.name);
+  if (filters.mahalle) konumParts.push(filters.mahalle.name);
 
-  if (filters.mahalle) {
-    activeFilters.push({ key: 'mahalle', label: `Mahalle: ${filters.mahalle.name}`, value: 'mahalle' });
+  // Hangi konum seviyesinin aktif olduğunu belirle
+  if (konumParts.length > 0) {
+    if (filters.mahalle && !filters.ilce) {
+      // Sadece mahalle seçili
+      konumKey = 'mahalle';
+    } else if (filters.ilce && !filters.il) {
+      // Sadece ilçe seçili
+      konumKey = 'ilce';
+    } else {
+      // İl seçili (veya il + ilçe + mahalle)
+      konumKey = 'il';
+    }
+
+    activeFilters.push({ key: konumKey, label: `Konum: ${konumParts.join(' / ')}`, value: 'konum' });
   }
 
   if (filters.category === 'arsa') {
@@ -270,10 +282,22 @@ function ListingList({ listings, isAdmin = false, onUpdate, onEditListing, filte
 
   if (!listings.length) {
     return (
-      <div className="empty-state">
-        <i className="fas fa-home"></i>
-        <h3>Arama kriterlerine uygun ilan bulunamadı.</h3>
-        <p>Yakında yeni emlak ilanları eklenecektir.</p>
+      <div>
+        {/* Aktif Filtreler - Hiç ilan olmadığında da göster */}
+        {filters && sortOption && onRemoveFilter && onRemoveSort && (
+          <ActiveFilters
+            filters={filters}
+            sortOption={sortOption}
+            onRemoveFilter={onRemoveFilter}
+            onRemoveSort={onRemoveSort}
+          />
+        )}
+
+        <div className="empty-state">
+          <i className="fas fa-home"></i>
+          <h3>Arama kriterlerine uygun ilan bulunamadı.</h3>
+          <p>Yakında yeni emlak ilanları eklenecektir.</p>
+        </div>
       </div>
     );
   }
