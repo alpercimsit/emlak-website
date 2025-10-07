@@ -120,8 +120,9 @@ function ActiveFilters({
       backgroundColor: 'var(--background-color)',
       borderRadius: 'var(--radius-md)',
       border: '1px solid var(--border-color)',
-      maxHeight: '45px',
-      overflowY: 'auto'
+      
+      
+      alignItems: 'flex-start'
     }}>
       {/* Aktif Sıralama Kutucuğu */}
       {hasActiveSort && (
@@ -303,18 +304,21 @@ function ListingList({ listings, isAdmin = false, onUpdate, onEditListing, filte
   }
 
   return (
-    <div className="listings-grid">
-      {/* Aktif Filtreler - İlk ilanın üstünde */}
+    <div>
+      {/* Aktif Filtreler - Listeden önce */}
       {filters && sortOption && onRemoveFilter && onRemoveSort && (
-        <ActiveFilters
-          filters={filters}
-          sortOption={sortOption}
-          onRemoveFilter={onRemoveFilter}
-          onRemoveSort={onRemoveSort}
-        />
+        <div style={{ marginBottom: 'var(--spacing-md)' }}>
+          <ActiveFilters
+            filters={filters}
+            sortOption={sortOption}
+            onRemoveFilter={onRemoveFilter}
+            onRemoveSort={onRemoveSort}
+          />
+        </div>
       )}
 
-      {listings.map((l) => (
+      <div className="listings-grid">
+        {listings.map((l) => (
         <div key={l.ilan_no} className="card listing-card-compact" onClick={() => handleListingClick(l.ilan_no)} style={{ cursor: 'pointer' }}>
           {/* Sol taraf - Kare fotoğraf */}
           <div className="listing-image-container">
@@ -404,7 +408,8 @@ function ListingList({ listings, isAdmin = false, onUpdate, onEditListing, filte
             )}
           </div>
         </div>
-      ))}
+        ))}
+      </div>
     </div>
   );
 }
