@@ -6,6 +6,7 @@ import FilterPanel, { FilterState } from '../components/FilterPanel';
 import FilterModal from '../components/FilterModal';
 import { ModalContext } from '../App';
 
+
 export interface Listing {
   ilan_no: number;              // ilan_no int8 primary key
   ilan_tarihi: string;          // ilan_tarihi timestamp
@@ -80,6 +81,75 @@ function ListingsPage() {
     { key: 'pricePerM2-desc' as const, label: 'TL/m² fiyatına göre önce en yüksek' },
     { key: 'pricePerM2-asc' as const, label: 'TL/m² fiyatına göre önce en düşük' }
   ];
+
+  // Filtre kaldırma fonksiyonları
+  const handleRemoveFilter = (filterKey: keyof FilterState) => {
+    const newFilters = { ...filters };
+
+    switch (filterKey) {
+      case 'fiyatMin':
+      case 'fiyatMax':
+        newFilters.fiyatMin = '';
+        newFilters.fiyatMax = '';
+        break;
+      case 'alanMin':
+      case 'alanMax':
+        newFilters.alanMin = '';
+        newFilters.alanMax = '';
+        break;
+      case 'searchText':
+        newFilters.searchText = '';
+        break;
+      case 'ilanNo':
+        newFilters.ilanNo = '';
+        break;
+      case 'il':
+        newFilters.il = null;
+        newFilters.ilce = null;
+        newFilters.mahalle = null;
+        break;
+      case 'ilce':
+        newFilters.ilce = null;
+        newFilters.mahalle = null;
+        break;
+      case 'mahalle':
+        newFilters.mahalle = null;
+        break;
+      case 'adaNo':
+        newFilters.adaNo = '';
+        break;
+      case 'parselNo':
+        newFilters.parselNo = '';
+        break;
+      case 'binaYaslari':
+        newFilters.binaYaslari = [];
+        break;
+      case 'odaSayilari':
+        newFilters.odaSayilari = [];
+        break;
+      case 'katlar':
+        newFilters.katlar = [];
+        break;
+      case 'balkon':
+        newFilters.balkon = '';
+        break;
+      case 'asansor':
+        newFilters.asansor = '';
+        break;
+      case 'esyali':
+        newFilters.esyali = '';
+        break;
+      default:
+        break;
+    }
+
+    setFilters(newFilters);
+  };
+
+  // Sıralama kaldırma fonksiyonu
+  const handleRemoveSort = () => {
+    setSortOption('date-desc'); // default sıralamaya dön
+  };
   
   // Filtre state'i - localStorage'dan yükle veya default olarak arsa seçili
   const [filters, setFilters] = useState<FilterState>(() => {
@@ -455,21 +525,29 @@ function ListingsPage() {
             />
           </div>
 
-          {/* Sağ taraf - İlan Listesi */}
-          <div className="listings-content">
-            {loading ? (
-              <div className="loading">
-                <div className="spinner"></div>
-                <span style={{ marginLeft: 'var(--spacing-sm)' }}>İlanlar yükleniyor...</span>
-              </div>
-            ) : (
-              <ListingList
-                listings={paginatedListings}
-                isAdmin={isAdmin}
-                onUpdate={() => window.location.reload()}
-                onEditListing={modalContext.onEditListing}
-              />
-            )}
+          {/* Sağ taraf - İlan Listesi ve Aktif Filtreler */}
+          <div className="listings-content-with-filters">
+            {/* İçerik Alanı */}
+            <div className="listings-content">
+              {loading ? (
+                <div className="loading">
+                  <div className="spinner"></div>
+                  <span style={{ marginLeft: 'var(--spacing-sm)' }}>İlanlar yükleniyor...</span>
+                </div>
+              ) : (
+                <ListingList
+                  listings={paginatedListings}
+                  isAdmin={isAdmin}
+                  onUpdate={() => window.location.reload()}
+                  onEditListing={modalContext.onEditListing}
+                  filters={filters}
+                  sortOption={sortOption}
+                  onRemoveFilter={handleRemoveFilter}
+                  onRemoveSort={handleRemoveSort}
+                />
+              )}
+            </div>
+          </div>
           </div>
         </div>
 
@@ -627,9 +705,8 @@ function ListingsPage() {
         />
       </div>
 
-    </div>
-  );
-}
+
+);}
 
 export default ListingsPage;
 
