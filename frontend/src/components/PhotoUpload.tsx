@@ -17,6 +17,8 @@ interface Props {
 
 function PhotoUpload({ photos, onPhotosChange, maxPhotos = 30, listingId }: Props) {
   const [isDragging, setIsDragging] = useState(false);
+  const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
+  const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const generatePhotoId = () => `photo_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
@@ -163,20 +165,20 @@ function PhotoUpload({ photos, onPhotosChange, maxPhotos = 30, listingId }: Prop
     }
   }, [photos, onPhotosChange, maxPhotos, listingId]);
 
-  const handleDragOver = useCallback((e: React.DragEvent) => {
+  const handleUploadDragOver = useCallback((e: React.DragEvent) => {
     e.preventDefault();
     setIsDragging(true);
   }, []);
 
-  const handleDragLeave = useCallback((e: React.DragEvent) => {
+  const handleUploadDragLeave = useCallback((e: React.DragEvent) => {
     e.preventDefault();
     setIsDragging(false);
   }, []);
 
-  const handleDrop = useCallback((e: React.DragEvent) => {
+  const handleUploadDrop = useCallback((e: React.DragEvent) => {
     e.preventDefault();
     setIsDragging(false);
-    
+
     const files = e.dataTransfer.files;
     if (files.length > 0) {
       handleFiles(files);
@@ -214,6 +216,65 @@ function PhotoUpload({ photos, onPhotosChange, maxPhotos = 30, listingId }: Prop
     fileInputRef.current?.click();
   };
 
+  // Drag and Drop Functions for reordering photos
+  const handleDragStart = (e: React.DragEvent<HTMLDivElement>, index: number) => {
+    setDraggedIndex(index);
+    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData('text/html', e.currentTarget.outerHTML);
+
+    // Add visual feedback
+    e.currentTarget.style.opacity = '0.5';
+  };
+
+  const handleDragEnd = (e: React.DragEvent<HTMLDivElement>) => {
+    setDraggedIndex(null);
+    setDragOverIndex(null);
+
+    // Remove visual feedback
+    e.currentTarget.style.opacity = '1';
+  };
+
+  const handleDragOver = (e: React.DragEvent<HTMLDivElement>, index: number) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+
+    if (draggedIndex !== null && draggedIndex !== index) {
+      setDragOverIndex(index);
+    }
+  };
+
+  const handleDragLeave = (e: React.DragEvent<HTMLDivElement>) => {
+    // Only clear dragOverIndex if we're leaving the actual drop zone
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = e.clientX;
+    const y = e.clientY;
+
+    if (x < rect.left || x > rect.right || y < rect.top || y > rect.bottom) {
+      setDragOverIndex(null);
+    }
+  };
+
+  const handleDrop = (e: React.DragEvent<HTMLDivElement>, dropIndex: number) => {
+    e.preventDefault();
+    setDraggedIndex(null);
+    setDragOverIndex(null);
+
+    if (draggedIndex !== null && draggedIndex !== dropIndex) {
+      // Reorder photos array
+      const newPhotos = [...photos];
+      const draggedPhoto = newPhotos[draggedIndex];
+
+      // Remove dragged photo from its current position
+      newPhotos.splice(draggedIndex, 1);
+
+      // Insert at new position
+      newPhotos.splice(dropIndex, 0, draggedPhoto);
+
+      // Update parent component
+      onPhotosChange(newPhotos);
+    }
+  };
+
   return (
     <div className="photo-upload">
       <label className="form-label">
@@ -224,9 +285,9 @@ function PhotoUpload({ photos, onPhotosChange, maxPhotos = 30, listingId }: Prop
       {/* Upload Area */}
       <div
         className={`photo-upload-area ${isDragging ? 'dragging' : ''}`}
-        onDragOver={handleDragOver}
-        onDragLeave={handleDragLeave}
-        onDrop={handleDrop}
+        onDragOver={handleUploadDragOver}
+        onDragLeave={handleUploadDragLeave}
+        onDrop={handleUploadDrop}
         onClick={openFileDialog}
       >
         <div className="upload-content">
@@ -254,9 +315,22 @@ function PhotoUpload({ photos, onPhotosChange, maxPhotos = 30, listingId }: Prop
       {photos.length > 0 && (
         <div className="photo-preview-grid">
           {photos.map((photo, index) => (
-            <div key={photo.id} className="photo-preview-item">
+            <div
+              key={photo.id}
+              className={`photo-preview-item ${draggedIndex === index ? 'dragging' : ''} ${dragOverIndex === index ? 'drag-over' : ''}`}
+              draggable={!photo.uploading}
+              onDragStart={(e) => handleDragStart(e, index)}
+              onDragEnd={handleDragEnd}
+              onDragOver={(e) => handleDragOver(e, index)}
+              onDragLeave={(e) => handleDragLeave(e)}
+              onDrop={(e) => handleDrop(e, index)}
+              style={{
+                cursor: photo.uploading ? 'default' : 'move',
+                userSelect: 'none'
+              }}
+            >
               <img src={photo.url} alt={`Fotoğraf ${index + 1}`} />
-              
+
               {/* Loading Overlay */}
               {photo.uploading && (
                 <div className="photo-loading-overlay">
@@ -283,6 +357,13 @@ function PhotoUpload({ photos, onPhotosChange, maxPhotos = 30, listingId }: Prop
                 <div className="main-photo-badge">
                   <i className="fas fa-star"></i>
                   Ana Fotoğraf
+                </div>
+              )}
+
+              {/* Drag Handle Indicator */}
+              {!photo.uploading && (
+                <div className="drag-handle">
+                  <i className="fas fa-grip-vertical"></i>
                 </div>
               )}
             </div>
