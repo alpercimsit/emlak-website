@@ -324,7 +324,6 @@ function EditListingModal({ listing, isOpen, onClose, onUpdate }: Props) {
                   type="number"
                   name="fiyat"
                   className="form-control"
-                  placeholder="1500000"
                   value={form.fiyat}
                   onChange={handleChange}
                   min="0"
@@ -677,7 +676,6 @@ function EditListingModal({ listing, isOpen, onClose, onUpdate }: Props) {
                     type="number"
                     name="sahibinden_no"
                     className="form-control"
-                    placeholder="123456789"
                     value={form.sahibinden_no}
                     onChange={handleChange}
                     min="0"

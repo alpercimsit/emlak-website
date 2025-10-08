@@ -5,6 +5,37 @@ import { Listing } from './ListingsPage';
 import PhotoUpload from '../components/PhotoUpload';
 import LocationSelector from '../components/LocationSelector';
 
+// Form state tipi - boş string değerleri destekler
+interface FormState {
+  baslik: string;
+  detay: string;
+  emlak_tipi: string;
+  fiyat: number | '';
+  m2: number | '';
+  il: string;
+  ilce: string;
+  mahalle: string;
+  sahibi_ad: string;
+  sahibi_tel: string;
+  ada: number | '';
+  parsel: number | '';
+  sahibinden_no: number | '';
+  sahibinden_tarih: string;
+  oda_sayisi: string;
+  bina_yasi: string;
+  bulundugu_kat: string;
+  kat_sayisi: number | '';
+  isitma: string;
+  banyo_sayisi: number | '';
+  balkon: boolean;
+  asansor: boolean;
+  esyali: boolean;
+  aidat: number | '';
+  fotolar: string;
+  gizli: boolean;
+  not: string;
+}
+
 // Kat seçenekleri
 const katOptions = [
   'Bodrum Kat',
@@ -31,20 +62,20 @@ function AdminDashboard() {
   const [feedbackType, setFeedbackType] = useState<'success' | 'error' | ''>('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [photos, setPhotos] = useState<Array<{id: string, url: string}>>([]);
-  const [form, setForm] = useState<Partial<Listing>>({
+  const [form, setForm] = useState<FormState>({
     baslik: '',
     detay: '',
     emlak_tipi: 'Arsa',
-    fiyat: 0,
-    m2: 0,
+    fiyat: '',
+    m2: '',
     il: '',
     ilce: '',
     mahalle: '',
     sahibi_ad: '',
     sahibi_tel: '',
-    ada: 0,
-    parsel: 0,
-    sahibinden_no: 0,
+    ada: '',
+    parsel: '',
+    sahibinden_no: '',
     sahibinden_tarih: '',
     oda_sayisi: '',
     bina_yasi: '',
@@ -55,7 +86,7 @@ function AdminDashboard() {
       balkon: true,
       asansor: true,
       esyali: false,
-      aidat: 0,
+      aidat: '',
       fotolar: '',
       gizli: false,
       not: ''
@@ -100,7 +131,16 @@ function AdminDashboard() {
       // Convert photos to URL string for database
       const formWithPhotos = {
         ...form,
-        fotolar: api.photosToUrlString(photos)
+        fotolar: api.photosToUrlString(photos),
+        // Convert empty strings to null for numeric fields
+        fiyat: form.fiyat === '' ? null : Number(form.fiyat),
+        m2: form.m2 === '' ? null : Number(form.m2),
+        ada: form.ada === '' ? null : Number(form.ada),
+        parsel: form.parsel === '' ? null : Number(form.parsel),
+        sahibinden_no: form.sahibinden_no === '' ? null : Number(form.sahibinden_no),
+        kat_sayisi: form.kat_sayisi === '' ? null : Number(form.kat_sayisi),
+        banyo_sayisi: form.banyo_sayisi === '' ? null : Number(form.banyo_sayisi),
+        aidat: form.aidat === '' ? null : Number(form.aidat)
       };
       
       await api.addListing(formWithPhotos);
@@ -113,16 +153,16 @@ function AdminDashboard() {
         baslik: '',
         detay: '',
         emlak_tipi: 'Arsa',
-        fiyat: 0,
-        m2: 0,
+        fiyat: '',
+        m2: '',
         il: '',
         ilce: '',
         mahalle: '',
         sahibi_ad: '',
         sahibi_tel: '',
-        ada: 0,
-        parsel: 0,
-        sahibinden_no: 0,
+        ada: '',
+        parsel: '',
+        sahibinden_no: '',
         sahibinden_tarih: '',
         oda_sayisi: '',
         bina_yasi: '',
@@ -133,7 +173,7 @@ function AdminDashboard() {
         balkon: true,
         asansor: true,
         esyali: false,
-        aidat: 0,
+        aidat: '',
         fotolar: '',
         gizli: false,
         not: ''
@@ -249,7 +289,6 @@ function AdminDashboard() {
                   type="number"
                   name="fiyat"
                   className="form-control"
-                  placeholder="1500000"
                   value={form.fiyat}
                   onChange={handleChange}
                   min="0"
@@ -266,10 +305,10 @@ function AdminDashboard() {
                   type="number"
                   name="m2"
                   className="form-control"
-                  placeholder="95"
                   value={form.m2}
                   onChange={handleChange}
                   min="0"
+                  required
                 />
               </div>
             </div>
@@ -304,7 +343,6 @@ function AdminDashboard() {
                     type="number"
                     name="ada"
                     className="form-control"
-                    placeholder="123"
                     value={form.ada}
                     onChange={handleChange}
                     min="0"
@@ -320,7 +358,6 @@ function AdminDashboard() {
                     type="number"
                     name="parsel"
                     className="form-control"
-                    placeholder="45"
                     value={form.parsel}
                     onChange={handleChange}
                     min="0"
@@ -427,7 +464,6 @@ function AdminDashboard() {
                       type="number"
                       name="kat_sayisi"
                       className="form-control"
-                      placeholder="7"
                       value={form.kat_sayisi}
                       onChange={handleChange}
                       min="1"
@@ -465,7 +501,6 @@ function AdminDashboard() {
                       type="number"
                       name="banyo_sayisi"
                       className="form-control"
-                      placeholder="1"
                       value={form.banyo_sayisi}
                       onChange={handleChange}
                       min="1"
@@ -481,7 +516,6 @@ function AdminDashboard() {
                       type="number"
                       name="aidat"
                       className="form-control"
-                      placeholder="350"
                       value={form.aidat}
                       onChange={handleChange}
                       min="0"
@@ -600,7 +634,6 @@ function AdminDashboard() {
                     type="number"
                     name="sahibinden_no"
                     className="form-control"
-                    placeholder="123456789"
                     value={form.sahibinden_no}
                     onChange={handleChange}
                     min="0"
