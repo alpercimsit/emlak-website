@@ -327,7 +327,10 @@ function Combobox({
               <div
                 key={option.id}
                 className={`combobox-option ${selectedOptionId === option.id ? 'selected' : ''}`}
-                onClick={() => handleOptionSelect(option)}
+                onMouseDown={(e) => {
+                  e.preventDefault(); // Bu satır input'un 'blur' olmasını engeller.
+                  handleOptionSelect(option);
+                }}
                 style={{
                   padding: '8px 12px',
                   cursor: 'pointer',
