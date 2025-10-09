@@ -53,6 +53,8 @@ function ListingDetailPage() {
       api.getListingById(parseInt(id))
         .then((data) => {
           setListing(data);
+          // Update page title when listing is loaded
+          updatePageTitle(data);
         })
         .catch((err) => {
           console.error('İlan yüklenirken hata:', err);
@@ -91,12 +93,81 @@ function ListingDetailPage() {
       case 'satilikDaire':
         return 'Satılık Daire';
       case 'Arsa':
-        return 'Arsa';
+        return 'Satılık Arsa';
       case 'Daire':
         return 'Daire';
       default:
         return emlakTipi;
     }
+  };
+
+  // Büyük ünlü uyumu için ek fonksiyonu
+  const getLocationSuffix = (location: string) => {
+    const lastChar = location.charAt(location.length - 1).toLowerCase();
+    let sertUnsuz = false;
+    if(lastChar in ['f', 's', 't', 'k', 'ç', 'ş', 'h', 'p']){
+      sertUnsuz = true;
+    }
+
+    for(let i = location.length -1; i > 0; i--){
+      const char = location.charAt(i).toLowerCase();
+      if (char === 'a' || char === 'ı' || char === 'o' || char === 'u') {
+        if(sertUnsuz){
+          return "'ta";
+        }
+        return "'da";
+      } else if (char === 'e' || char === 'i' || char === 'ö' || char === 'ü') {
+        if(sertUnsuz){
+          return "'te";
+        }
+        return "'de";
+      }
+    }
+
+    // Eğer Türkçe karakter değilse veya belirlenemezse varsayılan olarak 'da' kullan
+    return "'de";
+  };
+
+  // Sayfa başlığını güncelleyen fonksiyon
+  const updatePageTitle = (listing: Listing) => {
+    if (!listing) return;
+
+    // Konum bilgilerini birleştir (il, ilçe, mahalle)
+    const locationParts = [listing.il, listing.ilce, listing.mahalle].filter(Boolean);
+
+    if (locationParts.length === 0) {
+      document.title = `${formatEmlakTipi(listing.emlak_tipi)} | Öz Kafkas Emlak`;
+      return;
+    }
+
+    // Son konum bilgisi için ek al
+    const lastLocation = locationParts[locationParts.length - 1];
+    const suffix = lastLocation ? getLocationSuffix(lastLocation) : "'de";
+
+    // Tam konum metnini oluştur
+    const fullLocation = locationParts.join(', ');
+
+    // Emlak tipi kontrolü
+    let emlakTipiText = '';
+    if (listing.emlak_tipi === 'Arsa') {
+      emlakTipiText = 'Satılık Arsa';
+    } else if (listing.emlak_tipi === 'satilikDaire') {
+      emlakTipiText = 'Satılık Daire';
+    } else if (listing.emlak_tipi === 'kiralikDaire') {
+      emlakTipiText = 'Kiralık Daire';
+    } else {
+      emlakTipiText = formatEmlakTipi(listing.emlak_tipi);
+    }
+
+    // m² bilgisi varsa ekle
+    let areaText = '';
+    if (listing.m2) {
+      areaText = ` ${listing.m2} m²`;
+    }
+
+    // Başlığı oluştur
+    const title = `${fullLocation}${suffix} ${emlakTipiText}${areaText} | Öz Kafkas Emlak`;
+    document.title = title;
   };
 
   const handleDelete = async (listingId: number) => {
