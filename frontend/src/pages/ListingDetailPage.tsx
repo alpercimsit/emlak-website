@@ -105,7 +105,8 @@ function ListingDetailPage() {
   const getLocationSuffix = (location: string) => {
     const lastChar = location.charAt(location.length - 1).toLowerCase();
     let sertUnsuz = false;
-    if(lastChar in ['f', 's', 't', 'k', 'ç', 'ş', 'h', 'p']){
+    if(lastChar === 'f' || lastChar === 's' || lastChar === 't' || lastChar === 'k' || lastChar === 'ç'
+       || lastChar === 'ş' || lastChar === 'h' || lastChar === 'p'){
       sertUnsuz = true;
     }
 
