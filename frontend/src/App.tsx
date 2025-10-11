@@ -111,7 +111,6 @@ function App() {
               >
                 <img
                   src="/gorsel/kafkas_buyuk.png"
-                  alt="Öz Kafkas Emlak Logo"
                   className="navbar-logo"
                 />
                 Öz Kafkas Emlak
