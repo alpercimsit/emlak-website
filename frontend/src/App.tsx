@@ -110,7 +110,7 @@ function App() {
                 }}
               >
                 <img
-                  src="/gorsel/kafkas_buyuk.png"
+                  src="/website/frontend/gorsel/kafkas_buyuk.png"
                   className="navbar-logo"
                 />
                 Öz Kafkas Emlak
