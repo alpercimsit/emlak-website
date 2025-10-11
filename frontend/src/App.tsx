@@ -9,6 +9,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 import EditListingModal from './components/EditListingModal';
 import { Listing } from './pages/ListingsPage';
 import { supabase } from './utils/api';
+import logo from './visuals/kafkas_buyuk.png';
 
 // Create context for modal operations
 export interface ModalContextType {
@@ -110,7 +111,7 @@ function App() {
                 }}
               >
                 <img
-                  src="/website/frontend/gorsel/kafkas_buyuk.png"
+                  src={logo}
                   className="navbar-logo"
                 />
                 Öz Kafkas Emlak
