@@ -319,7 +319,7 @@ function ListingList({ listings, isAdmin = false, onUpdate, onEditListing, filte
 
       <div className="listings-grid">
         {listings.map((l) => (
-        <div key={l.ilan_no} className="card listing-card-compact" onClick={() => handleListingClick(l.ilan_no)} style={{ cursor: 'pointer' }}>
+        <div key={l.ilan_no} className="card listing-card-compact" onClick={() => handleListingClick(l.ilan_no)} style={{ cursor: 'pointer', maxWidth: '94vw' }}>
           {/* Sol taraf - Kare fotoğraf */}
           <div className="listing-image-container">
             {l.fotolar ? (
