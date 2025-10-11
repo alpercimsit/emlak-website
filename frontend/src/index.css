@@ -138,6 +138,12 @@ p {
   gap: var(--spacing-sm);
 }
 
+.navbar-logo {
+  height: 40px;
+  width: auto;
+  border-radius: var(--radius-sm);
+}
+
 .navbar-nav {
   display: flex;
   list-style: none;

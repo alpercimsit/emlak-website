@@ -109,6 +109,11 @@ function App() {
                   window.location.href = '/';
                 }}
               >
+                <img
+                  src="/gorsel/kafkas_buyuk.png"
+                  alt="Öz Kafkas Emlak Logo"
+                  className="navbar-logo"
+                />
                 Öz Kafkas Emlak
               </Link>
               <div className="navbar-content">
