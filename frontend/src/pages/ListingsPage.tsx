@@ -222,8 +222,17 @@ function ListingsPage() {
     localStorage.setItem('sortOption', sortOption);
   }, [sortOption]);
 
+  // Filtreler veya sıralama değiştiğinde sayfayı 1'e sıfırla
+  useEffect(() => {
+    // Bu effect sadece filtreler veya sıralama değiştiğinde tetiklenmeli.
+    // Eğer o anda 1. sayfada değilsek, URL'den 'page' parametresini
+    // kaldırarak 1. sayfaya yönlendir.
+    if (currentPage !== 1) {
+      handlePageChange(1);
+    }
+  }, [filters, sortOption]);
 
-  
+
   // Dropdown dışına tıklandığında kapat
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
