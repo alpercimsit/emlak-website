@@ -269,6 +269,9 @@ function EditListingModal({ listing, isOpen, onClose, onUpdate }: Props) {
                 required
               >
                 <option value="Arsa">Arsa</option>
+                <option value="Tarla">Tarla</option>
+                <option value="bagYeri">Bağ Yeri</option>
+                <option value="arsaHissesi">Arsa Hissesi</option>
                 <option value="kiralikDaire">Kiralık Daire</option>
                 <option value="satilikDaire">Satılık Daire</option>
               </select>
@@ -340,7 +343,6 @@ function EditListingModal({ listing, isOpen, onClose, onUpdate }: Props) {
                   type="number"
                   name="m2"
                   className="form-control"
-                  placeholder="95"
                   value={form.m2}
                   onChange={handleChange}
                   min="0"
@@ -366,8 +368,9 @@ function EditListingModal({ listing, isOpen, onClose, onUpdate }: Props) {
             />
 
 
-            {/* Arsa Özellikleri - Sadece arsa tipinde göster */}
-            {form.emlak_tipi === 'Arsa' && (
+            {/* Arsa Özellikleri - Sadece arsa tiplerinde göster */}
+            {form.emlak_tipi === 'Arsa' || form.emlak_tipi === 'Tarla' ||
+             form.emlak_tipi === 'bagYeri' || form.emlak_tipi === 'arsaHissesi' && (
               <div className="d-flex gap-3" style={{ flexWrap: 'wrap' }}>
                 <div className="form-group" style={{ flex: 1, minWidth: '150px' }}>
                   <label className="form-label">
@@ -378,7 +381,6 @@ function EditListingModal({ listing, isOpen, onClose, onUpdate }: Props) {
                     type="number"
                     name="ada"
                     className="form-control"
-                    placeholder="123"
                     value={form.ada}
                     onChange={handleChange}
                     min="0"
@@ -394,7 +396,6 @@ function EditListingModal({ listing, isOpen, onClose, onUpdate }: Props) {
                     type="number"
                     name="parsel"
                     className="form-control"
-                    placeholder="45"
                     value={form.parsel}
                     onChange={handleChange}
                     min="0"
@@ -404,7 +405,7 @@ function EditListingModal({ listing, isOpen, onClose, onUpdate }: Props) {
             )}
 
             {/* Emlak Özellikleri - Sadece konut tiplerinde göster */}
-            {form.emlak_tipi !== 'Arsa' && (
+            {form.emlak_tipi === 'kiralikDaire' || form.emlak_tipi === 'satilikDaire' && (
               <>
                 <div className="d-flex gap-3" style={{ flexWrap: 'wrap' }}>
                   <div className="form-group" style={{ flex: 1, minWidth: '150px' }}>
@@ -501,7 +502,6 @@ function EditListingModal({ listing, isOpen, onClose, onUpdate }: Props) {
                       type="number"
                       name="kat_sayisi"
                       className="form-control"
-                      placeholder="7"
                       value={form.kat_sayisi}
                       onChange={handleChange}
                       min="1"
@@ -539,7 +539,6 @@ function EditListingModal({ listing, isOpen, onClose, onUpdate }: Props) {
                       type="number"
                       name="banyo_sayisi"
                       className="form-control"
-                      placeholder="1"
                       value={form.banyo_sayisi}
                       onChange={handleChange}
                       min="1"
@@ -555,7 +554,6 @@ function EditListingModal({ listing, isOpen, onClose, onUpdate }: Props) {
                       type="number"
                       name="aidat"
                       className="form-control"
-                      placeholder="350"
                       value={form.aidat}
                       onChange={handleChange}
                       min="0"

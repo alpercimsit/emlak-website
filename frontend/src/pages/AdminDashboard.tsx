@@ -235,6 +235,9 @@ function AdminDashboard() {
                 required
               >
                 <option value="Arsa">Arsa</option>
+                <option value="Tarla">Tarla</option>
+                <option value="bagYeri">Bağ Yeri</option>
+                <option value="arsaHissesi">Arsa Hissesi</option>
                 <option value="kiralikDaire">Kiralık Daire</option>
                 <option value="satilikDaire">Satılık Daire</option>
               </select>
@@ -331,8 +334,9 @@ function AdminDashboard() {
             />
 
 
-            {/* Arsa Özellikleri - Sadece arsa tipinde göster */}
-            {form.emlak_tipi === 'Arsa' && (
+            {/* Arsa Özellikleri - Sadece arsa tiplerinde göster */}
+            {form.emlak_tipi === 'Arsa' || form.emlak_tipi === 'Tarla' ||
+             form.emlak_tipi === 'bagYeri' || form.emlak_tipi === 'arsaHissesi' && (
               <div className="d-flex gap-3" style={{ flexWrap: 'wrap' }}>
                 <div className="form-group" style={{ flex: 1, minWidth: '150px' }}>
                   <label className="form-label">

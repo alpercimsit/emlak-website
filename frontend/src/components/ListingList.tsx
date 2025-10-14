@@ -236,28 +236,6 @@ function ListingList({ listings, isAdmin = false, onUpdate, onEditListing, filte
   const navigate = useNavigate();
   const [deletingId, setDeletingId] = useState<number | null>(null);
 
-  // Emlak tipi görüntüleme için helper fonksiyon
-  const formatEmlakTipi = (emlakTipi: string) => {
-    switch (emlakTipi) {
-      case 'kiralikDaire':
-        return 'Kiralık Daire';
-      case 'satilikDaire':
-        return 'Satılık Daire';
-      case 'Arsa':
-        return 'Arsa';
-      case 'Tarla':
-        return 'Tarla';
-      case 'Bağ Yeri':
-        return 'Bağ Yeri';
-      case 'Arsa Hissesi':
-        return 'Arsa Hissesi';
-      case 'Daire':
-        return 'Daire';
-      default:
-        return emlakTipi;
-    }
-  };
-
   const handleDelete = async (listingId: number) => {
     if (!confirm('Bu ilanı silmek istediğinize emin misiniz?')) {
       return;
@@ -352,7 +330,7 @@ function ListingList({ listings, isAdmin = false, onUpdate, onEditListing, filte
                   <i className="fas fa-expand"></i>
                   {l.m2 ? `${l.m2} m²` : 'Belirtilmemiş'}
                 </span>
-                {['Arsa', 'Tarla', 'Bağ Yeri', 'Arsa Hissesi'].includes(l.emlak_tipi) && (
+                {['Arsa', 'Tarla', 'bagYeri', 'arsaHissesi'].includes(l.emlak_tipi) && (
                   <span>
                     <i className="fas fa-calculator"></i>
                     {l.m2 && l.m2 > 0
@@ -361,13 +339,13 @@ function ListingList({ listings, isAdmin = false, onUpdate, onEditListing, filte
                     }
                   </span>
                 )}
-                {!['Arsa', 'Tarla', 'Bağ Yeri', 'Arsa Hissesi'].includes(l.emlak_tipi) && (
+                {!['Arsa', 'Tarla', 'bagYeri', 'arsaHissesi'].includes(l.emlak_tipi) && (
                   <span>
                     <i className="fas fa-bed"></i>
                     {l.oda_sayisi || 'Belirtilmemiş'}
                   </span>
                 )}
-                {!['Arsa', 'Tarla', 'Bağ Yeri', 'Arsa Hissesi'].includes(l.emlak_tipi) && (
+                {!['Arsa', 'Tarla', 'bagYeri', 'arsaHissesi'].includes(l.emlak_tipi) && (
                   <span>
                     <i className="fas fa-layer-group"></i>
                     {l.bulundugu_kat != null ? l.bulundugu_kat : 'Belirtilmemiş'}
