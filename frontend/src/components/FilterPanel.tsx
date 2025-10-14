@@ -49,7 +49,7 @@ function useSmartDropdownPosition(dropdownRef: React.RefObject<HTMLDivElement>) 
 
 export interface FilterState {
   category: 'arsa' | 'konut';
-  subCategory: 'all' | 'satilik' | 'kiralik' | 'tarla' | 'bagYeri' | 'arsaHissesi'; // konut ve arsa için alt kategori
+  subCategory: 'all' | 'satilik' | 'kiralik' | 'tarla' | 'bagYeri' | 'Hisse'; // konut ve arsa için alt kategori
   searchText: string;
   ilanNo: string;
   fiyatMin: string;
@@ -1192,12 +1192,12 @@ function FilterPanel({ filters, onFiltersChange, totalCount, isAdmin }: Props) {
                   Bağ Yeri
                 </button>
                 <button
-                  className={`submenu-btn ${filters.subCategory === 'arsaHissesi' ? 'active' : ''}`}
+                  className={`submenu-btn ${filters.subCategory === 'Hisse' ? 'active' : ''}`}
                   onClick={() => {
-                    onFiltersChange({ ...filters, category: 'arsa', subCategory: 'arsaHissesi' });
+                    onFiltersChange({ ...filters, category: 'arsa', subCategory: 'Hisse' });
                   }}
                 >
-                  Arsa Hissesi
+                  Hisse
                 </button>
               </div>
             )}

@@ -98,8 +98,8 @@ function ListingDetailPage() {
         return 'Tarla';
       case 'bagYeri':
         return 'Bağ Yeri';
-      case 'arsaHissesi':
-        return 'Arsa Hissesi';
+      case 'Hisse':
+        return 'Hisse';
       case 'Daire':
         return 'Daire';
       default:
@@ -162,8 +162,8 @@ function ListingDetailPage() {
       emlakTipiText = 'Tarla';
     } else if (listing.emlak_tipi === 'bagYeri') {
       emlakTipiText = 'Bağ Yeri';
-    } else if (listing.emlak_tipi === 'arsaHissesi') {
-      emlakTipiText = 'Arsa Hissesi';
+    } else if (listing.emlak_tipi === 'Hisse') {
+      emlakTipiText = 'Hisse';
     } else if (listing.emlak_tipi === 'satilikDaire') {
       emlakTipiText = 'Satılık Daire';
     } else if (listing.emlak_tipi === 'kiralikDaire') {
@@ -238,7 +238,7 @@ function ListingDetailPage() {
     const shareUrl = window.location.href;
     const shareTitle = listing.baslik || 'Emlak İlanı';
     let shareText = `Bu ilana göz atın: ${shareTitle} - ${listing.fiyat.toLocaleString('tr-TR')} TL`;
-    if(['Arsa', 'Tarla', 'bagYeri', 'arsaHissesi'].includes(listing.emlak_tipi)){
+    if(['Arsa', 'Tarla', 'bagYeri', 'Hisse'].includes(listing.emlak_tipi)){
       shareText = `Bu arsa ilanına göz atın: ${shareTitle} - ${listing.fiyat.toLocaleString('tr-TR')} TL`;
     }
     else{
@@ -973,7 +973,7 @@ function ListingDetailPage() {
                 <span className="value">{listing.m2 ? `${listing.m2} m²` : 'Belirtilmemiş'}</span>
               </div>
 
-              {['Arsa', 'Tarla', 'bagYeri', 'arsaHissesi'].includes(listing.emlak_tipi) && (
+              {['Arsa', 'Tarla', 'bagYeri', 'Hisse'].includes(listing.emlak_tipi) && (
                 <div className="info-item">
                   <i className="fas fa-calculator"></i>
                   <span className="label">m² Fiyatı:</span>
@@ -985,14 +985,14 @@ function ListingDetailPage() {
                   </span>
                 </div>
               )}
-              {['Arsa', 'Tarla', 'bagYeri', 'arsaHissesi'].includes(listing.emlak_tipi) && (
+              {['Arsa', 'Tarla', 'bagYeri', 'Hisse'].includes(listing.emlak_tipi) && (
                 <div className="info-item">
                   <i className="fas fa-map"></i>
                   <span className="label">Ada No:</span>
                   <span className="value">{listing.ada || 'Belirtilmemiş'}</span>
                 </div>
               )}
-              {['Arsa', 'Tarla', 'bagYeri', 'arsaHissesi'].includes(listing.emlak_tipi) && (
+              {['Arsa', 'Tarla', 'bagYeri', 'Hisse'].includes(listing.emlak_tipi) && (
                 <div className="info-item">
                   <i className="fas fa-map-pin"></i>
                   <span className="label">Parsel No:</span>
@@ -1000,7 +1000,7 @@ function ListingDetailPage() {
                 </div>
               )}
 
-              {!['Arsa', 'Tarla', 'bagYeri', 'arsaHissesi'].includes(listing.emlak_tipi) && (
+              {!['Arsa', 'Tarla', 'bagYeri', 'Hisse'].includes(listing.emlak_tipi) && (
                 <>
                   <div className="info-item">
                     <i className="fas fa-bed"></i>
@@ -1041,7 +1041,7 @@ function ListingDetailPage() {
               )}
             </div>
 
-            {!['Arsa', 'Tarla', 'bagYeri', 'arsaHissesi'].includes(listing.emlak_tipi) && (
+            {!['Arsa', 'Tarla', 'bagYeri', 'Hisse'].includes(listing.emlak_tipi) && (
               <div className="features">
                 {listing.balkon ? (
                   <span className="feature">
@@ -1465,7 +1465,7 @@ function ListingDetailPage() {
                   <span className="value">{listing.m2 ? `${listing.m2} m²` : 'Belirtilmemiş'}</span>
                 </div>
 
-                {['Arsa', 'Tarla', 'bagYeri', 'arsaHissesi'].includes(listing.emlak_tipi) && (
+                {['Arsa', 'Tarla', 'bagYeri', 'Hisse'].includes(listing.emlak_tipi) && (
                   <div className="info-item">
                     <i className="fas fa-calculator"></i>
                     <span className="label">m² Fiyatı:</span>
@@ -1477,14 +1477,14 @@ function ListingDetailPage() {
                     </span>
                   </div>
                 )}
-                {['Arsa', 'Tarla', 'bagYeri', 'arsaHissesi'].includes(listing.emlak_tipi) && (
+                {['Arsa', 'Tarla', 'bagYeri', 'Hisse'].includes(listing.emlak_tipi) && (
                   <div className="info-item">
                     <i className="fas fa-map"></i>
                     <span className="label">Ada No:</span>
                     <span className="value">{listing.ada || 'Belirtilmemiş'}</span>
                   </div>
                 )}
-                {['Arsa', 'Tarla', 'bagYeri', 'arsaHissesi'].includes(listing.emlak_tipi) && (
+                {['Arsa', 'Tarla', 'bagYeri', 'Hisse'].includes(listing.emlak_tipi) && (
                   <div className="info-item">
                     <i className="fas fa-map-pin"></i>
                     <span className="label">Parsel No:</span>
@@ -1492,7 +1492,7 @@ function ListingDetailPage() {
                   </div>
                 )}
 
-                {!['Arsa', 'Tarla', 'bagYeri', 'arsaHissesi'].includes(listing.emlak_tipi) && (
+                {!['Arsa', 'Tarla', 'bagYeri', 'Hisse'].includes(listing.emlak_tipi) && (
                   <>
                     <div className="info-item">
                       <i className="fas fa-bed"></i>
@@ -1533,7 +1533,7 @@ function ListingDetailPage() {
                 )}
               </div>
 
-              {!['Arsa', 'Tarla', 'bagYeri', 'arsaHissesi'].includes(listing.emlak_tipi) && (
+              {!['Arsa', 'Tarla', 'bagYeri', 'Hisse'].includes(listing.emlak_tipi) && (
                 <div className="features">
                   {listing.balkon ? (
                     <span className="feature">

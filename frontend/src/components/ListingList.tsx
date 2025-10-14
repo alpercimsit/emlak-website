@@ -330,7 +330,7 @@ function ListingList({ listings, isAdmin = false, onUpdate, onEditListing, filte
                   <i className="fas fa-expand"></i>
                   {l.m2 ? `${l.m2} m²` : 'Belirtilmemiş'}
                 </span>
-                {['Arsa', 'Tarla', 'bagYeri', 'arsaHissesi'].includes(l.emlak_tipi) && (
+                {['Arsa', 'Tarla', 'bagYeri', 'Hisse'].includes(l.emlak_tipi) && (
                   <span>
                     <i className="fas fa-calculator"></i>
                     {l.m2 && l.m2 > 0
@@ -339,13 +339,13 @@ function ListingList({ listings, isAdmin = false, onUpdate, onEditListing, filte
                     }
                   </span>
                 )}
-                {!['Arsa', 'Tarla', 'bagYeri', 'arsaHissesi'].includes(l.emlak_tipi) && (
+                {!['Arsa', 'Tarla', 'bagYeri', 'Hisse'].includes(l.emlak_tipi) && (
                   <span>
                     <i className="fas fa-bed"></i>
                     {l.oda_sayisi || 'Belirtilmemiş'}
                   </span>
                 )}
-                {!['Arsa', 'Tarla', 'bagYeri', 'arsaHissesi'].includes(l.emlak_tipi) && (
+                {!['Arsa', 'Tarla', 'bagYeri', 'Hisse'].includes(l.emlak_tipi) && (
                   <span>
                     <i className="fas fa-layer-group"></i>
                     {l.bulundugu_kat != null ? l.bulundugu_kat : 'Belirtilmemiş'}

@@ -262,11 +262,11 @@ function ListingsPage() {
           if (listing.emlak_tipi !== 'Tarla') return false;
         } else if (filters.subCategory === 'bagYeri') {
           if (listing.emlak_tipi !== 'bagYeri') return false;
-        } else if (filters.subCategory === 'arsaHissesi') {
-          if (listing.emlak_tipi !== 'arsaHissesi') return false;
+        } else if (filters.subCategory === 'Hisse') {
+          if (listing.emlak_tipi !== 'Hisse') return false;
         } else {
           // 'all' - tüm arsa türleri
-          if (!['Arsa', 'Tarla', 'bagYeri', 'arsaHissesi'].includes(listing.emlak_tipi)) return false;
+          if (!['Arsa', 'Tarla', 'bagYeri', 'Hisse'].includes(listing.emlak_tipi)) return false;
         }
       } else if (filters.category === 'konut') {
         if (filters.subCategory === 'satilik') {
@@ -450,8 +450,8 @@ function ListingsPage() {
         return 'İlan Listesi - Tarla';
       } else if (filters.subCategory === 'bagYeri') {
         return 'İlan Listesi - Bağ Yeri';
-      } else if (filters.subCategory === 'arsaHissesi') {
-        return 'İlan Listesi - Arsa Hissesi';
+      } else if (filters.subCategory === 'Hisse') {
+        return 'İlan Listesi - Hisse';
       } else {
         return 'İlan Listesi - Arsa';
       }
