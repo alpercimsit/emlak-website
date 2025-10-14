@@ -489,6 +489,7 @@ function PropertyFilters({ filters, onFiltersChange }: { filters: FilterState; o
 
 function FilterModal({ isOpen, onClose, filters, onFiltersChange, totalCount, isAdmin }: Props) {
   const [showKonutSubmenu, setShowKonutSubmenu] = useState(false);
+  const [showArsaSubmenu, setShowArsaSubmenu] = useState(false);
   const [provinces, setProvinces] = useState<Province[]>([]);
   const [districts, setDistricts] = useState<District[]>([]);
   const [neighborhoods, setNeighborhoods] = useState<Neighborhood[]>([]);
@@ -644,7 +645,12 @@ function FilterModal({ isOpen, onClose, filters, onFiltersChange, totalCount, is
           <div className="filter-section" style={{ padding: 'var(--spacing-sm)', marginBottom: 'var(--spacing-sm)' }}>
             <div className="category-buttons" style={{ flexDirection: 'column', width: '100%' }}>
               <div style={{ display: 'flex', width: '100%' }}>
-                <div className="category-button-wrapper" style={{ flex: 1 }}>
+                <div
+                  className="category-button-wrapper"
+                  style={{ flex: 1, position: 'relative' }}
+                  onMouseEnter={() => setShowArsaSubmenu(true)}
+                  onMouseLeave={() => setShowArsaSubmenu(false)}
+                >
                   <button
                     className={`category-btn ${filters.category === 'arsa' ? 'active' : ''}`}
                     onClick={() => {
@@ -655,6 +661,50 @@ function FilterModal({ isOpen, onClose, filters, onFiltersChange, totalCount, is
                     <i className="fas fa-map"></i>
                     Arsa
                   </button>
+                  {showArsaSubmenu && (
+                    <div style={{
+                      position: 'absolute',
+                      top: 'calc(100% + var(--spacing-xs))',
+                      left: 0,
+                      right: 0,
+                      background: 'var(--bg-primary)',
+                      border: '1px solid var(--border-color)',
+                      borderRadius: 'var(--radius-md)',
+                      boxShadow: 'var(--shadow-lg)',
+                      zIndex: 100,
+                      opacity: 1,
+                      transform: 'translateY(0) scale(1)',
+                      overflow: 'hidden'
+                    }}>
+                      <button
+                        className={`submenu-btn ${filters.subCategory === 'tarla' ? 'active' : ''}`}
+                        onClick={() => {
+                          onFiltersChange({ ...filters, category: 'arsa', subCategory: 'tarla' });
+                        }}
+                        style={{ width: '100%', justifyContent: 'center' }}
+                      >
+                        Tarla
+                      </button>
+                      <button
+                        className={`submenu-btn ${filters.subCategory === 'bagYeri' ? 'active' : ''}`}
+                        onClick={() => {
+                          onFiltersChange({ ...filters, category: 'arsa', subCategory: 'bagYeri' });
+                        }}
+                        style={{ width: '100%', justifyContent: 'center' }}
+                      >
+                        Bağ Yeri
+                      </button>
+                      <button
+                        className={`submenu-btn ${filters.subCategory === 'Hisse' ? 'active' : ''}`}
+                        onClick={() => {
+                          onFiltersChange({ ...filters, category: 'arsa', subCategory: 'Hisse' });
+                        }}
+                        style={{ width: '100%', justifyContent: 'center' }}
+                      >
+                        Hisse
+                      </button>
+                    </div>
+                  )}
                 </div>
 
                 <div
