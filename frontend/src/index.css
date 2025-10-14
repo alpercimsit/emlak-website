@@ -993,6 +993,7 @@ textarea.form-control {
   transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   z-index: 1;
   box-shadow: var(--shadow-md);
+  pointer-events: none;
 }
 
 /* Konut seçili olduğunda bar sağa kayar */
