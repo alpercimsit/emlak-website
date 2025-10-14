@@ -405,7 +405,7 @@ function EditListingModal({ listing, isOpen, onClose, onUpdate }: Props) {
             )}
 
             {/* Emlak Özellikleri - Sadece konut tiplerinde göster */}
-            {form.emlak_tipi === 'kiralikDaire' || form.emlak_tipi === 'satilikDaire' && (
+            {(form.emlak_tipi === 'kiralikDaire' || form.emlak_tipi === 'satilikDaire') && (
               <>
                 <div className="d-flex gap-3" style={{ flexWrap: 'wrap' }}>
                   <div className="form-group" style={{ flex: 1, minWidth: '150px' }}>
