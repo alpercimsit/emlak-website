@@ -258,7 +258,16 @@ function ListingsPage() {
     const filtered = listings.filter(listing => {
       // Kategori filtresi
       if (filters.category === 'arsa') {
-        if (listing.emlak_tipi !== 'Arsa') return false;
+        if (filters.subCategory === 'tarla') {
+          if (listing.emlak_tipi !== 'Tarla') return false;
+        } else if (filters.subCategory === 'bagYeri') {
+          if (listing.emlak_tipi !== 'Bağ Yeri') return false;
+        } else if (filters.subCategory === 'arsaHissesi') {
+          if (listing.emlak_tipi !== 'Arsa Hissesi') return false;
+        } else {
+          // 'all' - tüm arsa türleri
+          if (!['Arsa', 'Tarla', 'Bağ Yeri', 'Arsa Hissesi'].includes(listing.emlak_tipi)) return false;
+        }
       } else if (filters.category === 'konut') {
         if (filters.subCategory === 'satilik') {
           if (listing.emlak_tipi !== 'satilikDaire') return false;
@@ -437,7 +446,15 @@ function ListingsPage() {
   // Dinamik başlık metni oluşturma
   const getPageTitle = () => {
     if (filters.category === 'arsa') {
-      return 'İlan Listesi - Arsa';
+      if (filters.subCategory === 'tarla') {
+        return 'İlan Listesi - Tarla';
+      } else if (filters.subCategory === 'bagYeri') {
+        return 'İlan Listesi - Bağ Yeri';
+      } else if (filters.subCategory === 'arsaHissesi') {
+        return 'İlan Listesi - Arsa Hissesi';
+      } else {
+        return 'İlan Listesi - Arsa';
+      }
     } else if (filters.category === 'konut') {
       if (filters.subCategory === 'satilik') {
         return 'İlan Listesi - Satılık Konut';

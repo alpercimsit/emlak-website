@@ -49,7 +49,7 @@ function useSmartDropdownPosition(dropdownRef: React.RefObject<HTMLDivElement>) 
 
 export interface FilterState {
   category: 'arsa' | 'konut';
-  subCategory: 'all' | 'satilik' | 'kiralik'; // konut için alt kategori
+  subCategory: 'all' | 'satilik' | 'kiralik' | 'tarla' | 'bagYeri' | 'arsaHissesi'; // konut ve arsa için alt kategori
   searchText: string;
   ilanNo: string;
   fiyatMin: string;
@@ -1013,6 +1013,7 @@ function PropertyFilters({ filters, onFiltersChange }: { filters: FilterState; o
 
 function FilterPanel({ filters, onFiltersChange, totalCount, isAdmin }: Props) {
   const [showKonutSubmenu, setShowKonutSubmenu] = useState(false);
+  const [showArsaSubmenu, setShowArsaSubmenu] = useState(false);
   const [provinces, setProvinces] = useState<Province[]>([]);
   const [districts, setDistricts] = useState<District[]>([]);
   const [neighborhoods, setNeighborhoods] = useState<Neighborhood[]>([]);
@@ -1157,8 +1158,12 @@ function FilterPanel({ filters, onFiltersChange, totalCount, isAdmin }: Props) {
 
       {/* Kategori Seçimi */}
       <div className="filter-section">
-        <div className={`category-buttons ${filters.category === 'konut' ? 'konut-active' : ''}`}>
-          <div className="category-button-wrapper">
+        <div className={`category-buttons ${filters.category === 'konut' ? 'konut-active' : filters.category === 'arsa' ? 'arsa-active' : ''}`}>
+          <div
+            className="category-button-wrapper"
+            onMouseEnter={() => setShowArsaSubmenu(true)}
+            onMouseLeave={() => setShowArsaSubmenu(false)}
+          >
             <button
               className={`category-btn ${filters.category === 'arsa' ? 'active' : ''}`}
               onClick={() => {
@@ -1168,9 +1173,37 @@ function FilterPanel({ filters, onFiltersChange, totalCount, isAdmin }: Props) {
               <i className="fas fa-map"></i>
               Arsa
             </button>
+            {showArsaSubmenu && (
+              <div className="submenu">
+                <button
+                  className={`submenu-btn ${filters.subCategory === 'tarla' ? 'active' : ''}`}
+                  onClick={() => {
+                    onFiltersChange({ ...filters, category: 'arsa', subCategory: 'tarla' });
+                  }}
+                >
+                  Tarla
+                </button>
+                <button
+                  className={`submenu-btn ${filters.subCategory === 'bagYeri' ? 'active' : ''}`}
+                  onClick={() => {
+                    onFiltersChange({ ...filters, category: 'arsa', subCategory: 'bagYeri' });
+                  }}
+                >
+                  Bağ Yeri
+                </button>
+                <button
+                  className={`submenu-btn ${filters.subCategory === 'arsaHissesi' ? 'active' : ''}`}
+                  onClick={() => {
+                    onFiltersChange({ ...filters, category: 'arsa', subCategory: 'arsaHissesi' });
+                  }}
+                >
+                  Arsa Hissesi
+                </button>
+              </div>
+            )}
           </div>
-          
-          <div 
+
+          <div
             className="category-button-wrapper"
             onMouseEnter={() => setShowKonutSubmenu(true)}
             onMouseLeave={() => setShowKonutSubmenu(false)}

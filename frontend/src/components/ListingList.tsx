@@ -245,6 +245,12 @@ function ListingList({ listings, isAdmin = false, onUpdate, onEditListing, filte
         return 'Satılık Daire';
       case 'Arsa':
         return 'Arsa';
+      case 'Tarla':
+        return 'Tarla';
+      case 'Bağ Yeri':
+        return 'Bağ Yeri';
+      case 'Arsa Hissesi':
+        return 'Arsa Hissesi';
       case 'Daire':
         return 'Daire';
       default:
@@ -346,22 +352,22 @@ function ListingList({ listings, isAdmin = false, onUpdate, onEditListing, filte
                   <i className="fas fa-expand"></i>
                   {l.m2 ? `${l.m2} m²` : 'Belirtilmemiş'}
                 </span>
-                {l.emlak_tipi === 'Arsa' && (
+                {['Arsa', 'Tarla', 'Bağ Yeri', 'Arsa Hissesi'].includes(l.emlak_tipi) && (
                   <span>
                     <i className="fas fa-calculator"></i>
-                    {l.m2 && l.m2 > 0 
+                    {l.m2 && l.m2 > 0
                     ? `${Math.floor(l.fiyat / l.m2).toLocaleString('tr-TR')} TL/m²`
                     : 'Belirtilmemiş'
                     }
                   </span>
                 )}
-                {l.emlak_tipi !== 'Arsa' && (
+                {!['Arsa', 'Tarla', 'Bağ Yeri', 'Arsa Hissesi'].includes(l.emlak_tipi) && (
                   <span>
                     <i className="fas fa-bed"></i>
                     {l.oda_sayisi || 'Belirtilmemiş'}
                   </span>
                 )}
-                {l.emlak_tipi !== 'Arsa' && (
+                {!['Arsa', 'Tarla', 'Bağ Yeri', 'Arsa Hissesi'].includes(l.emlak_tipi) && (
                   <span>
                     <i className="fas fa-layer-group"></i>
                     {l.bulundugu_kat != null ? l.bulundugu_kat : 'Belirtilmemiş'}
