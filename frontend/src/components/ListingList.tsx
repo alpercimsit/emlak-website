@@ -95,12 +95,12 @@ function ActiveFilters({
   const sortLabels: { [key: string]: string } = {
     'date-desc': 'Tarihe göre önce en yeni',
     'date-asc': 'Tarihe göre önce en eski',
+    'pricePerM2-desc': 'TL/m² fiyatına göre önce en yüksek',
+    'pricePerM2-asc': 'TL/m² fiyatına göre önce en düşük',
     'price-desc': 'Fiyata göre önce en yüksek',
     'price-asc': 'Fiyata göre önce en düşük',
     'm2-desc': 'm²\'ye göre önce en yüksek',
-    'm2-asc': 'm²\'ye göre önce en düşük',
-    'pricePerM2-desc': 'TL/m² fiyatına göre önce en yüksek',
-    'pricePerM2-asc': 'TL/m² fiyatına göre önce en düşük'
+    'm2-asc': 'm²\'ye göre önce en düşük'
   };
 
   const hasActiveFilters = activeFilters.length > 0;

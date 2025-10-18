@@ -77,12 +77,12 @@ function ListingsPage() {
   const sortOptions = [
     { key: 'date-desc' as const, label: 'Tarihe göre önce en yeni (varsayılan)' },
     { key: 'date-asc' as const, label: 'Tarihe göre önce en eski' },
+    { key: 'pricePerM2-desc' as const, label: 'TL/m² fiyatına göre önce en yüksek' },
+    { key: 'pricePerM2-asc' as const, label: 'TL/m² fiyatına göre önce en düşük' },
     { key: 'price-desc' as const, label: 'Fiyata göre önce en yüksek' },
     { key: 'price-asc' as const, label: 'Fiyata göre önce en düşük' },
     { key: 'm2-desc' as const, label: 'm²\'ye göre önce en yüksek' },
-    { key: 'm2-asc' as const, label: 'm²\'ye göre önce en düşük' },
-    { key: 'pricePerM2-desc' as const, label: 'TL/m² fiyatına göre önce en yüksek' },
-    { key: 'pricePerM2-asc' as const, label: 'TL/m² fiyatına göre önce en düşük' }
+    { key: 'm2-asc' as const, label: 'm²\'ye göre önce en düşük' }
   ];
 
   // Filtre kaldırma fonksiyonları
