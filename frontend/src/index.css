@@ -2780,6 +2780,29 @@ textarea.form-control {
   pointer-events: auto;
 }
 
+/* Kaydırma çubuğunun kendisi (genişlik) */
+.sort-dropdown-menu::-webkit-scrollbar {
+  width: 10px; /* Genişliği 10px yap (fotoğrafındaki gibi) */
+}
+
+/* Kaydırma çubuğunun yolu (arka planı) */
+.sort-dropdown-menu::-webkit-scrollbar-track {
+  background: var(--surface-color, #f1f1f1); /* Arka planı açık gri/yüzey rengi yap */
+  border-radius: 10px; /* Kenarları yuvarlat */
+}
+
+/* Kaydırma çubuğunun tutamacı (hareket eden kısım) */
+.sort-dropdown-menu::-webkit-scrollbar-thumb {
+  background: var(--text-muted, #c1c1c1); /* Tutamacı gri/soluk metin rengi yap (senin fotoğrafa yakın) */
+  border-radius: 10px; /* Kenarları yuvarlat */
+  border: 2px solid var(--surface-color, #f1f1f1); /* Track ile arasında boşluk hissi verir */
+}
+
+/* Tutamacın üzerine gelince (hover) */
+.sort-dropdown-menu::-webkit-scrollbar-thumb:hover {
+  background: var(--text-primary, #888); /* Rengini koyulaştır */
+}
+
 .sort-option {
   display: flex;
   justify-content: space-between;
