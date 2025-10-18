@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo, useContext } from 'react';
+import { useEffect, useState, useMemo, useContext, useRef } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import api, { supabase } from '../utils/api';
 import ListingList from '../components/ListingList';
@@ -47,6 +47,9 @@ function ListingsPage() {
 
   // Get modal context
   const modalContext = useContext(ModalContext);
+
+  // Component'in ilk kez render edilip edilmediğini takip etmek için
+  const isInitialMount = useRef(true);
 
   // Sıralama seçenekleri
   const [sortOption, setSortOption] = useState<'price-desc' | 'price-asc' | 'date-desc' | 'date-asc' | 'm2-desc' | 'm2-asc' | 'pricePerM2-desc' | 'pricePerM2-asc'>(() => {
@@ -212,6 +215,13 @@ function ListingsPage() {
       .finally(() => setLoading(false));
   }, []);
 
+  // listings verisi yüklendiğinde, 'ilk yükleme' durumunu 'bitti' olarak işaretle
+  useEffect(() => {
+    if (!loading && isInitialMount.current) {
+      isInitialMount.current = false;
+    }
+  }, [loading]);
+
   // Filtreleri localStorage'a kaydet
   useEffect(() => {
     localStorage.setItem('listingFilters', JSON.stringify(filters));
@@ -224,11 +234,10 @@ function ListingsPage() {
 
   // Filtreler veya sıralama değiştiğinde sayfayı 1'e sıfırla
   useEffect(() => {
-    // Bu effect sadece filtreler veya sıralama değiştiğinde tetiklenmeli.
-    // Eğer o anda 1. sayfada değilsek, URL'den 'page' parametresini
-    // kaldırarak 1. sayfaya yönlendir.
-    if (currentPage !== 1) {
-      handlePageChange(1);
+    if (isInitialMount.current === false) {
+      if (currentPage !== 1) {
+        handlePageChange(1);
+      }
     }
   }, [filters, sortOption]);
 
