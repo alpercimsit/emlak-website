@@ -62,8 +62,9 @@ function ListingsPage() {
     }
     return 'date-desc';
   });
-  
+
   const [isSortDropdownOpen, setIsSortDropdownOpen] = useState(false);
+  const [isPageDropdownOpen, setIsPageDropdownOpen] = useState(false);
 
   // Mobil filtre modal state'i
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
@@ -248,16 +249,19 @@ function ListingsPage() {
       if (isSortDropdownOpen && !(event.target as Element).closest('.sort-dropdown')) {
         setIsSortDropdownOpen(false);
       }
+      if (isPageDropdownOpen && !(event.target as Element).closest('.page-dropdown')) {
+        setIsPageDropdownOpen(false);
+      }
     };
 
-    if (isSortDropdownOpen) {
+    if (isSortDropdownOpen || isPageDropdownOpen) {
       document.addEventListener('click', handleClickOutside);
     }
 
     return () => {
       document.removeEventListener('click', handleClickOutside);
     };
-  }, [isSortDropdownOpen]);
+  }, [isSortDropdownOpen, isPageDropdownOpen]);
 
 
 
@@ -441,6 +445,15 @@ function ListingsPage() {
   // Toplam sayfa sayısı
   const totalPages = Math.ceil(filteredListings.length / itemsPerPage);
 
+  // Sayfa seçenekleri oluştur
+  const pageOptions = useMemo(() => {
+    const options = [];
+    for (let i = 1; i <= totalPages; i++) {
+      options.push({ key: i, label: `${i}. Sayfa` });
+    }
+    return options;
+  }, [totalPages]);
+
   // Sayfa değişikliği için fonksiyon
   const handlePageChange = (page: number) => {
     const params = new URLSearchParams(searchParams);
@@ -545,8 +558,33 @@ function ListingsPage() {
             </button>
           {/* Sayfa bilgisi - Masaüstü */}
           {totalPages > 1 && (
-          <div className="page-info page-info-desktop" style={{whiteSpace: 'nowrap'}}>
-            Sayfa:&nbsp; <strong>{currentPage}</strong> &nbsp;/&nbsp; <strong>{totalPages}</strong>
+          <div className="page-dropdown page-info-desktop">
+            <button
+              className="page-info"
+              onClick={(e) => {
+                e.stopPropagation();
+                setIsPageDropdownOpen(!isPageDropdownOpen);
+              }}
+            >
+              Sayfa:&nbsp; <strong>{currentPage}</strong> &nbsp;/&nbsp; <strong>{totalPages}</strong>
+              &nbsp;&nbsp;<i className={`fas fa-chevron-down ${isPageDropdownOpen ? 'rotate' : ''}`}></i>
+            </button>
+            <div className={`sort-dropdown-menu ${isPageDropdownOpen ? 'show' : ''}`}>
+              {pageOptions.map(option => (
+                <div
+                  key={option.key}
+                  className={`sort-option ${currentPage === option.key ? 'active' : ''}`}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handlePageChange(option.key);
+                    setIsPageDropdownOpen(false);
+                  }}
+                >
+                  {option.label}
+                  {currentPage === option.key && <i className="fas fa-check"></i>}
+                </div>
+              ))}
+            </div>
           </div>
           )}
           </div>
@@ -556,8 +594,33 @@ function ListingsPage() {
           
           <div className="mobile-page-count-group">
           {totalPages > 1 && (
-          <div className="page-info page-info-mobile" style={{whiteSpace: 'nowrap'}}>
-            Sayfa:&nbsp; <strong>{currentPage}</strong> &nbsp;/&nbsp; <strong>{totalPages}</strong>
+          <div className="page-dropdown page-info-mobile">
+            <button
+              className="page-info"
+              onClick={(e) => {
+                e.stopPropagation();
+                setIsPageDropdownOpen(!isPageDropdownOpen);
+              }}
+            >
+              Sayfa:&nbsp; <strong>{currentPage}</strong> &nbsp;/&nbsp; <strong>{totalPages}</strong>
+              &nbsp;&nbsp;<i className={`fas fa-chevron-down ${isPageDropdownOpen ? 'rotate' : ''}`}></i>
+            </button>
+            <div className={`sort-dropdown-menu ${isPageDropdownOpen ? 'show' : ''}`}>
+              {pageOptions.map(option => (
+                <div
+                  key={option.key}
+                  className={`sort-option ${currentPage === option.key ? 'active' : ''}`}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handlePageChange(option.key);
+                    setIsPageDropdownOpen(false);
+                  }}
+                >
+                  {option.label}
+                  {currentPage === option.key && <i className="fas fa-check"></i>}
+                </div>
+              ))}
+            </div>
           </div>
           )}
           <div className="listings-count mobile-listings-count" style={{whiteSpace: 'nowrap'}}>

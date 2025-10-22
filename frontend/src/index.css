@@ -1223,6 +1223,7 @@ textarea.form-control {
   position: relative;
   bottom: 10px;
   margin-left: var(--spacing-lg);
+  white-space: nowrap !important; 
 }
 
 .page-info:hover {
@@ -2752,7 +2753,8 @@ textarea.form-control {
   align-items: center;
 }
 
-.sort-dropdown {
+.sort-dropdown,
+.page-dropdown {
   position: relative;
   display: inline-block;
   user-select: none;
@@ -3343,7 +3345,14 @@ input[type="number"]::-webkit-inner-spin-button {
   .page-info-mobile{
     padding: var(--spacing-sm) !important;
     margin-left: 0 !important;
-    margin-right: var(--spacing-sm) !important;
+
+
+  }
+
+  .page-info{
+    padding: var(--spacing-sm) !important;
+    margin-right: 0 !important;
+    margin-left: 0 !important;
   }
 
   .mobile-page-count-group {
