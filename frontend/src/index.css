@@ -1222,7 +1222,7 @@ textarea.form-control {
   display: flex;
   position: relative;
   bottom: 10px;
-  margin-left: var(--spacing-lg);;
+  margin-left: var(--spacing-lg);
 }
 
 .page-info:hover {
@@ -3274,6 +3274,10 @@ input[type="number"]::-webkit-inner-spin-button {
   .mobile-listings-count{
     display: none;
   }
+
+  .page-info-mobile{
+    display: none;
+  }
 }
 
 /* Paylaşma Butonu Stilleri */
@@ -3330,6 +3334,15 @@ input[type="number"]::-webkit-inner-spin-button {
     font-size: 1rem;
     top: var(--spacing-xs);
     right: var(--spacing-xs);
+  }
+
+  .page-info-desktop{
+    display: none;
+  }
+
+  .page-info-mobile{
+    padding: var(--spacing-sm) !important;
+    margin-left: var(--spacing-sm) !important;
   }
 
   .share-button-modal {

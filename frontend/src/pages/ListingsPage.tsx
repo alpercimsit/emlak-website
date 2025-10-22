@@ -545,10 +545,13 @@ function ListingsPage() {
             </button>
           {/* Sayfa bilgisi - Masaüstü */}
           {totalPages > 1 && (
-          <div className="page-info" style={{whiteSpace: 'nowrap'}}>
+          <div className="page-info page-info-desktop" style={{whiteSpace: 'nowrap'}}>
             Sayfa:&nbsp; <strong>{currentPage}</strong> &nbsp;/&nbsp; <strong>{totalPages}</strong>
           </div>
           )}
+          <div className="page-info page-info-mobile" style={{whiteSpace: 'nowrap'}}>
+            Sayfa:&nbsp; <strong>{currentPage}</strong> / <strong>{totalPages}</strong>
+          </div>
           </div>
           <div className="listings-count desktop-listings-count" style={{whiteSpace: 'nowrap'}}>
             Bulunan İlan:&nbsp; <strong>{filteredListings.length}</strong>
