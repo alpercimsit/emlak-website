@@ -549,15 +549,20 @@ function ListingsPage() {
             Sayfa:&nbsp; <strong>{currentPage}</strong> &nbsp;/&nbsp; <strong>{totalPages}</strong>
           </div>
           )}
-          <div className="page-info page-info-mobile" style={{whiteSpace: 'nowrap'}}>
-            Sayfa:&nbsp; <strong>{currentPage}</strong> &nbsp;/&nbsp; <strong>{totalPages}</strong>
-          </div>
           </div>
           <div className="listings-count desktop-listings-count" style={{whiteSpace: 'nowrap'}}>
             Bulunan İlan:&nbsp; <strong>{filteredListings.length}</strong>
           </div>
+          
+          <div className="mobile-page-count-group">
+          {totalPages > 1 && (
+          <div className="page-info page-info-mobile" style={{whiteSpace: 'nowrap'}}>
+            Sayfa:&nbsp; <strong>{currentPage}</strong> &nbsp;/&nbsp; <strong>{totalPages}</strong>
+          </div>
+          )}
           <div className="listings-count mobile-listings-count" style={{whiteSpace: 'nowrap'}}>
             <strong>{filteredListings.length}</strong> &nbsp;İlan
+          </div>
           </div>
         </div>
       </div>

@@ -3342,7 +3342,13 @@ input[type="number"]::-webkit-inner-spin-button {
 
   .page-info-mobile{
     padding: var(--spacing-sm) !important;
-    margin-left: var(--spacing-sm) !important;
+    margin-left: 0 !important;
+    margin-right: var(--spacing-sm) !important;
+  }
+
+  .mobile-page-count-group {
+    display: flex;
+    align-items: center;
   }
 
   .share-button-modal {
