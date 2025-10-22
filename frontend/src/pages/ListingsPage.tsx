@@ -543,9 +543,9 @@ function ListingsPage() {
               <i className="fas fa-filter"></i> &nbsp;
               Filtrele
             </button>
-          {/* Sayfa bilgisi */}
+          {/* Sayfa bilgisi - Masaüstü */}
           {totalPages > 1 && (
-          <div className="page-info" style={{whiteSpace: 'nowrap'}}>
+          <div className="page-info desktop-page-info" style={{whiteSpace: 'nowrap'}}>
             Sayfa:&nbsp; <strong>{currentPage}</strong> &nbsp;/&nbsp; <strong>{totalPages}</strong>
           </div>
           )}
@@ -558,6 +558,13 @@ function ListingsPage() {
 
       {/* Başlık ile ilanlar arasına ayırıcı çizgi */}
       <hr className="listings-separator" style={{ width: '100%', border: 'none', height: '2px', backgroundColor: 'var(--border-color)', margin: '1.5rem 0 2rem 0' }} />
+
+      {/* Sayfa bilgisi - Mobil */}
+      {totalPages > 1 && (
+        <div className="page-info mobile-page-info" style={{ whiteSpace: 'nowrap' }}>
+          Sayfa:&nbsp; <strong>{currentPage}</strong> &nbsp;/&nbsp; <strong>{totalPages}</strong>
+        </div>
+      )}
 
       <div className="listings-container">
         <div className="listings-layout">

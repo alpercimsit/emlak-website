@@ -1344,6 +1344,16 @@ textarea.form-control {
     width: 100% !important;
   }
 
+  /* Sayfa bilgisi için responsive kurallar */
+  .desktop-page-info {
+    display: none !important;
+  }
+
+  .mobile-page-info {
+    display: flex !important;
+  }
+
+  
   .listings-container {
     display: flex;
     flex-direction: column;
@@ -3251,6 +3261,15 @@ input[type="number"]::-webkit-inner-spin-button {
 
 @media (min-width: 769px){
   .contact-small-icons{
+    display: none !important;
+  }
+
+  /* Sayfa bilgisi için masaüstü kuralları */
+  .desktop-page-info {
+    display: flex !important;
+  }
+
+  .mobile-page-info {
     display: none !important;
   }
 }
