@@ -1344,15 +1344,6 @@ textarea.form-control {
     width: 100% !important;
   }
 
-  /* Sayfa bilgisi için responsive kurallar */
-  .desktop-page-info {
-    display: none !important;
-  }
-
-  .mobile-page-info {
-    display: flex !important;
-  }
-
   
   .listings-container {
     display: flex;
@@ -2717,6 +2708,22 @@ textarea.form-control {
     width: 8.8vw;
     height: 30px;
   }
+
+  .sort-icon{
+    display: none;
+  }
+
+  .sort-button{
+    padding: var(--spacing-sm) !important;
+  }
+
+  .desktop-listings-count{
+    display: none;
+  }
+
+  .mobile-listings-count{
+    padding: var(--spacing-sm) !important;
+  }
 }
 
 /* Ana başlık ve kontrol paneli */
@@ -3264,13 +3271,8 @@ input[type="number"]::-webkit-inner-spin-button {
     display: none !important;
   }
 
-  /* Sayfa bilgisi için masaüstü kuralları */
-  .desktop-page-info {
-    display: flex !important;
-  }
-
-  .mobile-page-info {
-    display: none !important;
+  .mobile-listings-count{
+    display: none;
   }
 }
 

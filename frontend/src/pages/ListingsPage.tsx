@@ -500,7 +500,7 @@ function ListingsPage() {
                 setIsSortDropdownOpen(!isSortDropdownOpen);
               }}
               >
-                <i className="fas fa-sort"></i>
+                <i className="fas fa-sort sort-icon"></i>
                 Sırala
                 <i className={`fas fa-chevron-down ${isSortDropdownOpen ? 'rotate' : ''}`}></i>
               </button>
@@ -541,30 +541,26 @@ function ListingsPage() {
               }}
             >
               <i className="fas fa-filter"></i> &nbsp;
-              Filtrele
+              Filtre
             </button>
           {/* Sayfa bilgisi - Masaüstü */}
           {totalPages > 1 && (
-          <div className="page-info desktop-page-info" style={{whiteSpace: 'nowrap'}}>
+          <div className="page-info" style={{whiteSpace: 'nowrap'}}>
             Sayfa:&nbsp; <strong>{currentPage}</strong> &nbsp;/&nbsp; <strong>{totalPages}</strong>
           </div>
           )}
           </div>
-          <div className="listings-count" style={{whiteSpace: 'nowrap'}}>
+          <div className="listings-count desktop-listings-count" style={{whiteSpace: 'nowrap'}}>
             Bulunan İlan:&nbsp; <strong>{filteredListings.length}</strong>
+          </div>
+          <div className="listings-count mobile-listings-count" style={{whiteSpace: 'nowrap'}}>
+            <strong>{filteredListings.length}</strong> &nbsp;Kayıt
           </div>
         </div>
       </div>
 
       {/* Başlık ile ilanlar arasına ayırıcı çizgi */}
       <hr className="listings-separator" style={{ width: '100%', border: 'none', height: '2px', backgroundColor: 'var(--border-color)', margin: '1.5rem 0 2rem 0' }} />
-
-      {/* Sayfa bilgisi - Mobil */}
-      {totalPages > 1 && (
-        <div className="page-info mobile-page-info" style={{ whiteSpace: 'nowrap' }}>
-          Sayfa:&nbsp; <strong>{currentPage}</strong> &nbsp;/&nbsp; <strong>{totalPages}</strong>
-        </div>
-      )}
 
       <div className="listings-container">
         <div className="listings-layout">
