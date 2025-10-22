@@ -1207,7 +1207,33 @@ textarea.form-control {
   min-width: 0; /* Allow flex shrinking */
 }
 
+.page-info {
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-sm) var(--spacing-md);
+  box-shadow: var(--shadow-sm);
+  font-size: 0.875rem;
+  color: var(--text-primary);
+  pointer-events: auto; /* Sadece bu element tıklanabilir */
+  transition: all 0.2s ease;
+  height: 34px;
+  align-items: center;
+  display: flex;
+  position: relative;
+  bottom: 10px;
+  margin-left: var(--spacing-lg);;
+}
 
+.page-info:hover {
+  border-color: var(--primary-color);
+  background: var(--bg-secondary);
+}
+
+.page-info strong {
+  color: var(--primary-color);
+  font-weight: 600;
+}
 
 .listings-count {
   background: var(--bg-primary);

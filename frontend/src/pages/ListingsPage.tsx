@@ -543,6 +543,12 @@ function ListingsPage() {
               <i className="fas fa-filter"></i> &nbsp;
               Filtrele
             </button>
+          {/* Sayfa bilgisi */}
+          {totalPages > 1 && (
+          <div className="page-info" style={{whiteSpace: 'nowrap'}}>
+            Sayfa:&nbsp; <strong>{currentPage}</strong> &nbsp;/&nbsp; <strong>{totalPages}</strong>
+          </div>
+          )}
           </div>
           <div className="listings-count" style={{whiteSpace: 'nowrap'}}>
             Bulunan İlan:&nbsp; <strong>{filteredListings.length}</strong>
