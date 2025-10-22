@@ -569,7 +569,7 @@ function ListingsPage() {
               Sayfa:&nbsp; <strong>{currentPage}</strong> &nbsp;/&nbsp; <strong>{totalPages}</strong>
               &nbsp;&nbsp;<i className={`fas fa-chevron-down ${isPageDropdownOpen ? 'rotate' : ''}`}></i>
             </button>
-            <div className={`sort-dropdown-menu ${isPageDropdownOpen ? 'show' : ''}`}>
+            <div className={`sort-dropdown-menu page-info-dropdown-menu ${isPageDropdownOpen ? 'show' : ''}`}>
               {pageOptions.map(option => (
                 <div
                   key={option.key}
@@ -593,6 +593,8 @@ function ListingsPage() {
           </div>
           
           <div className="mobile-page-count-group">
+
+          {/* Sayfa bilgisi - Mobil */}
           {totalPages > 1 && (
           <div className="page-dropdown page-info-mobile">
             <button
@@ -605,7 +607,7 @@ function ListingsPage() {
               Sayfa:&nbsp; <strong>{currentPage}</strong> &nbsp;/&nbsp; <strong>{totalPages}</strong>
               &nbsp;&nbsp;<i className={`fas fa-chevron-down ${isPageDropdownOpen ? 'rotate' : ''}`}></i>
             </button>
-            <div className={`sort-dropdown-menu ${isPageDropdownOpen ? 'show' : ''}`}>
+            <div className={`sort-dropdown-menu page-info-dropdown-menu ${isPageDropdownOpen ? 'show' : ''}`}>
               {pageOptions.map(option => (
                 <div
                   key={option.key}

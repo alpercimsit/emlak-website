@@ -2797,6 +2797,11 @@ textarea.form-control {
   transition: transform 0.2s ease;
 }
 
+.page-info-dropdown-menu{
+  min-width: 0 !important;
+}
+
+
 .sort-dropdown-menu {
   position: absolute;
   top: calc(100% + 4px);
