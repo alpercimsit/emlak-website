@@ -450,6 +450,9 @@ function ListingsPage() {
       params.set("page", page.toString());
     }
     setSearchParams(params);
+
+    // Sayfayı en üste al
+    window.scrollTo(0, 0);
   };
 
   // Dinamik başlık metni oluşturma
