@@ -4,6 +4,18 @@ import { Listing } from './ListingsPage';
 import api, { supabase } from '../utils/api';
 import EditListingModal from '../components/EditListingModal';
 
+// Viewport sabitlerini tanımla
+const originalViewportContent = "width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0, minimum-scale=1.0";
+const zoomedViewportContent = "width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes";
+
+// Viewport'u güncelleyen helper fonksiyon
+const setViewport = (content: string) => {
+  let viewportTag = document.querySelector<HTMLMetaElement>("meta[name='viewport']");
+  if (viewportTag) {
+    viewportTag.setAttribute('content', content);
+  }
+};
+
 function ListingDetailPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
@@ -68,8 +80,10 @@ function ListingDetailPage() {
   useEffect(() => {
     const handlePopState = () => {
       if (window.location.hash === '#photo-modal') {
+        setViewport(zoomedViewportContent); // <-- YAKINLAŞTIRMAYI AÇ
         setShowPhotoModal(true);
       } else {
+        setViewport(originalViewportContent); // <-- YAKINLAŞTIRMAYI KAPAT
         setShowPhotoModal(false);
       }
     };
@@ -218,6 +232,7 @@ function ListingDetailPage() {
   };
 
   const handlePhotoClick = () => {
+    setViewport(zoomedViewportContent); // <-- YAKINLAŞTIRMAYI AÇ
     setShowPhotoModal(true);
     setModalTranslateX(0); // Modal açıldığında translateX'i sıfırla
     // Modal açıldığında hash fragment ile yeni history entry oluştur
@@ -225,6 +240,7 @@ function ListingDetailPage() {
   };
 
   const handleClosePhotoModal = () => {
+    setViewport(originalViewportContent);
     setShowPhotoModal(false);
     // Modal kapandığında hash fragment'ı kaldır
     window.history.back();
