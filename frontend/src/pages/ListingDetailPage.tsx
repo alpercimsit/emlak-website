@@ -18,8 +18,6 @@ function ListingDetailPage() {
   const [thumbnailStartIndex, setThumbnailStartIndex] = useState(0);
   const [thumbnailPage, setThumbnailPage] = useState(0);
   const thumbnailsPerPage = 10;
-  const [isPhotoChanging, setIsPhotoChanging] = useState(false);
-  const [photoChangeDirection, setPhotoChangeDirection] = useState<'left' | 'right' | null>(null);
   const [thumbnailSlideDirection, setThumbnailSlideDirection] = useState<'left' | 'right' | null>(null);
 
   // Touch/swipe gesture state'leri
@@ -636,8 +634,7 @@ function ListingDetailPage() {
                         className="carousel-img"
                         style={{
                           transform: `translateX(${currentTranslateX - window.innerWidth}px)`,
-                          transition: isDragging ? 'none' : 'transform 0.3s ease',
-                          opacity: isPhotoChanging ? 0.7 : 1,
+                          transition: isDragging ? 'none' : 'transform 0.3s ease'
                         }}
                       />
 
@@ -646,11 +643,7 @@ function ListingDetailPage() {
                         key="current-photo-slot"
                         src={photos[currentImageIndex]}
                         alt={listing.baslik}
-                        className={`carousel-img ${
-                          isPhotoChanging
-                            ? (photoChangeDirection === 'left' ? 'change-photo-left' : 'change-photo-right')
-                            : ''
-                        }`}
+                        className={"carousel-img"}
                         style={{
                           transform: `translateX(${currentTranslateX}px)`,
                           transition: isDragging ? 'none' : 'transform 0.3s ease',
@@ -669,8 +662,7 @@ function ListingDetailPage() {
                         className="carousel-img"
                         style={{
                           transform: `translateX(${currentTranslateX + window.innerWidth}px)`,
-                          transition: isDragging ? 'none' : 'transform 0.3s ease',
-                          opacity: isPhotoChanging ? 0.7 : 1,
+                          transition: isDragging ? 'none' : 'transform 0.3s ease'
                         }}
                       />
                     </>
@@ -1104,8 +1096,7 @@ function ListingDetailPage() {
                           className="carousel-img"
                           style={{
                             transform: `translateX(${currentTranslateX - window.innerWidth}px)`,
-                            transition: isDragging ? 'none' : 'transform 0.3s ease',
-                            opacity: isPhotoChanging ? 0.7 : 1,
+                            transition: isDragging ? 'none' : 'transform 0.3s ease'
                           }}
                         />
 
@@ -1114,11 +1105,7 @@ function ListingDetailPage() {
                           key="current-photo-slot"
                           src={photos[currentImageIndex]}
                           alt={listing.baslik}
-                          className={`carousel-img ${
-                            isPhotoChanging
-                              ? (photoChangeDirection === 'left' ? 'change-photo-left' : 'change-photo-right')
-                              : ''
-                          }`}
+                          className={"carousel-img"}
                           style={{
                             transform: `translateX(${currentTranslateX}px)`,
                             transition: isDragging ? 'none' : 'transform 0.3s ease',
@@ -1137,8 +1124,7 @@ function ListingDetailPage() {
                           className="carousel-img"
                           style={{
                             transform: `translateX(${currentTranslateX + window.innerWidth}px)`,
-                            transition: isDragging ? 'none' : 'transform 0.3s ease',
-                            opacity: isPhotoChanging ? 0.7 : 1,
+                            transition: isDragging ? 'none' : 'transform 0.3s ease'
                           }}
                         />
                       </>
@@ -1567,8 +1553,7 @@ function ListingDetailPage() {
                   className="carousel-img"
                   style={{
                     transform: `translateX(${modalTranslateX - window.innerWidth}px)`,
-                    transition: isDragging ? 'none' : 'transform 0.3s ease',
-                    opacity: isPhotoChanging ? 0.7 : 1,
+                    transition: isDragging ? 'none' : 'transform 0.3s ease'
                   }}
                 />
 
@@ -1579,8 +1564,7 @@ function ListingDetailPage() {
                   className="carousel-img"
                   style={{
                     transform: `translateX(${modalTranslateX + window.innerWidth}px)`,
-                    transition: isDragging ? 'none' : 'transform 0.3s ease',
-                    opacity: isPhotoChanging ? 0.7 : 1,
+                    transition: isDragging ? 'none' : 'transform 0.3s ease'
                   }}
                 />
 
@@ -1589,11 +1573,7 @@ function ListingDetailPage() {
                   key="modal-current-photo-slot"
                   src={photos[currentImageIndex]}
                   alt={`${listing.baslik} - ${currentImageIndex + 1}`}
-                  className={`carousel-img ${
-                    isPhotoChanging
-                      ? (photoChangeDirection === 'left' ? 'change-photo-left' : 'change-photo-right')
-                      : ''
-                  }`}
+                  className={"carousel-img"}
                   style={{
                     transform: `translateX(${modalTranslateX}px)`,
                     transition: isDragging ? 'none' : 'transform 0.3s ease',
