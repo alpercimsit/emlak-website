@@ -236,48 +236,18 @@ function ListingsPage() {
   const restoreScrollPosition = () => {
     const savedScrollPosition = localStorage.getItem('listingsPageScrollPosition');
     if (savedScrollPosition) {
-      // Kısa bir delay ile scroll'u geri yükle (sayfa render edildikten sonra)
-      setTimeout(() => {
-        window.scrollTo(0, parseInt(savedScrollPosition, 10));
-        // Scroll geri yüklendikten sonra localStorage'dan temizle
-        localStorage.removeItem('listingsPageScrollPosition');
-      }, 100);
+      window.scrollTo(0, parseInt(savedScrollPosition, 10));
+      // Scroll geri yüklendikten sonra localStorage'dan temizle
+      localStorage.removeItem('listingsPageScrollPosition');
     }
   };
 
   // Sayfa yüklendiğinde ve geri dönüldüğünde scroll pozisyonunu geri yükle
   useEffect(() => {
-    // İlk yüklemede scroll pozisyonunu geri yükle
-    const handlePageLoad = () => {
+    if (!loading) { 
+      // Sadece data yüklendiyse (loading=false)
       restoreScrollPosition();
-    };
-
-    // Browser back button için popstate dinle
-    const handlePopState = () => {
-      restoreScrollPosition();
-    };
-
-    // Sayfa görünür olduğunda da kontrol et (başka tab'dan dönüş)
-    const handleVisibilityChange = () => {
-      if (!document.hidden) {
-        restoreScrollPosition();
-      }
-    };
-
-    // Event listener'ları ekle
-    window.addEventListener('popstate', handlePopState);
-    document.addEventListener('visibilitychange', handleVisibilityChange);
-
-    // İlk render'dan sonra scroll pozisyonunu geri yükle
-    const timer = setTimeout(() => {
-      restoreScrollPosition();
-    }, 200);
-
-    return () => {
-      window.removeEventListener('popstate', handlePopState);
-      document.removeEventListener('visibilitychange', handleVisibilityChange);
-      clearTimeout(timer);
-    };
+    }
   }, [loading]); // loading dependency ile listings yüklendikten sonra çalışsın
 
   // localStorage değişikliklerini dinle ve highlightedListingId'yi güncelle
