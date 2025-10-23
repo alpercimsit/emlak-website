@@ -1652,7 +1652,7 @@ function ListingDetailPage() {
                       style={{
                         transform: `translateX(${modalTranslateX - window.innerWidth}px)`,
                         transition: 'none',
-                        opacity: 0.7,
+                        opacity: 1,
                       }}
                     />
 
@@ -1664,7 +1664,7 @@ function ListingDetailPage() {
                       style={{
                         transform: `translateX(${modalTranslateX + window.innerWidth}px)`,
                         transition: 'none',
-                        opacity: 0.7,
+                        opacity: 1,
                       }}
                     />
                   </>
