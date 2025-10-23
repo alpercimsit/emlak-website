@@ -2784,7 +2784,6 @@ textarea.form-control {
 
 .sort-button:hover {
   border-color: var(--primary-color);
-  background: var(--bg-secondary);
 }
 
 .sort-button i {
