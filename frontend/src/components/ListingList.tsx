@@ -265,6 +265,10 @@ function ListingList({ listings, isAdmin = false, onUpdate, onEditListing, filte
   const handleListingClick = (listingId: number) => {
     // Hangi ilana tıklandığını localStorage'a kaydet
     localStorage.setItem('lastClickedListingId', listingId.toString());
+
+    // Mevcut scroll pozisyonunu kaydet
+    localStorage.setItem('listingsPageScrollPosition', window.scrollY.toString());
+
     navigate(`/ilan/${listingId}`);
   };
 

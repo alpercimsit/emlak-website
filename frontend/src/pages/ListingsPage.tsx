@@ -232,6 +232,54 @@ function ListingsPage() {
     }
   }, [loading]);
 
+  // Scroll pozisyonunu geri yükleme fonksiyonu
+  const restoreScrollPosition = () => {
+    const savedScrollPosition = localStorage.getItem('listingsPageScrollPosition');
+    if (savedScrollPosition) {
+      // Kısa bir delay ile scroll'u geri yükle (sayfa render edildikten sonra)
+      setTimeout(() => {
+        window.scrollTo(0, parseInt(savedScrollPosition, 10));
+        // Scroll geri yüklendikten sonra localStorage'dan temizle
+        localStorage.removeItem('listingsPageScrollPosition');
+      }, 100);
+    }
+  };
+
+  // Sayfa yüklendiğinde ve geri dönüldüğünde scroll pozisyonunu geri yükle
+  useEffect(() => {
+    // İlk yüklemede scroll pozisyonunu geri yükle
+    const handlePageLoad = () => {
+      restoreScrollPosition();
+    };
+
+    // Browser back button için popstate dinle
+    const handlePopState = () => {
+      restoreScrollPosition();
+    };
+
+    // Sayfa görünür olduğunda da kontrol et (başka tab'dan dönüş)
+    const handleVisibilityChange = () => {
+      if (!document.hidden) {
+        restoreScrollPosition();
+      }
+    };
+
+    // Event listener'ları ekle
+    window.addEventListener('popstate', handlePopState);
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    // İlk render'dan sonra scroll pozisyonunu geri yükle
+    const timer = setTimeout(() => {
+      restoreScrollPosition();
+    }, 200);
+
+    return () => {
+      window.removeEventListener('popstate', handlePopState);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      clearTimeout(timer);
+    };
+  }, [loading]); // loading dependency ile listings yüklendikten sonra çalışsın
+
   // localStorage değişikliklerini dinle ve highlightedListingId'yi güncelle
   useEffect(() => {
     const handleStorageChange = (e: StorageEvent) => {
@@ -270,12 +318,14 @@ function ListingsPage() {
     localStorage.setItem('sortOption', sortOption);
   }, [sortOption]);
 
-  // Filtreler veya sıralama değiştiğinde sayfayı 1'e sıfırla
+  // Filtreler veya sıralama değiştiğinde sayfayı 1'e sıfırla ve scroll pozisyonunu temizle
   useEffect(() => {
     if (isInitialMount.current === false) {
       if (currentPage !== 1) {
         handlePageChange(1);
       }
+      // Filtreler değiştiğinde scroll pozisyonunu temizle
+      localStorage.removeItem('listingsPageScrollPosition');
     }
   }, [filters, sortOption]);
 

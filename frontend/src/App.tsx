@@ -1,5 +1,5 @@
 import React, { useState, useEffect, createContext, useContext } from 'react';
-import { Routes, Route, Link, Navigate, useNavigate } from 'react-router-dom';
+import { Routes, Route, Link, Navigate, useNavigate, useLocation } from 'react-router-dom';
 import ListingsPage from './pages/ListingsPage';
 import ListingDetailPage from './pages/ListingDetailPage';
 import ContactPage from './pages/ContactPage';
@@ -22,6 +22,7 @@ function App() {
   const [isAdmin, setIsAdmin] = useState(false);
   const [editingListing, setEditingListing] = useState<Listing | null>(null);
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     // Check if user is admin using Supabase Auth
@@ -51,6 +52,24 @@ function App() {
 
     return () => subscription.unsubscribe();
   }, []);
+
+  // Route değişikliklerini dinle ve listings sayfasından çıkıldığında scroll pozisyonunu temizle
+  useEffect(() => {
+    const currentPath = location.pathname;
+    const previousPath = localStorage.getItem('previousPath');
+
+    // Gidilen yolun bir ilan detayı olup olmadığını kontrol et
+    const isNavigatingToListingDetail = currentPath.startsWith('/ilan/');
+
+    // Eğer listings sayfasından (/) başka bir sayfaya geçildiyse 
+    // VE bu sayfa bir ilan detayı DEĞİLSE scroll pozisyonunu temizle
+    if (previousPath === '/' && currentPath !== '/' && !isNavigatingToListingDetail) {
+      localStorage.removeItem('listingsPageScrollPosition');
+    }
+
+    // Mevcut path'i kaydet
+    localStorage.setItem('previousPath', currentPath);
+  }, [location.pathname]);
 
   const handleNewListing = () => {
     navigate('/admin/dashboard');
