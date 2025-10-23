@@ -1642,33 +1642,29 @@ function ListingDetailPage() {
             {photos.length > 0 && (
               <div className="carousel-container">
                 {/* Önceki fotoğraf - Modal'da sadece mevcut fotoğraf görünür */}
-                {isDragging && (
-                  <>
-                    <img
-                      key="modal-prev-photo-slot"
-                      src={photos[(currentImageIndex - 1 + photos.length) % photos.length]}
-                      alt={`${listing.baslik} - Önceki`}
-                      className="carousel-img"
-                      style={{
-                        transform: `translateX(${modalTranslateX - window.innerWidth}px)`,
-                        transition: 'none',
-                        opacity: 1,
-                      }}
-                    />
+                <img
+                  key="modal-prev-photo-slot"
+                  src={photos[(currentImageIndex - 1 + photos.length) % photos.length]}
+                  alt={`${listing.baslik} - Önceki`}
+                  className="carousel-img"
+                  style={{
+                    transform: `translateX(${modalTranslateX - window.innerWidth}px)`,
+                    transition: isDragging ? 'none' : 'transform 0.3s ease',
+                    opacity: isPhotoChanging ? 0.7 : 1,
+                  }}
+                />
 
-                    <img
-                      key="modal-next-photo-slot"
-                      src={photos[(currentImageIndex + 1) % photos.length]}
-                      alt={`${listing.baslik} - Sonraki`}
-                      className="carousel-img"
-                      style={{
-                        transform: `translateX(${modalTranslateX + window.innerWidth}px)`,
-                        transition: 'none',
-                        opacity: 1,
-                      }}
-                    />
-                  </>
-                )}
+                <img
+                  key="modal-next-photo-slot"
+                  src={photos[(currentImageIndex + 1) % photos.length]}
+                  alt={`${listing.baslik} - Sonraki`}
+                  className="carousel-img"
+                  style={{
+                    transform: `translateX(${modalTranslateX + window.innerWidth}px)`,
+                    transition: isDragging ? 'none' : 'transform 0.3s ease',
+                    opacity: isPhotoChanging ? 0.7 : 1,
+                  }}
+                />
 
                 {/* Mevcut fotoğraf */}
                 <img
