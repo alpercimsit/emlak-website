@@ -335,35 +335,7 @@ function ListingDetailPage() {
   };
 
   const handlePhotoModalNav = (direction: 'prev' | 'next') => {
-    const photos = listing?.fotolar ? listing.fotolar.split(',').filter(url => url.trim()) : [];
-    let newIndex;
-    if (direction === 'prev') {
-      newIndex = currentImageIndex === 0 ? photos.length - 1 : currentImageIndex - 1;
-    } else {
-      newIndex = currentImageIndex === photos.length - 1 ? 0 : currentImageIndex + 1;
-    }
-
-    // Tüm state güncellemelerini aynı anda yap
-    setCurrentImageIndex(newIndex);
-
-    // Update thumbnail page if needed
-    const pageIndex = Math.floor(newIndex / thumbnailsPerPage);
-    const newStartIndex = pageIndex * thumbnailsPerPage;
-    if (newStartIndex !== thumbnailStartIndex) {
-      setThumbnailStartIndex(newStartIndex);
-      setThumbnailPage(pageIndex);
-    }
-
-    // CSS animasyonunu tetikle - yön bilgisi ile birlikte
-    const changeDirection = direction === 'prev' ? 'left' : 'right';
-    setPhotoChangeDirection(changeDirection);
-    setIsPhotoChanging(true);
-
-    // Animasyon bittikten sonra state'leri sıfırla
-    setTimeout(() => {
-      setIsPhotoChanging(false);
-      setPhotoChangeDirection(null);
-    }, 400); // Modal animasyonu 0.4s olduğu için 400ms
+    handleChangePhoto(direction);
   };
 
   // Touch event handlers for mobile swipe gestures
@@ -416,6 +388,56 @@ function ListingDetailPage() {
     e.preventDefault();
   };
 
+  // YENİ BİRLEŞTİRİLMİŞ FONKSİYON
+  const handleChangePhoto = (direction: 'prev' | 'next') => {
+    const photos = listing?.fotolar ? listing.fotolar.split(',').filter(url => url.trim()) : [];
+    if (photos.length <= 1) return;
+
+    let newIndex;
+    if (direction === 'prev') {
+      newIndex = currentImageIndex === 0 ? photos.length - 1 : currentImageIndex - 1;
+    } else {
+      newIndex = currentImageIndex === photos.length - 1 ? 0 : currentImageIndex + 1;
+    }
+
+    // --- Burası handleTouchEnd'den kopyaladığımız animasyon mantığı ---
+
+    // 1. CSS transition'ı etkinleştir
+    setIsDragging(false);
+
+    // 2. Fotoğrafı ekranın dışına it (CSS transition'ı bunu yumuşak yapacak)
+    const snapTarget = direction === 'prev' ? window.innerWidth : -window.innerWidth;
+    setCurrentTranslateX(snapTarget);
+    setModalTranslateX(snapTarget); // Modal için de aynısını yap
+
+    // 3. Animasyon bittikten sonra state'i toparla
+    setTimeout(() => {
+      // 4. Toparlama yaparken animasyon olmasın diye transition'ı geçici olarak kapat
+      setIsDragging(true); 
+
+      // 5. Yeni indeksi ayarla
+      setCurrentImageIndex(newIndex);
+      
+      // 6. Thumbnail'ları ayarla
+      const pageIndex = Math.floor(newIndex / thumbnailsPerPage);
+      const newStartIndex = pageIndex * thumbnailsPerPage;
+      if (newStartIndex !== thumbnailStartIndex) {
+        setThumbnailStartIndex(newStartIndex);
+        setThumbnailPage(pageIndex);
+      }
+
+      // 7. Translate'i sıfırla (yeni fotoğraf artık ortada)
+      setCurrentTranslateX(0);
+      setModalTranslateX(0);
+
+      // 8. Bir sonraki karede transition'ları tekrar aç
+      requestAnimationFrame(() => {
+        setIsDragging(false);
+      });
+
+    }, 350); // CSS'deki transition süren 0.3s-0.35s arası. 350 ideal.
+  };
+
   const handleTouchEnd = (e: React.TouchEvent) => {
     if (!touchStartX || !isSwiping || photos.length <= 1) {
       setTouchStartX(null);
@@ -463,72 +485,20 @@ function ListingDetailPage() {
     }
 
     // Buraya geldiyse, fotoğraf değişecek demektir.
-    let direction: 'left' | 'right' = 'right';
+    let direction: 'prev' | 'next' = 'next'; // Yönü 'prev'/'next' olarak değiştirdik
     if (deltaX > 0 || velocity > 0) {
-      direction = 'left'; // Sağdan sola - önceki fotoğraf
+      direction = 'prev'; // Önceki fotoğraf
     } else {
-      direction = 'right'; // Soldan sağa - sonraki fotoğraf
+      direction = 'next'; // Sonraki fotoğraf
     }
 
-    // Fotoğraf değiştirme işlemi
-    let newIndex;
-    if (direction === 'left') {
-      newIndex = currentImageIndex === 0 ? photos.length - 1 : currentImageIndex - 1;
-    } else {
-      newIndex = currentImageIndex === photos.length - 1 ? 0 : currentImageIndex + 1;
-    }
-
-    // --- YENİ ANİMASYON MANTIĞI ---
-
-    // 1. `isDragging=false` ayarla (bu, CSS `transition: '...ease'` özelliğini etkinleştirir).
-    setIsDragging(false);
-
-    // 2. Fotoğrafı ekranın dışına it.
-    // `currentTranslateX`'i 0'a çekmek yerine, kaydığı yönde ekran dışına itiyoruz.
-    // CSS transition'ı bu hareketi yumuşatacak.
-    const snapTarget = direction === 'left' ? window.innerWidth : -window.innerWidth;
-    setCurrentTranslateX(snapTarget);
-    setModalTranslateX(snapTarget); // Modal için de aynısını yap
-
-    // 3. CSS animasyonunu (`isPhotoChanging`) BURADA TETİKLEME.
-    // O sadece tıklamalar (`handlePhotoModalNav`) için.
-    // setPhotoChangeDirection(direction); // SİL
-    // setIsPhotoChanging(true); // SİL
-
-    // 4. CSS transition'ı bittikten sonra (örn: 300ms-350ms)
-    //    state'i toparla: yeni indeksi ayarla ve translate'i sıfırla.
-    setTimeout(() => {
-      // 5. Toparlama yaparken animasyon olmasın diye transition'ı geçici olarak kapat
-      setIsDragging(true); 
-
-      // 6. Yeni indeksi ayarla
-      setCurrentImageIndex(newIndex);
-      const pageIndex = Math.floor(newIndex / thumbnailsPerPage);
-      const newStartIndex = pageIndex * thumbnailsPerPage;
-      if (newStartIndex !== thumbnailStartIndex) {
-        setThumbnailStartIndex(newStartIndex);
-        setThumbnailPage(pageIndex);
-      }
-
-      // 7. Translate'i sıfırla (yeni fotoğraf artık ortada)
-      setCurrentTranslateX(0);
-      setModalTranslateX(0);
-
-      // 8. Bir sonraki karede transition'ları tekrar aç
-      //    (requestAnimationFrame veya küçük bir timeout ile de olur)
-      requestAnimationFrame(() => {
-        setIsDragging(false);
-      });
-
-    }, 350); // CSS'deki transition süren 0.3s ise burayı 300 yap, 0.35s ise 350 yap.
+    handleChangePhoto(direction);
 
     // 9. Touch state'lerini hemen sıfırla.
     setTouchStartX(null);
     setTouchStartY(null);
     setTouchStartTime(null);
     setIsSwiping(false);
-    // `setIsDragging(false)` zaten yukarıda yapıldı.
-    // `setCurrentTranslateX(0)` en sonda timeout içinde yapılıyor.
     setVelocity(0);
   };
 
@@ -721,20 +691,7 @@ function ListingDetailPage() {
                     <button
                       className="photo-nav photo-nav-prev"
                       onClick={() => {
-                        const newIndex = currentImageIndex === 0 ? photos.length - 1 : currentImageIndex - 1;
-                        setCurrentImageIndex(newIndex);
-                        const pageIndex = Math.floor(newIndex / thumbnailsPerPage);
-                        const newStartIndex = pageIndex * thumbnailsPerPage;
-                        if (newStartIndex !== thumbnailStartIndex) {
-                          setThumbnailStartIndex(newStartIndex);
-                          setThumbnailPage(pageIndex);
-                        }
-                        setPhotoChangeDirection('left');
-                        setIsPhotoChanging(true);
-                        setTimeout(() => {
-                          setIsPhotoChanging(false);
-                          setPhotoChangeDirection(null);
-                        }, 300);
+                        handleChangePhoto('prev');
                       }}
                     >
                       <i className="fas fa-chevron-left"></i>
@@ -742,20 +699,7 @@ function ListingDetailPage() {
                     <button
                       className="photo-nav photo-nav-next"
                       onClick={() => {
-                        const newIndex = currentImageIndex === photos.length - 1 ? 0 : currentImageIndex + 1;
-                        setCurrentImageIndex(newIndex);
-                        const pageIndex = Math.floor(newIndex / thumbnailsPerPage);
-                        const newStartIndex = pageIndex * thumbnailsPerPage;
-                        if (newStartIndex !== thumbnailStartIndex) {
-                          setThumbnailStartIndex(newStartIndex);
-                          setThumbnailPage(pageIndex);
-                        }
-                        setPhotoChangeDirection('right');
-                        setIsPhotoChanging(true);
-                        setTimeout(() => {
-                          setIsPhotoChanging(false);
-                          setPhotoChangeDirection(null);
-                        }, 300);
+                        handleChangePhoto('next');
                       }}
                     >
                       <i className="fas fa-chevron-right"></i>
@@ -1215,20 +1159,7 @@ function ListingDetailPage() {
                       <button
                         className="photo-nav photo-nav-prev"
                         onClick={() => {
-                          const newIndex = currentImageIndex === 0 ? photos.length - 1 : currentImageIndex - 1;
-                          setCurrentImageIndex(newIndex);
-                          const pageIndex = Math.floor(newIndex / thumbnailsPerPage);
-                          const newStartIndex = pageIndex * thumbnailsPerPage;
-                          if (newStartIndex !== thumbnailStartIndex) {
-                            setThumbnailStartIndex(newStartIndex);
-                            setThumbnailPage(pageIndex);
-                          }
-                          setPhotoChangeDirection('left');
-                          setIsPhotoChanging(true);
-                          setTimeout(() => {
-                            setIsPhotoChanging(false);
-                            setPhotoChangeDirection(null);
-                          }, 300);
+                          handleChangePhoto('prev');
                         }}
                       >
                         <i className="fas fa-chevron-left"></i>
@@ -1236,20 +1167,7 @@ function ListingDetailPage() {
                       <button
                         className="photo-nav photo-nav-next"
                         onClick={() => {
-                          const newIndex = currentImageIndex === photos.length - 1 ? 0 : currentImageIndex + 1;
-                          setCurrentImageIndex(newIndex);
-                          const pageIndex = Math.floor(newIndex / thumbnailsPerPage);
-                          const newStartIndex = pageIndex * thumbnailsPerPage;
-                          if (newStartIndex !== thumbnailStartIndex) {
-                            setThumbnailStartIndex(newStartIndex);
-                            setThumbnailPage(pageIndex);
-                          }
-                          setPhotoChangeDirection('right');
-                          setIsPhotoChanging(true);
-                          setTimeout(() => {
-                            setIsPhotoChanging(false);
-                            setPhotoChangeDirection(null);
-                          }, 300);
+                          handleChangePhoto('next');
                         }}
                       >
                         <i className="fas fa-chevron-right"></i>
