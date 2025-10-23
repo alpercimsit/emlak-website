@@ -1224,11 +1224,11 @@ textarea.form-control {
   bottom: 10px;
   margin-left: var(--spacing-lg);
   white-space: nowrap !important; 
+  cursor: pointer;
 }
 
 .page-info:hover {
   border-color: var(--primary-color);
-  background: var(--bg-secondary);
 }
 
 .page-info strong {
@@ -1255,7 +1255,6 @@ textarea.form-control {
 
 .listings-count:hover {
   border-color: var(--primary-color);
-  background: var(--bg-secondary);
 }
 
 .listings-count strong {
