@@ -230,9 +230,10 @@ interface Props {
   sortOption?: string;
   onRemoveFilter?: (filterKey: keyof FilterState) => void;
   onRemoveSort?: () => void;
+  highlightedListingId?: number | null;
 }
 
-function ListingList({ listings, isAdmin = false, onUpdate, onEditListing, filters, sortOption, onRemoveFilter, onRemoveSort }: Props) {
+function ListingList({ listings, isAdmin = false, onUpdate, onEditListing, filters, sortOption, onRemoveFilter, onRemoveSort, highlightedListingId }: Props) {
   const navigate = useNavigate();
   const [deletingId, setDeletingId] = useState<number | null>(null);
 
@@ -262,6 +263,8 @@ function ListingList({ listings, isAdmin = false, onUpdate, onEditListing, filte
   };
 
   const handleListingClick = (listingId: number) => {
+    // Hangi ilana tıklandığını localStorage'a kaydet
+    localStorage.setItem('lastClickedListingId', listingId.toString());
     navigate(`/ilan/${listingId}`);
   };
 
@@ -303,7 +306,12 @@ function ListingList({ listings, isAdmin = false, onUpdate, onEditListing, filte
 
       <div className="listings-grid">
         {listings.map((l) => (
-        <div key={l.ilan_no} className="card listing-card-compact" onClick={() => handleListingClick(l.ilan_no)} style={{ cursor: 'pointer', maxWidth: '94vw' }}>
+        <div
+          key={l.ilan_no}
+          className={`card listing-card-compact ${highlightedListingId === l.ilan_no ? 'highlighted-listing' : ''}`}
+          onClick={() => handleListingClick(l.ilan_no)}
+          style={{ cursor: 'pointer', maxWidth: '94vw' }}
+        >
           {/* Sol taraf - Kare fotoğraf */}
           <div className="listing-image-container">
             {l.fotolar ? (

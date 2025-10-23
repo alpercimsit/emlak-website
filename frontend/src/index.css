@@ -3381,6 +3381,11 @@ input[type="number"]::-webkit-inner-spin-button {
   }
 }
 
+/* Vurgulu İlan Stilleri - Son tıklanan ilan için */
+.highlighted-listing {
+  border: 2px solid var(--primary-color) !important;
+}
+
 @media (max-width: 480px) {
   .share-button {
     width: 36px;

@@ -45,6 +45,9 @@ function ListingsPage() {
   const [isAdmin, setIsAdmin] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
 
+  // Son tıklanan ilanı takip et
+  const [highlightedListingId, setHighlightedListingId] = useState<number | null>(null);
+
   // Get modal context
   const modalContext = useContext(ModalContext);
 
@@ -208,7 +211,13 @@ function ListingsPage() {
     };
 
     checkAdminStatus();
-    
+
+    // Son tıklanan ilanı localStorage'dan oku
+    const lastClickedId = localStorage.getItem('lastClickedListingId');
+    if (lastClickedId) {
+      setHighlightedListingId(parseInt(lastClickedId, 10));
+    }
+
     setLoading(true);
     api.getListings()
       .then((data) => setListings(data))
@@ -222,6 +231,34 @@ function ListingsPage() {
       isInitialMount.current = false;
     }
   }, [loading]);
+
+  // localStorage değişikliklerini dinle ve highlightedListingId'yi güncelle
+  useEffect(() => {
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === 'lastClickedListingId') {
+        const newId = e.newValue ? parseInt(e.newValue, 10) : null;
+        setHighlightedListingId(newId);
+      }
+    };
+
+    // Sayfa görünür olduğunda da localStorage'ı kontrol et (başka tab'dan dönüş)
+    const handleVisibilityChange = () => {
+      if (!document.hidden) {
+        const lastClickedId = localStorage.getItem('lastClickedListingId');
+        if (lastClickedId) {
+          setHighlightedListingId(parseInt(lastClickedId, 10));
+        }
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
+  }, []);
 
   // Filtreleri localStorage'a kaydet
   useEffect(() => {
@@ -666,6 +703,7 @@ function ListingsPage() {
                   sortOption={sortOption}
                   onRemoveFilter={handleRemoveFilter}
                   onRemoveSort={handleRemoveSort}
+                  highlightedListingId={highlightedListingId}
                 />
               )}
             </div>
