@@ -2796,6 +2796,15 @@ textarea.form-control {
   transition: transform 0.2s ease;
 }
 
+.page-info i{
+  font-size: 0.75rem;
+}
+
+.page-info i.rotate {
+  transform: rotate(180deg);
+  transition: transform 0.2s ease;
+}
+
 .page-info-dropdown-menu{
   min-width: 0 !important;
 }
