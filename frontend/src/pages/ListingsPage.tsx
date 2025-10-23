@@ -557,7 +557,7 @@ function ListingsPage() {
               Filtre
             </button>
           {/* Sayfa bilgisi - Masaüstü */}
-          {totalPages > 1 && (
+          {totalPages >= 1 && (
           <div className="page-dropdown page-info-desktop">
             <button
               className="page-info"
@@ -595,7 +595,7 @@ function ListingsPage() {
           <div className="mobile-page-count-group">
 
           {/* Sayfa bilgisi - Mobil */}
-          {totalPages > 1 && (
+          {totalPages >= 1 && (
           <div className="page-dropdown page-info-mobile">
             <button
               className="page-info"
