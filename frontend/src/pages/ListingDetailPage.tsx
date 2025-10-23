@@ -433,60 +433,75 @@ function ListingDetailPage() {
     const deltaX = touch.clientX - (touchStartX || 0);
     const deltaY = touch.clientY - (touchStartY || 0);
 
-    // Eğer dikey hareket çok fazla ise (yatay hareketten daha fazla ise), swipe olarak kabul etme
+    // Dikey kaydırmayı iptal et
     if (Math.abs(deltaY) > Math.abs(deltaX)) {
       setTouchStartX(null);
       setTouchStartY(null);
       setTouchStartTime(null);
       setIsSwiping(false);
       setIsDragging(false);
-      setCurrentTranslateX(0);
+      setCurrentTranslateX(0); // Geri sek
+      setModalTranslateX(0);
       setVelocity(0);
       return;
     }
 
-    const threshold = window.innerWidth * 0.2; // Minimum 20% ekran genişliği hareket gerektir
-    const minVelocity = 0.5; // Minimum hız eşik değeri
+    const threshold = window.innerWidth * 0.2; 
+    const minVelocity = 0.5;
 
-    // Eğer yeterli hareket veya hız yoksa, fotoğrafı geri getir
+    // Eğer yeterli hareket veya hız yoksa, fotoğrafı geri getir (Snap-back)
     if (Math.abs(deltaX) < threshold && Math.abs(velocity) < minVelocity) {
       setTouchStartX(null);
       setTouchStartY(null);
       setTouchStartTime(null);
       setIsSwiping(false);
       setIsDragging(false);
-      setCurrentTranslateX(0);
+      setCurrentTranslateX(0); // Geri sek (transition bunu yumuşak yapacak)
       setModalTranslateX(0);
       setVelocity(0);
       return;
     }
 
-    // Momentum efekti için fotoğrafın mevcut konumunu ve hızını kullan
-    let willChangePhoto = false;
+    // Buraya geldiyse, fotoğraf değişecek demektir.
     let direction: 'left' | 'right' = 'right';
-
-    if (Math.abs(deltaX) > threshold || Math.abs(velocity) > minVelocity) {
-      willChangePhoto = true;
-
-      // Hız ve mesafe kombinasyonuna göre yön belirle
-      if (deltaX > 0 || velocity > 0) {
-        direction = 'left'; // Sağdan sola - önceki fotoğraf
-      } else {
-        direction = 'right'; // Soldan sağa - sonraki fotoğraf
-      }
+    if (deltaX > 0 || velocity > 0) {
+      direction = 'left'; // Sağdan sola - önceki fotoğraf
+    } else {
+      direction = 'right'; // Soldan sağa - sonraki fotoğraf
     }
 
-    if (willChangePhoto) {
-      // Fotoğraf değiştirme işlemi
-      let newIndex;
-      if (direction === 'left') {
-        // Sağdan sola swipe - önceki fotoğraf
-        newIndex = currentImageIndex === 0 ? photos.length - 1 : currentImageIndex - 1;
-      } else {
-        // Soldan sağa swipe - sonraki fotoğraf
-        newIndex = currentImageIndex === photos.length - 1 ? 0 : currentImageIndex + 1;
-      }
+    // Fotoğraf değiştirme işlemi
+    let newIndex;
+    if (direction === 'left') {
+      newIndex = currentImageIndex === 0 ? photos.length - 1 : currentImageIndex - 1;
+    } else {
+      newIndex = currentImageIndex === photos.length - 1 ? 0 : currentImageIndex + 1;
+    }
 
+    // --- YENİ ANİMASYON MANTIĞI ---
+
+    // 1. `isDragging=false` ayarla (bu, CSS `transition: '...ease'` özelliğini etkinleştirir).
+    setIsDragging(false);
+
+    // 2. Fotoğrafı ekranın dışına it.
+    // `currentTranslateX`'i 0'a çekmek yerine, kaydığı yönde ekran dışına itiyoruz.
+    // CSS transition'ı bu hareketi yumuşatacak.
+    const snapTarget = direction === 'left' ? window.innerWidth : -window.innerWidth;
+    setCurrentTranslateX(snapTarget);
+    setModalTranslateX(snapTarget); // Modal için de aynısını yap
+
+    // 3. CSS animasyonunu (`isPhotoChanging`) BURADA TETİKLEME.
+    // O sadece tıklamalar (`handlePhotoModalNav`) için.
+    // setPhotoChangeDirection(direction); // SİL
+    // setIsPhotoChanging(true); // SİL
+
+    // 4. CSS transition'ı bittikten sonra (örn: 300ms-350ms)
+    //    state'i toparla: yeni indeksi ayarla ve translate'i sıfırla.
+    setTimeout(() => {
+      // 5. Toparlama yaparken animasyon olmasın diye transition'ı geçici olarak kapat
+      setIsDragging(true); 
+
+      // 6. Yeni indeksi ayarla
       setCurrentImageIndex(newIndex);
       const pageIndex = Math.floor(newIndex / thumbnailsPerPage);
       const newStartIndex = pageIndex * thumbnailsPerPage;
@@ -495,23 +510,25 @@ function ListingDetailPage() {
         setThumbnailPage(pageIndex);
       }
 
-      setPhotoChangeDirection(direction);
-      setIsPhotoChanging(true);
+      // 7. Translate'i sıfırla (yeni fotoğraf artık ortada)
+      setCurrentTranslateX(0);
+      setModalTranslateX(0);
 
-      // Tüm fotoğrafların yeni pozisyonlarını ayarla ve animasyonu başlat
-      setTimeout(() => {
-        setIsPhotoChanging(false);
-        setPhotoChangeDirection(null);
-      }, 350);
-    }
+      // 8. Bir sonraki karede transition'ları tekrar aç
+      //    (requestAnimationFrame veya küçük bir timeout ile de olur)
+      requestAnimationFrame(() => {
+        setIsDragging(false);
+      });
 
+    }, 350); // CSS'deki transition süren 0.3s ise burayı 300 yap, 0.35s ise 350 yap.
+
+    // 9. Touch state'lerini hemen sıfırla.
     setTouchStartX(null);
     setTouchStartY(null);
     setTouchStartTime(null);
     setIsSwiping(false);
-    setIsDragging(false);
-    setCurrentTranslateX(0);
-    setModalTranslateX(0);
+    // `setIsDragging(false)` zaten yukarıda yapıldı.
+    // `setCurrentTranslateX(0)` en sonda timeout içinde yapılıyor.
     setVelocity(0);
   };
 
@@ -643,7 +660,7 @@ function ListingDetailPage() {
                     <>
                       {/* Önceki fotoğraf */}
                       <img
-                        key={`prev-${currentImageIndex}`}
+                        key="prev-photo-slot"
                         src={photos[(currentImageIndex - 1 + photos.length) % photos.length]}
                         alt={`${listing.baslik} - Önceki`}
                         className="carousel-img"
@@ -656,7 +673,7 @@ function ListingDetailPage() {
 
                       {/* Mevcut fotoğraf */}
                       <img
-                        key={`current-${currentImageIndex}`}
+                        key="current-photo-slot"
                         src={photos[currentImageIndex]}
                         alt={listing.baslik}
                         className={`carousel-img ${
@@ -676,7 +693,7 @@ function ListingDetailPage() {
 
                       {/* Sonraki fotoğraf */}
                       <img
-                        key={`next-${currentImageIndex}`}
+                        key="next-photo-slot"
                         src={photos[(currentImageIndex + 1) % photos.length]}
                         alt={`${listing.baslik} - Sonraki`}
                         className="carousel-img"
@@ -1137,7 +1154,7 @@ function ListingDetailPage() {
                       <>
                         {/* Önceki fotoğraf */}
                         <img
-                          key={`prev-${currentImageIndex}`}
+                          key="prev-photo-slot"
                           src={photos[(currentImageIndex - 1 + photos.length) % photos.length]}
                           alt={`${listing.baslik} - Önceki`}
                           className="carousel-img"
@@ -1150,7 +1167,7 @@ function ListingDetailPage() {
 
                         {/* Mevcut fotoğraf */}
                         <img
-                          key={`current-${currentImageIndex}`}
+                          key="current-photo-slot"
                           src={photos[currentImageIndex]}
                           alt={listing.baslik}
                           className={`carousel-img ${
@@ -1170,7 +1187,7 @@ function ListingDetailPage() {
 
                         {/* Sonraki fotoğraf */}
                         <img
-                          key={`next-${currentImageIndex}`}
+                          key="next-photo-slot"
                           src={photos[(currentImageIndex + 1) % photos.length]}
                           alt={`${listing.baslik} - Sonraki`}
                           className="carousel-img"
@@ -1628,7 +1645,7 @@ function ListingDetailPage() {
                 {isDragging && (
                   <>
                     <img
-                      key={`modal-prev-${currentImageIndex}`}
+                      key="modal-prev-photo-slot"
                       src={photos[(currentImageIndex - 1 + photos.length) % photos.length]}
                       alt={`${listing.baslik} - Önceki`}
                       className="carousel-img"
@@ -1640,7 +1657,7 @@ function ListingDetailPage() {
                     />
 
                     <img
-                      key={`modal-next-${currentImageIndex}`}
+                      key="modal-next-photo-slot"
                       src={photos[(currentImageIndex + 1) % photos.length]}
                       alt={`${listing.baslik} - Sonraki`}
                       className="carousel-img"
@@ -1655,7 +1672,7 @@ function ListingDetailPage() {
 
                 {/* Mevcut fotoğraf */}
                 <img
-                  key={`modal-current-${currentImageIndex}`}
+                  key="modal-current-photo-slot"
                   src={photos[currentImageIndex]}
                   alt={`${listing.baslik} - ${currentImageIndex + 1}`}
                   className={`carousel-img ${
