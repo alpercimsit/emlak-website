@@ -1431,32 +1431,6 @@ textarea.form-control {
     display: flex !important;
   }
 
-  /* Mobil görünümde kategori animasyonunu düzelt */
-  .category-buttons.konut-active .category-btn.active {
-    background: var(--primary-color) !important;
-    color: white !important;
-    transform: translateY(0) !important;
-  }
-
-  .category-buttons.konut-active .category-btn:not(.active) {
-    background: transparent !important;
-    color: var(--text-secondary) !important;
-  }
-
-  .category-buttons {
-    flex-direction: column;
-    width: 100%;
-  }
-
-  .category-button-wrapper {
-    width: 100%;
-  }
-
-  .category-btn {
-    width: 100%;
-    justify-content: center;
-  }
-
   .submenu {
     position: static;
     margin-top: var(--spacing-sm);

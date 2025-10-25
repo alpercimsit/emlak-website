@@ -643,7 +643,7 @@ function FilterModal({ isOpen, onClose, filters, onFiltersChange, totalCount, is
         <div className="modal-body filter-modal-body">
           {/* Kategori Seçimi */}
           <div className="filter-section" style={{ padding: 'var(--spacing-sm)', marginBottom: 'var(--spacing-sm)' }}>
-            <div className="category-buttons" style={{ flexDirection: 'column', width: '100%' }}>
+            <div className={`category-buttons ${filters.category === 'konut' ? 'konut-active' : filters.category === 'arsa' ? 'arsa-active' : ''}`}>
               <div style={{ display: 'flex', width: '100%' }}>
                 <div
                   className="category-button-wrapper"
@@ -652,7 +652,7 @@ function FilterModal({ isOpen, onClose, filters, onFiltersChange, totalCount, is
                   onMouseLeave={() => setShowArsaSubmenu(false)}
                 >
                   <button
-                    className={`category-btn ${filters.category === 'arsa' ? 'active' : ''}`}
+                    className={`category-btn ${filters.category === 'arsa' || filters.category === 'all' ? 'active' : ''}`}
                     onClick={() => {
                       onFiltersChange({ ...filters, category: 'arsa', subCategory: 'all' });
                     }}
@@ -714,7 +714,7 @@ function FilterModal({ isOpen, onClose, filters, onFiltersChange, totalCount, is
                   onMouseLeave={() => setShowKonutSubmenu(false)}
                 >
                   <button
-                    className={`category-btn ${filters.category === 'konut' ? 'active' : ''}`}
+                    className={`category-btn ${filters.category === 'konut' || filters.category === 'all' ? 'active' : ''}`}
                     onClick={() => {
                       onFiltersChange({ ...filters, category: 'konut', subCategory: 'all' });
                     }}
