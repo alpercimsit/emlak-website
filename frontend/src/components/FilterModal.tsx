@@ -286,10 +286,12 @@ function PropertyFilters({ filters, onFiltersChange }: { filters: FilterState; o
 
   return (
     <div className="filter-group">
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-md)', alignItems: 'stretch' }}>
+      {/* DEĞİŞİKLİK: 'flexDirection' 'row' yapıldı ve 'alignItems' 'flex-start' olarak ayarlandı */}
+      <div style={{ display: 'flex', flexDirection: 'row', gap: 'var(--spacing-md)', alignItems: 'flex-start' }}>
         
         {/* Balkon Filter */}
-        <div>
+        {/* DEĞİŞİKLİK: 'flex: 1' eklendi */}
+        <div style={{ flex: 1 }}>
           <label className="filter-label">Balkon</label>
           <div style={{ position: 'relative' }}>
             <button
@@ -363,7 +365,8 @@ function PropertyFilters({ filters, onFiltersChange }: { filters: FilterState; o
         </div>
 
         {/* Asansör Filter */}
-        <div>
+        {/* DEĞİŞİKLİK: 'flex: 1' eklendi */}
+        <div style={{ flex: 1 }}>
           <label className="filter-label">Asansör</label>
           <div style={{ position: 'relative' }}>
             <button
@@ -437,7 +440,8 @@ function PropertyFilters({ filters, onFiltersChange }: { filters: FilterState; o
         </div>
 
         {/* Eşyalı Filter */}
-        <div>
+        {/* DEĞİŞİKLİK: 'flex: 1' eklendi */}
+        <div style={{ flex: 1 }}>
           <label className="filter-label">Eşyalı</label>
           <div style={{ position: 'relative' }}>
             <button
