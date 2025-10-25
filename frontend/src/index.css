@@ -987,17 +987,27 @@ textarea.form-control {
   top: var(--spacing-xs);
   bottom: var(--spacing-xs);
   left: var(--spacing-xs);
-  width: calc(50% - var(--spacing-xs));
+  /* GÜNCELLENDİ: Varsayılan olarak tam genişlik (Tümü seçili durumu) */
+  width: calc(100% - 2 * var(--spacing-xs)); 
   background: var(--primary-color);
   border-radius: var(--radius-md);
+  /* 'width' ve 'transform' değişimlerine animasyon ekle */
   transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   z-index: 1;
   box-shadow: var(--shadow-md);
   pointer-events: none;
+  transform: translateX(0); /* Varsayılan pozisyon */
+}
+
+/* YENİ: Arsa seçili olduğunda bar sola küçülür */
+.category-buttons.arsa-active::before {
+  width: calc(50% - var(--spacing-xs));
+  transform: translateX(0);
 }
 
 /* Konut seçili olduğunda bar sağa kayar */
 .category-buttons.konut-active::before {
+  width: calc(50% - var(--spacing-xs));
   transform: translateX(calc(100% + var(--spacing-xs)));
 }
 

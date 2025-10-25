@@ -1165,7 +1165,7 @@ function FilterPanel({ filters, onFiltersChange, totalCount, isAdmin }: Props) {
             onMouseLeave={() => setShowArsaSubmenu(false)}
           >
             <button
-              className={`category-btn ${filters.category === 'arsa' ? 'active' : ''}`}
+              className={`category-btn ${filters.category === 'arsa' || filters.category === 'all' ? 'active' : ''}`}
               onClick={() => {
                 onFiltersChange({ ...filters, category: 'arsa', subCategory: 'all' });
               }}
@@ -1209,7 +1209,7 @@ function FilterPanel({ filters, onFiltersChange, totalCount, isAdmin }: Props) {
             onMouseLeave={() => setShowKonutSubmenu(false)}
           >
             <button
-              className={`category-btn ${filters.category === 'konut' ? 'active' : ''}`}
+              className={`category-btn ${filters.category === 'konut' || filters.category === 'all' ? 'active' : ''}`}
               onClick={() => {
                 onFiltersChange({ ...filters, category: 'konut', subCategory: 'all' });
               }}
