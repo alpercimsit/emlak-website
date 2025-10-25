@@ -57,7 +57,7 @@ function EditListingModal({ listing, isOpen, onClose, onUpdate }: Props) {
     bina_yasi: '',
     bulundugu_kat: '',
     kat_sayisi: 1,
-    isitma: '',
+    isitma: 'Kombi',
     banyo_sayisi: 1,
     balkon: true,
     asansor: true,

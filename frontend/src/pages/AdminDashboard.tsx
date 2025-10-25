@@ -81,7 +81,7 @@ function AdminDashboard() {
     bina_yasi: '',
     bulundugu_kat: '',
     kat_sayisi: 1,
-    isitma: '', // Will be mapped to 'isitma' in database
+    isitma: 'Kombi', // Will be mapped to 'isitma' in database
     banyo_sayisi: 1,
       balkon: true,
       asansor: true,
@@ -168,7 +168,7 @@ function AdminDashboard() {
         bina_yasi: '',
         bulundugu_kat: '',
         kat_sayisi: 1,
-        isitma: '', // Will be mapped to 'isitma' in database
+        isitma: 'Kombi', // Will be mapped to 'isitma' in database
         banyo_sayisi: 1,
         balkon: true,
         asansor: true,
