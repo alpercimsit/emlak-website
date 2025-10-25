@@ -968,7 +968,7 @@ textarea.form-control {
   gap: var(--spacing-sm);
   font-weight: 500;
   position: relative;
-  z-index: 2;
+  z-index: 3;
 }
 
 .category-btn:hover {
@@ -1027,6 +1027,36 @@ textarea.form-control {
   width: calc(50% - var(--spacing-xs));
   /* 'transform' SİLİNDİ */
 }
+
+/* YENİ: 'Tümü' durumundayken görünen dikey ayırıcı çizgi */
+.category-buttons::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  /* Yüksekliğini butonun %60'ı kadar yapalım, tam kaplamasın */
+  height: 60%; 
+  width: 1px;
+  /* Çizgi rengi: Beyaz, %30 opaklıkta */
+  background-color: var(--bg-tertiary);
+  /* Hem dikey hem yatay tam ortalamak için */
+  transform: translate(-50%, -50%);
+  /* z-index: Bar(1) < Çizgi(2) < Buton(3) */
+  z-index: 2;
+  /* Varsayılan olarak görünür */
+  opacity: 1;
+  /* Gizlenirken yumuşak geçiş yapsın */
+  transition: opacity 0.3s ease;
+  /* Tıklamayı engellemesin */
+  pointer-events: none;
+}
+
+/* YENİ: Arsa veya Konut seçilince ayırıcı çizgiyi gizle */
+.category-buttons.arsa-active::after,
+.category-buttons.konut-active::after {
+  opacity: 0;
+}
+
 /* Seçili olmayan buton animasyonu */
 .category-btn:not(.active) {
   transition: all 0.3s ease;
