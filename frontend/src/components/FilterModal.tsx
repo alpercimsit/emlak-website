@@ -583,7 +583,7 @@ function FilterModal({ isOpen, onClose, filters, onFiltersChange, totalCount, is
 
   const clearFilters = () => {
     onFiltersChange({
-      category: 'arsa',
+      category: 'all',
       subCategory: 'all',
       searchText: '',
       ilanNo: '',
