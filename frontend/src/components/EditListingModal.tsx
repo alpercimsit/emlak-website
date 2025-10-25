@@ -56,7 +56,7 @@ function EditListingModal({ listing, isOpen, onClose, onUpdate }: Props) {
     oda_sayisi: '',
     bina_yasi: '',
     bulundugu_kat: '',
-    kat_sayisi: 1,
+    kat_sayisi: 0,
     isitma: 'Kombi',
     banyo_sayisi: 1,
     balkon: true,
@@ -106,7 +106,7 @@ function EditListingModal({ listing, isOpen, onClose, onUpdate }: Props) {
         oda_sayisi: listing.oda_sayisi || '',
         bina_yasi: listing.bina_yasi || '',
         bulundugu_kat: listing.bulundugu_kat || '',
-        kat_sayisi: listing.kat_sayisi || 1,
+        kat_sayisi: listing.kat_sayisi || 0,
         isitma: listing.isitma || '',
         banyo_sayisi: listing.banyo_sayisi || 1,
         balkon: listing.balkon,
@@ -504,7 +504,7 @@ function EditListingModal({ listing, isOpen, onClose, onUpdate }: Props) {
                       className="form-control"
                       value={form.kat_sayisi}
                       onChange={handleChange}
-                      min="1"
+                      min="0"
                     />
                   </div>
                 </div>
@@ -541,7 +541,7 @@ function EditListingModal({ listing, isOpen, onClose, onUpdate }: Props) {
                       className="form-control"
                       value={form.banyo_sayisi}
                       onChange={handleChange}
-                      min="1"
+                      min="0"
                     />
                   </div>
 

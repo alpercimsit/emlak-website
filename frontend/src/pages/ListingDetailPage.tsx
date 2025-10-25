@@ -1449,7 +1449,7 @@ function ListingDetailPage() {
                     <div className="info-item">
                       <i className="fas fa-building"></i>
                       <span className="label">Kat Sayısı:</span>
-                      <span className="value">{listing.kat_sayisi != null ? listing.kat_sayisi : 'Belirtilmemiş'}</span>
+                      <span className="value">{listing.kat_sayisi != null && listing.kat_sayisi > 0 ? listing.kat_sayisi : 'Belirtilmemiş'}</span>
                     </div>
                     <div className="info-item">
                       <i className="fas fa-fire"></i>

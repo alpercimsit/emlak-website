@@ -80,16 +80,16 @@ function AdminDashboard() {
     oda_sayisi: '',
     bina_yasi: '',
     bulundugu_kat: '',
-    kat_sayisi: 1,
+    kat_sayisi: '',
     isitma: 'Kombi', // Will be mapped to 'isitma' in database
     banyo_sayisi: 1,
-      balkon: true,
-      asansor: true,
-      esyali: false,
-      aidat: '',
-      fotolar: '',
-      gizli: false,
-      not: ''
+    balkon: true,
+    asansor: true,
+    esyali: false,
+    aidat: '',
+    fotolar: '',
+    gizli: false,
+    not: ''
   });
 
   const navigate = useNavigate();
@@ -167,7 +167,7 @@ function AdminDashboard() {
         oda_sayisi: '',
         bina_yasi: '',
         bulundugu_kat: '',
-        kat_sayisi: 1,
+        kat_sayisi: '',
         isitma: 'Kombi', // Will be mapped to 'isitma' in database
         banyo_sayisi: 1,
         balkon: true,
@@ -470,7 +470,7 @@ function AdminDashboard() {
                       className="form-control"
                       value={form.kat_sayisi}
                       onChange={handleChange}
-                      min="1"
+                      min="0"
                     />
                   </div>
                 </div>
@@ -507,7 +507,7 @@ function AdminDashboard() {
                       className="form-control"
                       value={form.banyo_sayisi}
                       onChange={handleChange}
-                      min="1"
+                      min="0"
                     />
                   </div>
 
