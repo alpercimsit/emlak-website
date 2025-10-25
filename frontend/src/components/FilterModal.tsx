@@ -257,25 +257,37 @@ function Combobox({
 
 // Property filters component for rental and sale housing
 function PropertyFilters({ filters, onFiltersChange }: { filters: FilterState; onFiltersChange: (filters: FilterState) => void }) {
+  // 1. Hangi dropdown'ın açık olduğunu takip etmek için state ekleyin
+  const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+
   const balkonOptions = ['Tümü', 'Var', 'Yok'];
   const asansorOptions = ['Tümü', 'Var', 'Yok'];
   const esyaliOptions = ['Tümü', 'Eşyalı', 'Eşyasız'];
 
   const handleBalkonChange = (value: string) => {
     onFiltersChange({ ...filters, balkon: value });
+    setOpenDropdown(null); // 4. Seçim sonrası dropdown'ı kapat
   };
 
   const handleAsansorChange = (value: string) => {
     onFiltersChange({ ...filters, asansor: value });
+    setOpenDropdown(null); // 4. Seçim sonrası dropdown'ı kapat
   };
 
   const handleEsyaliChange = (value: string) => {
     onFiltersChange({ ...filters, esyali: value });
+    setOpenDropdown(null); // 4. Seçim sonrası dropdown'ı kapat
+  };
+
+  // Helper fonksiyonu dropdown'ları açıp kapatmak için
+  const toggleDropdown = (name: string) => {
+    setOpenDropdown(prev => (prev === name ? null : name));
   };
 
   return (
     <div className="filter-group">
       <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-md)', alignItems: 'stretch' }}>
+        
         {/* Balkon Filter */}
         <div>
           <label className="filter-label">Balkon</label>
@@ -283,6 +295,7 @@ function PropertyFilters({ filters, onFiltersChange }: { filters: FilterState; o
             <button
               type="button"
               className="filter-input"
+              onClick={() => toggleDropdown('balkon')} // 2. Tıklama olayı eklendi
               style={{
                 width: '100%',
                 textAlign: 'left',
@@ -299,49 +312,53 @@ function PropertyFilters({ filters, onFiltersChange }: { filters: FilterState; o
               <span style={{ color: filters.balkon ? 'inherit' : 'var(--text-muted)' }}>
                 {filters.balkon || 'Tümü'}
               </span>
-              <i className="fas fa-chevron-down" style={{ fontSize: '12px', color: 'var(--text-muted)' }}></i>
+              <i className={`fas ${openDropdown === 'balkon' ? 'fa-chevron-up' : 'fa-chevron-down'}`} style={{ fontSize: '12px', color: 'var(--text-muted)' }}></i>
             </button>
-            <div
-              style={{
-                position: 'absolute',
-                top: '100%',
-                left: 0,
-                right: 0,
-                backgroundColor: 'white',
-                border: '1px solid var(--border-color)',
-                borderRadius: '4px',
-                boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-                zIndex: 1000,
-                marginTop: '2px'
-              }}
-            >
-              {balkonOptions.map(option => (
-                <div
-                  key={option}
-                  onClick={() => handleBalkonChange(option)}
-                  style={{
-                    padding: '8px 12px',
-                    cursor: 'pointer',
-                    borderBottom: '1px solid var(--border-color)',
-                    backgroundColor: filters.balkon === option ? 'var(--primary-color)' : 'white',
-                    color: filters.balkon === option ? 'white' : 'inherit',
-                    fontSize: '13px'
-                  }}
-                  onMouseEnter={(e) => {
-                    if (filters.balkon !== option) {
-                      e.currentTarget.style.backgroundColor = 'var(--bg-secondary)';
-                    }
-                  }}
-                  onMouseLeave={(e) => {
-                    if (filters.balkon !== option) {
-                      e.currentTarget.style.backgroundColor = 'white';
-                    }
-                  }}
-                >
-                  {option}
-                </div>
-              ))}
-            </div>
+            
+            {/* 3. Koşullu render etme eklendi */}
+            {openDropdown === 'balkon' && (
+              <div
+                style={{
+                  position: 'absolute',
+                  top: '100%',
+                  left: 0,
+                  right: 0,
+                  backgroundColor: 'white',
+                  border: '1px solid var(--border-color)',
+                  borderRadius: '4px',
+                  boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+                  zIndex: 1000,
+                  marginTop: '2px'
+                }}
+              >
+                {balkonOptions.map(option => (
+                  <div
+                    key={option}
+                    onClick={() => handleBalkonChange(option)} // 4. Kapatma işlemi handle... fonksiyonuna taşındı
+                    style={{
+                      padding: '8px 12px',
+                      cursor: 'pointer',
+                      borderBottom: '1px solid var(--border-color)',
+                      backgroundColor: filters.balkon === option ? 'var(--primary-color)' : 'white',
+                      color: filters.balkon === option ? 'white' : 'inherit',
+                      fontSize: '13px'
+                    }}
+                    onMouseEnter={(e) => {
+                      if (filters.balkon !== option) {
+                        e.currentTarget.style.backgroundColor = 'var(--bg-secondary)';
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      if (filters.balkon !== option) {
+                        e.currentTarget.style.backgroundColor = 'white';
+                      }
+                    }}
+                  >
+                    {option}
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         </div>
 
@@ -352,6 +369,7 @@ function PropertyFilters({ filters, onFiltersChange }: { filters: FilterState; o
             <button
               type="button"
               className="filter-input"
+              onClick={() => toggleDropdown('asansor')} // 2. Tıklama olayı eklendi
               style={{
                 width: '100%',
                 textAlign: 'left',
@@ -368,49 +386,53 @@ function PropertyFilters({ filters, onFiltersChange }: { filters: FilterState; o
               <span style={{ color: filters.asansor ? 'inherit' : 'var(--text-muted)' }}>
                 {filters.asansor || 'Tümü'}
               </span>
-              <i className="fas fa-chevron-down" style={{ fontSize: '12px', color: 'var(--text-muted)' }}></i>
+              <i className={`fas ${openDropdown === 'asansor' ? 'fa-chevron-up' : 'fa-chevron-down'}`} style={{ fontSize: '12px', color: 'var(--text-muted)' }}></i>
             </button>
-            <div
-              style={{
-                position: 'absolute',
-                top: '100%',
-                left: 0,
-                right: 0,
-                backgroundColor: 'white',
-                border: '1px solid var(--border-color)',
-                borderRadius: '4px',
-                boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-                zIndex: 1000,
-                marginTop: '2px'
-              }}
-            >
-              {asansorOptions.map(option => (
-                <div
-                  key={option}
-                  onClick={() => handleAsansorChange(option)}
-                  style={{
-                    padding: '8px 12px',
-                    cursor: 'pointer',
-                    borderBottom: '1px solid var(--border-color)',
-                    backgroundColor: filters.asansor === option ? 'var(--primary-color)' : 'white',
-                    color: filters.asansor === option ? 'white' : 'inherit',
-                    fontSize: '13px'
-                  }}
-                  onMouseEnter={(e) => {
-                    if (filters.asansor !== option) {
-                      e.currentTarget.style.backgroundColor = 'var(--bg-secondary)';
-                    }
-                  }}
-                  onMouseLeave={(e) => {
-                    if (filters.asansor !== option) {
-                      e.currentTarget.style.backgroundColor = 'white';
-                    }
-                  }}
-                >
-                  {option}
-                </div>
-              ))}
-            </div>
+            
+            {/* 3. Koşullu render etme eklendi */}
+            {openDropdown === 'asansor' && (
+              <div
+                style={{
+                  position: 'absolute',
+                  top: '100%',
+                  left: 0,
+                  right: 0,
+                  backgroundColor: 'white',
+                  border: '1px solid var(--border-color)',
+                  borderRadius: '4px',
+                  boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+                  zIndex: 1000,
+                  marginTop: '2px'
+                }}
+              >
+                {asansorOptions.map(option => (
+                  <div
+                    key={option}
+                    onClick={() => handleAsansorChange(option)} // 4. Kapatma işlemi handle... fonksiyonuna taşındı
+                    style={{
+                      padding: '8px 12px',
+                      cursor: 'pointer',
+                      borderBottom: '1px solid var(--border-color)',
+                      backgroundColor: filters.asansor === option ? 'var(--primary-color)' : 'white',
+                      color: filters.asansor === option ? 'white' : 'inherit',
+                      fontSize: '13px'
+                    }}
+                    onMouseEnter={(e) => {
+                      if (filters.asansor !== option) {
+                        e.currentTarget.style.backgroundColor = 'var(--bg-secondary)';
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      if (filters.asansor !== option) {
+                        e.currentTarget.style.backgroundColor = 'white';
+                      }
+                    }}
+                  >
+                    {option}
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         </div>
 
@@ -421,6 +443,7 @@ function PropertyFilters({ filters, onFiltersChange }: { filters: FilterState; o
             <button
               type="button"
               className="filter-input"
+              onClick={() => toggleDropdown('esyali')} // 2. Tıklama olayı eklendi
               style={{
                 width: '100%',
                 textAlign: 'left',
@@ -437,49 +460,53 @@ function PropertyFilters({ filters, onFiltersChange }: { filters: FilterState; o
               <span style={{ color: filters.esyali ? 'inherit' : 'var(--text-muted)' }}>
                 {filters.esyali || 'Tümü'}
               </span>
-              <i className="fas fa-chevron-down" style={{ fontSize: '12px', color: 'var(--text-muted)' }}></i>
+              <i className={`fas ${openDropdown === 'esyali' ? 'fa-chevron-up' : 'fa-chevron-down'}`} style={{ fontSize: '12px', color: 'var(--text-muted)' }}></i>
             </button>
-            <div
-              style={{
-                position: 'absolute',
-                top: '100%',
-                left: 0,
-                right: 0,
-                backgroundColor: 'white',
-                border: '1px solid var(--border-color)',
-                borderRadius: '4px',
-                boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-                zIndex: 1000,
-                marginTop: '2px'
-              }}
-            >
-              {esyaliOptions.map(option => (
-                <div
-                  key={option}
-                  onClick={() => handleEsyaliChange(option)}
-                  style={{
-                    padding: '8px 12px',
-                    cursor: 'pointer',
-                    borderBottom: '1px solid var(--border-color)',
-                    backgroundColor: filters.esyali === option ? 'var(--primary-color)' : 'white',
-                    color: filters.esyali === option ? 'white' : 'inherit',
-                    fontSize: '13px'
-                  }}
-                  onMouseEnter={(e) => {
-                    if (filters.esyali !== option) {
-                      e.currentTarget.style.backgroundColor = 'var(--bg-secondary)';
-                    }
-                  }}
-                  onMouseLeave={(e) => {
-                    if (filters.esyali !== option) {
-                      e.currentTarget.style.backgroundColor = 'white';
-                    }
-                  }}
-                >
-                  {option}
-                </div>
-              ))}
-            </div>
+
+            {/* 3. Koşullu render etme eklendi */}
+            {openDropdown === 'esyali' && (
+              <div
+                style={{
+                  position: 'absolute',
+                  top: '100%',
+                  left: 0,
+                  right: 0,
+                  backgroundColor: 'white',
+                  border: '1px solid var(--border-color)',
+                  borderRadius: '4px',
+                  boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+                  zIndex: 1000,
+                  marginTop: '2px'
+                }}
+              >
+                {esyaliOptions.map(option => (
+                  <div
+                    key={option}
+                    onClick={() => handleEsyaliChange(option)} // 4. Kapatma işlemi handle... fonksiyonuna taşındı
+                    style={{
+                      padding: '8px 12px',
+                      cursor: 'pointer',
+                      borderBottom: '1px solid var(--border-color)',
+                      backgroundColor: filters.esyali === option ? 'var(--primary-color)' : 'white',
+                      color: filters.esyali === option ? 'white' : 'inherit',
+                      fontSize: '13px'
+                    }}
+                    onMouseEnter={(e) => {
+                      if (filters.esyali !== option) {
+                        e.currentTarget.style.backgroundColor = 'var(--bg-secondary)';
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      if (filters.esyali !== option) {
+                        e.currentTarget.style.backgroundColor = 'white';
+                      }
+                    }}
+                  >
+                    {option}
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </div>
