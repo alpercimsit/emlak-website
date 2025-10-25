@@ -286,18 +286,16 @@ function PropertyFilters({ filters, onFiltersChange }: { filters: FilterState; o
 
   return (
     <div className="filter-group">
-      {/* DEĞİŞİKLİK: 'flexDirection' 'row' yapıldı ve 'alignItems' 'flex-start' olarak ayarlandı */}
       <div style={{ display: 'flex', flexDirection: 'row', gap: 'var(--spacing-md)', alignItems: 'flex-start' }}>
         
         {/* Balkon Filter */}
-        {/* DEĞİŞİKLİK: 'flex: 1' eklendi */}
         <div style={{ flex: 1 }}>
           <label className="filter-label">Balkon</label>
           <div style={{ position: 'relative' }}>
             <button
               type="button"
               className="filter-input"
-              onClick={() => toggleDropdown('balkon')} // 2. Tıklama olayı eklendi
+              onClick={() => toggleDropdown('balkon')}
               style={{
                 width: '100%',
                 textAlign: 'left',
@@ -317,12 +315,12 @@ function PropertyFilters({ filters, onFiltersChange }: { filters: FilterState; o
               <i className={`fas ${openDropdown === 'balkon' ? 'fa-chevron-up' : 'fa-chevron-down'}`} style={{ fontSize: '12px', color: 'var(--text-muted)' }}></i>
             </button>
             
-            {/* 3. Koşullu render etme eklendi */}
             {openDropdown === 'balkon' && (
               <div
                 style={{
                   position: 'absolute',
-                  top: '100%',
+                  // DEĞİŞİKLİK: Dropdown'ı yukarı açmak için 'top' yerine 'bottom'
+                  bottom: '100%', 
                   left: 0,
                   right: 0,
                   backgroundColor: 'white',
@@ -330,13 +328,14 @@ function PropertyFilters({ filters, onFiltersChange }: { filters: FilterState; o
                   borderRadius: '4px',
                   boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
                   zIndex: 1000,
-                  marginTop: '2px'
+                  // DEĞİŞİKLİK: 'marginTop' yerine 'marginBottom'
+                  marginBottom: '2px' 
                 }}
               >
                 {balkonOptions.map(option => (
                   <div
                     key={option}
-                    onClick={() => handleBalkonChange(option)} // 4. Kapatma işlemi handle... fonksiyonuna taşındı
+                    onClick={() => handleBalkonChange(option)}
                     style={{
                       padding: '8px 12px',
                       cursor: 'pointer',
@@ -365,14 +364,13 @@ function PropertyFilters({ filters, onFiltersChange }: { filters: FilterState; o
         </div>
 
         {/* Asansör Filter */}
-        {/* DEĞİŞİKLİK: 'flex: 1' eklendi */}
         <div style={{ flex: 1 }}>
           <label className="filter-label">Asansör</label>
           <div style={{ position: 'relative' }}>
             <button
               type="button"
               className="filter-input"
-              onClick={() => toggleDropdown('asansor')} // 2. Tıklama olayı eklendi
+              onClick={() => toggleDropdown('asansor')}
               style={{
                 width: '100%',
                 textAlign: 'left',
@@ -392,12 +390,12 @@ function PropertyFilters({ filters, onFiltersChange }: { filters: FilterState; o
               <i className={`fas ${openDropdown === 'asansor' ? 'fa-chevron-up' : 'fa-chevron-down'}`} style={{ fontSize: '12px', color: 'var(--text-muted)' }}></i>
             </button>
             
-            {/* 3. Koşullu render etme eklendi */}
             {openDropdown === 'asansor' && (
               <div
                 style={{
                   position: 'absolute',
-                  top: '100%',
+                  // DEĞİŞİKLİK: Dropdown'ı yukarı açmak için 'top' yerine 'bottom'
+                  bottom: '100%',
                   left: 0,
                   right: 0,
                   backgroundColor: 'white',
@@ -405,13 +403,14 @@ function PropertyFilters({ filters, onFiltersChange }: { filters: FilterState; o
                   borderRadius: '4px',
                   boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
                   zIndex: 1000,
-                  marginTop: '2px'
+                  // DEĞİŞİKLİK: 'marginTop' yerine 'marginBottom'
+                  marginBottom: '2px'
                 }}
               >
                 {asansorOptions.map(option => (
                   <div
                     key={option}
-                    onClick={() => handleAsansorChange(option)} // 4. Kapatma işlemi handle... fonksiyonuna taşındı
+                    onClick={() => handleAsansorChange(option)}
                     style={{
                       padding: '8px 12px',
                       cursor: 'pointer',
@@ -440,14 +439,13 @@ function PropertyFilters({ filters, onFiltersChange }: { filters: FilterState; o
         </div>
 
         {/* Eşyalı Filter */}
-        {/* DEĞİŞİKLİK: 'flex: 1' eklendi */}
         <div style={{ flex: 1 }}>
           <label className="filter-label">Eşyalı</label>
           <div style={{ position: 'relative' }}>
             <button
               type="button"
               className="filter-input"
-              onClick={() => toggleDropdown('esyali')} // 2. Tıklama olayı eklendi
+              onClick={() => toggleDropdown('esyali')}
               style={{
                 width: '100%',
                 textAlign: 'left',
@@ -467,12 +465,12 @@ function PropertyFilters({ filters, onFiltersChange }: { filters: FilterState; o
               <i className={`fas ${openDropdown === 'esyali' ? 'fa-chevron-up' : 'fa-chevron-down'}`} style={{ fontSize: '12px', color: 'var(--text-muted)' }}></i>
             </button>
 
-            {/* 3. Koşullu render etme eklendi */}
             {openDropdown === 'esyali' && (
               <div
                 style={{
                   position: 'absolute',
-                  top: '100%',
+                  // DEĞİŞİKLİK: Dropdown'ı yukarı açmak için 'top' yerine 'bottom'
+                  bottom: '100%',
                   left: 0,
                   right: 0,
                   backgroundColor: 'white',
@@ -480,13 +478,14 @@ function PropertyFilters({ filters, onFiltersChange }: { filters: FilterState; o
                   borderRadius: '4px',
                   boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
                   zIndex: 1000,
-                  marginTop: '2px'
+                  // DEĞİŞİKLİK: 'marginTop' yerine 'marginBottom'
+                  marginBottom: '2px'
                 }}
               >
                 {esyaliOptions.map(option => (
                   <div
                     key={option}
-                    onClick={() => handleEsyaliChange(option)} // 4. Kapatma işlemi handle... fonksiyonuna taşındı
+                    onClick={() => handleEsyaliChange(option)}
                     style={{
                       padding: '8px 12px',
                       cursor: 'pointer',
