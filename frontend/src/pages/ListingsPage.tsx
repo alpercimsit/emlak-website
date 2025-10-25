@@ -146,6 +146,10 @@ function ListingsPage() {
       case 'esyali':
         newFilters.esyali = '';
         break;
+      case 'category':
+        newFilters.category = 'all';
+        newFilters.subCategory = 'all';
+        break;
       default:
         break;
     }
@@ -169,7 +173,7 @@ function ListingsPage() {
       }
     }
     return {
-      category: 'arsa',
+      category: 'all',
       subCategory: 'all',
       searchText: '',
       ilanNo: '',
@@ -327,7 +331,10 @@ function ListingsPage() {
     // Önce filtreleme yap
     const filtered = listings.filter(listing => {
       // Kategori filtresi
-      if (filters.category === 'arsa') {
+      if (filters.category === 'all') {
+        // Tüm ilanları göster - sadece diğer filtreler uygulanır
+        // Hiçbir şey yapma, diğer filtrelere geç
+      } else if (filters.category === 'arsa') {
         if (filters.subCategory === 'tarla') {
           if (listing.emlak_tipi !== 'Tarla') return false;
         } else if (filters.subCategory === 'bagYeri') {
@@ -527,7 +534,9 @@ function ListingsPage() {
 
   // Dinamik başlık metni oluşturma
   const getPageTitle = () => {
-    if (filters.category === 'arsa') {
+    if (filters.category === 'all') {
+      return 'İlan Listesi - Tümü';
+    } else if (filters.category === 'arsa') {
       if (filters.subCategory === 'tarla') {
         return 'İlan Listesi - Tarla';
       } else if (filters.subCategory === 'bagYeri') {

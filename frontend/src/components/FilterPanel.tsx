@@ -48,7 +48,7 @@ function useSmartDropdownPosition(dropdownRef: React.RefObject<HTMLDivElement>) 
 }
 
 export interface FilterState {
-  category: 'arsa' | 'konut';
+  category: 'all' | 'arsa' | 'konut';
   subCategory: 'all' | 'satilik' | 'kiralik' | 'tarla' | 'bagYeri' | 'Hisse'; // konut ve arsa için alt kategori
   searchText: string;
   ilanNo: string;
@@ -1097,7 +1097,7 @@ function FilterPanel({ filters, onFiltersChange, totalCount, isAdmin }: Props) {
 
   const clearFilters = () => {
     onFiltersChange({
-      category: 'arsa',
+      category: 'all',
       subCategory: 'all',
       searchText: '',
       ilanNo: '',

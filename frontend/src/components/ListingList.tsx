@@ -61,6 +61,34 @@ function ActiveFilters({
     activeFilters.push({ key: konumKey, label: `Konum: ${konumParts.join(' / ')}`, value: 'konum' });
   }
 
+  // Kategori filtresi (sadece 'all' değilse göster)
+  if (filters.category !== 'all') {
+    let categoryLabel = '';
+    if (filters.category === 'arsa') {
+      if (filters.subCategory === 'tarla') {
+        categoryLabel = 'Kategori: Tarla';
+      } else if (filters.subCategory === 'bagYeri') {
+        categoryLabel = 'Kategori: Bağ Yeri';
+      } else if (filters.subCategory === 'Hisse') {
+        categoryLabel = 'Kategori: Hisse';
+      } else {
+        categoryLabel = 'Kategori: Arsa';
+      }
+    } else if (filters.category === 'konut') {
+      if (filters.subCategory === 'satilik') {
+        categoryLabel = 'Kategori: Satılık Konut';
+      } else if (filters.subCategory === 'kiralik') {
+        categoryLabel = 'Kategori: Kiralık Konut';
+      } else {
+        categoryLabel = 'Kategori: Konut';
+      }
+    }
+
+    if (categoryLabel) {
+      activeFilters.push({ key: 'category', label: categoryLabel, value: 'category' });
+    }
+  }
+
   if (filters.category === 'arsa') {
     if (filters.adaNo) {
       activeFilters.push({ key: 'adaNo', label: `Ada No: ${filters.adaNo}`, value: 'adaNo' });
