@@ -2,6 +2,51 @@ import { useState, useEffect, useRef } from 'react';
 import { FilterState } from '../components/FilterPanel';
 import api from '../utils/api';
 
+// Smart dropdown positioning hook
+function useSmartDropdownPosition(dropdownRef: React.RefObject<HTMLDivElement>) {
+  const [dropdownDirection, setDropdownDirection] = useState<'down' | 'up'>('down');
+
+  useEffect(() => {
+    const calculateDirection = () => {
+      if (!dropdownRef.current) return;
+
+      const rect = dropdownRef.current.getBoundingClientRect();
+      const viewportHeight = window.innerHeight;
+      const dropdownHeight = 200; // maxHeight for mobile modal
+
+      // Calculate space below and above
+      const spaceBelow = viewportHeight - rect.bottom;
+      const spaceAbove = rect.top;
+
+      // If there's not enough space below (less than dropdown height + 20px padding)
+      // and there's more space above, open upwards
+      if (spaceBelow < dropdownHeight + 20 && spaceAbove > spaceBelow) {
+        setDropdownDirection('up');
+      } else {
+        setDropdownDirection('down');
+      }
+    };
+
+    // Calculate on mount and when dropdown opens
+    calculateDirection();
+
+    // Recalculate on window resize or scroll
+    const handleResizeOrScroll = () => {
+      calculateDirection();
+    };
+
+    window.addEventListener('resize', handleResizeOrScroll);
+    window.addEventListener('scroll', handleResizeOrScroll, true);
+
+    return () => {
+      window.removeEventListener('resize', handleResizeOrScroll);
+      window.removeEventListener('scroll', handleResizeOrScroll, true);
+    };
+  }, []);
+
+  return dropdownDirection;
+}
+
 // Filter options constants
 const binaYasiOptions = ['0','1','2','3','4','5', '6-10 arası', '11-15 arası', '16-20 arası', '21-25 arası', '26-30 arası', '31 ve üzeri'];
 const odaSayisiOptions = ['Stüdyo (1+0)', '1+1', '2+1', '2+2', '3+1', '3+2', '4+1', '4+2', '4+3', '4+4', '5+1', '5+2', '5+3', '6+1', '6+2', '6+3', '7+1', '7+2', '7+3', '8+1', '8+2', '8+3', '9+1', '9+2', '9+3'];
@@ -299,6 +344,7 @@ function MultiSelectDropdown({
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const dropdownDirection = useSmartDropdownPosition(dropdownRef);
 
   // Normalize Turkish characters for consistent matching
   const normalizeTurkish = (str: string) => {
@@ -515,17 +561,17 @@ function MultiSelectDropdown({
           <div
             style={{
               position: 'absolute',
-              top: '100%',
+              [dropdownDirection === 'up' ? 'bottom' : 'top']: '100%',
               left: 0,
               right: 0,
               backgroundColor: 'white',
               border: '1px solid var(--border-color)',
               borderRadius: '4px',
-              boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+              boxShadow: dropdownDirection === 'up' ? '0 -2px 8px rgba(0,0,0,0.1)' : '0 2px 8px rgba(0,0,0,0.1)',
               maxHeight: '200px',
               overflowY: 'auto',
               zIndex: 2000,
-              marginTop: '2px'
+              [dropdownDirection === 'up' ? 'marginBottom' : 'marginTop']: '2px'
             }}
           >
             {filteredOptions.length > 0 ? (
