@@ -368,7 +368,7 @@ function ListingList({ listings, isAdmin = false, onUpdate, onEditListing, filte
               <div className="meta-row">
                 <span>
                   <i className="fas fa-expand"></i>
-                  {l.m2 ? `${l.m2} m²` : 'Belirtilmemiş'}
+                  {l.m2 ? `${l.m2} m²` : 'Belirtilmemiş'} &nbsp;
                 </span>
                 {['Arsa', 'Tarla', 'bagYeri', 'Hisse'].includes(l.emlak_tipi) && (
                   <span>
@@ -381,8 +381,8 @@ function ListingList({ listings, isAdmin = false, onUpdate, onEditListing, filte
                 )}
                 {!['Arsa', 'Tarla', 'bagYeri', 'Hisse'].includes(l.emlak_tipi) && (
                   <span>
-                    <i className="fas fa-bed"></i>
-                    {l.oda_sayisi || 'Belirtilmemiş'}
+                    <i className="fas fa-bed"></i> &nbsp;
+                    {l.oda_sayisi || 'Belirtilmemiş'} &nbsp;
                   </span>
                 )}
                 {!['Arsa', 'Tarla', 'bagYeri', 'Hisse'].includes(l.emlak_tipi) && (
