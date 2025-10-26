@@ -1278,11 +1278,6 @@ function FilterModal({ isOpen, onClose, filters, onFiltersChange, totalCount, is
             {/* Konut Özel Filtreleri */}
             {filters.category === 'konut' && (
               <>
-                {/* Kiralık/Satılık Konut Özel Filtreleri */}
-                {(filters.category === 'konut') && (
-                  <PropertyFilters filters={filters} onFiltersChange={onFiltersChange} />
-                )}
-
                 {/* Bina Yaşı */}
                 <MultiSelectDropdown
                   options={binaYasiOptions}
@@ -1309,6 +1304,11 @@ function FilterModal({ isOpen, onClose, filters, onFiltersChange, totalCount, is
                   placeholder="Bulunduğu kat seçin..."
                   label="Bulunduğu Kat"
                 />
+
+                {/* Kiralık/Satılık Konut Özel Filtreleri */}
+                {(filters.category === 'konut') && (
+                  <PropertyFilters filters={filters} onFiltersChange={onFiltersChange} />
+                )}
               </>
             )}
 
