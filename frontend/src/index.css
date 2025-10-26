@@ -3075,36 +3075,7 @@ input[type="number"]::-webkit-inner-spin-button {
 }
 
 /* Dropdown Option Hover Animasyonları */
-.combobox-option,
-.multiselect-option {
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  position: relative;
-  overflow: hidden;
-}
 
-.combobox-option::before,
-.multiselect-option::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(30, 64, 175, 0.1), transparent);
-  transition: left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  z-index: -1;
-}
-
-.combobox-option:hover::before,
-.multiselect-option:hover::before {
-  left: 100%;
-}
-
-/* Selected option highlight animation */
-.combobox-option.selected,
-.multiselect-option.selected {
-  animation: bounceIn 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
-}
 
 /* Input focus animations */
 .filter-input:focus {

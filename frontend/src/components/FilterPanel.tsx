@@ -384,7 +384,6 @@ function MultiSelectDropdown({
 }: MultiSelectDropdownProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
-  const [selectedOption, setSelectedOption] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const dropdownRef = useRef<HTMLDivElement>(null);
   const dropdownDirection = useSmartDropdownPosition(dropdownRef);
@@ -468,19 +467,11 @@ function MultiSelectDropdown({
     e.preventDefault();
     e.stopPropagation();
 
-    // Add selection animation
-    setSelectedOption(option);
-
     if (value.includes(option)) {
       onChange(value.filter(item => item !== option));
     } else {
       onChange([...value, option]);
     }
-
-    // Keep dropdown open for multiple selections with animation feedback
-    setTimeout(() => {
-      setSelectedOption(null);
-    }, 300);
   };
 
   const handleRemoveValue = (optionToRemove: string, e: React.MouseEvent) => {
@@ -644,7 +635,7 @@ function MultiSelectDropdown({
               filteredOptions.map(option => (
                 <div
                   key={option}
-                  className={`multiselect-option ${selectedOption === option ? 'selected' : ''}`}
+                  className="multiselect-option"
                   onClick={(e) => handleOptionToggle(option, e)}
                   style={{
                     padding: '8px 12px',
