@@ -342,43 +342,11 @@ function MultiSelectDropdown({
   disabled = false
 }: MultiSelectDropdownProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const [searchTerm, setSearchTerm] = useState('');
   const dropdownRef = useRef<HTMLDivElement>(null);
   const dropdownDirection = useSmartDropdownPosition(dropdownRef);
 
-  // Normalize Turkish characters for consistent matching
-  const normalizeTurkish = (str: string) => {
-    const turkishCharMap: {[key: string]: string} = {
-      'İ': 'i', 'I': 'ı', 'ı': 'i',
-      'Ş': 's', 'ş': 's',
-      'Ğ': 'g', 'ğ': 'g',
-      'Ü': 'u', 'ü': 'u',
-      'Ö': 'o', 'ö': 'o',
-      'Ç': 'c', 'ç': 'c'
-    };
-
-    let result = str;
-    let iterations = 0;
-    const maxIterations = 5;
-
-    while (iterations < maxIterations) {
-      const newResult = result.split('').map(char => turkishCharMap[char] || char).join('');
-      if (newResult === result) break;
-      result = newResult;
-      iterations++;
-    }
-
-    return result.toLowerCase();
-  };
-
-  // Filter options based on search term
-  const filteredOptions = searchTerm
-    ? options.filter(option => {
-        const optionNormalized = normalizeTurkish(option);
-        const searchTermNormalized = normalizeTurkish(searchTerm);
-        return optionNormalized.includes(searchTermNormalized);
-      })
-    : options;
+  // All options are available since we don't have search
+  const filteredOptions = options;
 
   const handleInputFocus = () => {
     if (!disabled) {
@@ -395,12 +363,7 @@ function MultiSelectDropdown({
   const handleInputBlur = () => {
     setTimeout(() => {
       setIsOpen(false);
-    }, 200);
-  };
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newValue = e.target.value;
-    setSearchTerm(newValue);
+    }, 150);
   };
 
   const handleOptionToggle = (option: string, e: React.MouseEvent) => {
@@ -422,7 +385,6 @@ function MultiSelectDropdown({
   const handleClear = (e: React.MouseEvent) => {
     e.stopPropagation();
     onChange([]);
-    setSearchTerm('');
   };
 
   const displayText = value.length === 0
@@ -441,20 +403,21 @@ function MultiSelectDropdown({
           type="text"
           className="filter-input"
           placeholder={displayText}
-          value={searchTerm}
-          onChange={handleInputChange}
+          value={displayText}
+          onChange={() => {}} // Prevent typing
           onFocus={handleInputFocus}
           onBlur={handleInputBlur}
           disabled={disabled}
+          readOnly={true} // Make input read-only
           style={{
             paddingRight: value.length > 0 ? '70px' : '40px',
-            cursor: disabled ? 'not-allowed' : 'text',
-            color: searchTerm ? 'inherit' : (value.length === 0 ? 'var(--text-muted)' : 'inherit')
+            cursor: disabled ? 'not-allowed' : 'pointer',
+            color: value.length === 0 ? 'var(--text-muted)' : 'inherit'
           }}
         />
 
         {/* Selected values display */}
-        {value.length > 0 && searchTerm === '' && (
+        {value.length > 0 && (
           <div
             style={{
               position: 'absolute',
@@ -531,7 +494,7 @@ function MultiSelectDropdown({
           alignItems: 'center',
           gap: '4px'
         }}>
-          {value.length > 0 && searchTerm === '' && (
+          {value.length > 0 && (
             <button
               type="button"
               onClick={handleClear}
@@ -574,55 +537,42 @@ function MultiSelectDropdown({
               [dropdownDirection === 'up' ? 'marginBottom' : 'marginTop']: '2px'
             }}
           >
-            {filteredOptions.length > 0 ? (
-              filteredOptions.map(option => (
-                <div
-                  key={option}
-                  onClick={(e) => handleOptionToggle(option, e)}
-                  style={{
-                    padding: '8px 12px',
-                    cursor: 'pointer',
-                    borderBottom: '1px solid var(--border-color)',
-                    backgroundColor: value.includes(option) ? 'var(--primary-color)' : 'white',
-                    color: value.includes(option) ? 'white' : 'inherit',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '8px',
-                    fontSize: '13px',
-                    lineHeight: '1.4'
-                  }}
-                  onMouseEnter={(e) => {
-                    if (!value.includes(option)) {
-                      e.currentTarget.style.backgroundColor = 'var(--bg-secondary)';
-                    }
-                  }}
-                  onMouseLeave={(e) => {
-                    if (!value.includes(option)) {
-                      e.currentTarget.style.backgroundColor = 'white';
-                    }
-                  }}
-                >
-                  <input
-                    type="checkbox"
-                    checked={value.includes(option)}
-                    onChange={() => {}}
-                    style={{ margin: 0 }}
-                  />
-                  {option}
-                </div>
-              ))
-            ) : (
+            {filteredOptions.map(option => (
               <div
+                key={option}
+                onClick={(e) => handleOptionToggle(option, e)}
                 style={{
-                  padding: '12px',
-                  textAlign: 'center',
-                  color: 'var(--text-muted)',
-                  fontSize: '14px'
+                  padding: '8px 12px',
+                  cursor: 'pointer',
+                  borderBottom: '1px solid var(--border-color)',
+                  backgroundColor: value.includes(option) ? 'var(--primary-color)' : 'white',
+                  color: value.includes(option) ? 'white' : 'inherit',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  fontSize: '13px',
+                  lineHeight: '1.4'
+                }}
+                onMouseEnter={(e) => {
+                  if (!value.includes(option)) {
+                    e.currentTarget.style.backgroundColor = 'var(--bg-secondary)';
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (!value.includes(option)) {
+                    e.currentTarget.style.backgroundColor = 'white';
+                  }
                 }}
               >
-                Sonuç bulunamadı
+                <input
+                  type="checkbox"
+                  checked={value.includes(option)}
+                  onChange={() => {}}
+                  style={{ margin: 0 }}
+                />
+                {option}
               </div>
-            )}
+            ))}
           </div>
         )}
       </div>
