@@ -403,48 +403,37 @@ function MultiSelectDropdown({
         {label}
       </label>
       <div style={{ position: 'relative' }}>
-        <input
-          type="text"
-          className="filter-input"
-          placeholder={displayText}
-          value={displayText}
-          onChange={() => {}} // Prevent typing
+        {/* === YENİ "FAKE INPUT" BAŞLANGIÇ === */}
+        <div
+          className="filter-input" // Gerçek input'un stillerini al
           onClick={handleInputClick}
-          disabled={disabled}
-          readOnly={true} // Make input read-only
           style={{
-            paddingRight: value.length > 0 ? '70px' : '40px',
+            display: 'flex',
+            flexWrap: 'wrap', // Badge'ler sığmazsa alt satıra atar
+            alignItems: 'center',
+            gap: '4px', // Badge'ler arası boşluk
             cursor: disabled ? 'not-allowed' : 'pointer',
-            color: value.length === 0 ? 'var(--text-muted)' : 'inherit'
+            // Butonlar için sağda boşluk bırak
+            paddingRight: value.length > 0 ? '70px' : '40px',
+            // Boşken bile input yüksekliğini koru
+            minHeight: '38px' // filter-input yüksekliğine göre ayarla
           }}
-        />
-
-        {/* Selected values display */}
-        {value.length > 0 && (
-          <div
-            style={{
-              position: 'absolute',
-              top: '50%',
-              left: '8px',
-              transform: 'translateY(-50%)',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '4px',
-              pointerEvents: 'none'
-            }}
-          >
-            {value.slice(0, 2).map(selectedValue => (
+        >
+          {/* Seçili değer varsa badge'leri göster */}
+          {value.length > 0 ? (
+            value.map(selectedValue => (
               <span
                 key={selectedValue}
                 style={{
                   backgroundColor: 'var(--primary-color)',
                   color: 'white',
-                  padding: '2px 6px',
+                  padding: '2px 8px',
                   borderRadius: '12px',
                   fontSize: '12px',
                   display: 'flex',
                   alignItems: 'center',
-                  gap: '4px'
+                  gap: '4px',
+                  whiteSpace: 'nowrap'
                 }}
               >
                 {selectedValue}
@@ -456,43 +445,38 @@ function MultiSelectDropdown({
                     border: 'none',
                     color: 'white',
                     cursor: 'pointer',
-                    fontSize: '12px',
+                    fontSize: '14px',
                     padding: '0',
                     marginLeft: '2px',
-                    width: '12px',
-                    height: '12px',
+                    width: '14px',
+                    height: '14px',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    pointerEvents: 'auto'
+                    pointerEvents: 'auto',
+                    lineHeight: '1'
                   }}
                 >
                   ×
                 </button>
               </span>
-            ))}
-            {value.length > 2 && (
-              <span
-                style={{
-                  backgroundColor: 'var(--bg-secondary)',
-                  color: 'var(--text-muted)',
-                  padding: '2px 6px',
-                  borderRadius: '12px',
-                  fontSize: '12px'
-                }}
-              >
-                +{value.length - 2}
-              </span>
-            )}
-          </div>
-        )}
+            ))
+          ) : (
+            // Seçili değer yoksa placeholder'ı göster
+            <span style={{ color: 'var(--text-muted)' }}>
+              {placeholder}
+            </span>
+          )}
+        </div>
+        {/* === YENİ "FAKE INPUT" BİTİŞ === */}
 
         {/* Right side buttons */}
         <div style={{
           position: 'absolute',
           right: '8px',
-          top: '50%',
-          transform: 'translateY(-50%)',
+          top: '0', // Değişti: 50%'den '0'a
+          height: '38px', // Eklendi: "Fake input" min-height'i ile aynı
+          // transform: 'translateY(-50%)', // Silindi
           display: 'flex',
           alignItems: 'center',
           gap: '4px'
