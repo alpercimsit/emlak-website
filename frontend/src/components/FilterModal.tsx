@@ -387,11 +387,7 @@ function MultiSelectDropdown({
     onChange([]);
   };
 
-  const displayText = value.length === 0
-    ? placeholder
-    : value.length === 1
-    ? value[0]
-    : `${value.length} seçenek seçildi`;
+  const displayText = placeholder;
 
   return (
     <div className="filter-group" style={{ position: 'relative' }} ref={dropdownRef}>
@@ -1279,7 +1275,7 @@ function FilterModal({ isOpen, onClose, filters, onFiltersChange, totalCount, is
                   options={binaYasiOptions}
                   value={filters.binaYaslari}
                   onChange={(values) => handleFilterChange('binaYaslari', values)}
-                  placeholder="Bina yaşı seçin..."
+                  placeholder="Tümü"
                   label="Bina Yaşı"
                 />
 
@@ -1288,7 +1284,7 @@ function FilterModal({ isOpen, onClose, filters, onFiltersChange, totalCount, is
                   options={odaSayisiOptions}
                   value={filters.odaSayilari}
                   onChange={(values) => handleFilterChange('odaSayilari', values)}
-                  placeholder="Oda sayısı seçin..."
+                  placeholder="Tümü"
                   label="Oda Sayısı"
                 />
 
@@ -1297,7 +1293,7 @@ function FilterModal({ isOpen, onClose, filters, onFiltersChange, totalCount, is
                   options={katOptions}
                   value={filters.katlar}
                   onChange={(values) => handleFilterChange('katlar', values)}
-                  placeholder="Bulunduğu kat seçin..."
+                  placeholder="Tümü"
                   label="Bulunduğu Kat"
                 />
 
