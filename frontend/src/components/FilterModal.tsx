@@ -354,11 +354,25 @@ function MultiSelectDropdown({
     }
   };
 
-  const handleInputBlur = () => {
-    setTimeout(() => {
-      setIsOpen(false);
-    }, 150);
-  };
+  useEffect(() => {
+    // Sadece dropdown açıkken dışarıya tıklamaları dinle
+    if (!isOpen) return;
+
+    const handleClickOutside = (event: MouseEvent) => {
+    // `dropdownRef.current` (yani component'in ana div'i) dışında bir yere tıklandıysa kapat
+    if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+    setIsOpen(false);
+    }
+    };
+
+    // Event listener'ı ekle
+    document.addEventListener('mousedown', handleClickOutside);
+
+    // Cleanup: Component unmount olduğunda veya isOpen değiştiğinde listener'ı kaldır
+    return () => {
+    document.removeEventListener('mousedown', handleClickOutside);
+    };
+    }, [isOpen]);
 
   const handleOptionToggle = (option: string, e: React.MouseEvent) => {
     e.preventDefault();
@@ -396,7 +410,6 @@ function MultiSelectDropdown({
           value={displayText}
           onChange={() => {}} // Prevent typing
           onClick={handleInputClick}
-          onBlur={handleInputBlur}
           disabled={disabled}
           readOnly={true} // Make input read-only
           style={{
