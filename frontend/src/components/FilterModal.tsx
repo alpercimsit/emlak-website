@@ -127,6 +127,7 @@ function Combobox({
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredOptions, setFilteredOptions] = useState<Array<{id: number, name: string}>>([]);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const dropdownDirection = useSmartDropdownPosition(dropdownRef);
 
   // Normalize Turkish characters for consistent matching
   const normalizeTurkish = (str: string) => {
@@ -273,17 +274,17 @@ function Combobox({
         <div
           style={{
             position: 'absolute',
-            top: '100%',
+            [dropdownDirection === 'up' ? 'bottom' : 'top']: '100%',
             left: 0,
             right: 0,
             backgroundColor: 'white',
             border: '1px solid var(--border-color)',
             borderRadius: '4px',
-            boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+            boxShadow: dropdownDirection === 'up' ? '0 -2px 8px rgba(0,0,0,0.1)' : '0 2px 8px rgba(0,0,0,0.1)',
             maxHeight: '200px',
             overflowY: 'auto',
             zIndex: 2000,
-            marginTop: '2px'
+            [dropdownDirection === 'up' ? 'marginBottom' : 'marginTop']: '2px'
           }}
         >
           {filteredOptions.length > 0 ? (
