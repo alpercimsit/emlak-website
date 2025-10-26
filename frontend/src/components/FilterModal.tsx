@@ -2,6 +2,29 @@ import { useState, useEffect, useRef } from 'react';
 import { FilterState } from '../components/FilterPanel';
 import api from '../utils/api';
 
+// Filter options constants
+const binaYasiOptions = ['0','1','2','3','4','5', '6-10 arası', '11-15 arası', '16-20 arası', '21-25 arası', '26-30 arası', '31 ve üzeri'];
+const odaSayisiOptions = ['Stüdyo (1+0)', '1+1', '2+1', '2+2', '3+1', '3+2', '4+1', '4+2', '4+3', '4+4', '5+1', '5+2', '5+3', '6+1', '6+2', '6+3', '7+1', '7+2', '7+3', '8+1', '8+2', '8+3', '9+1', '9+2', '9+3'];
+const katOptions = [
+  'Bodrum Kat',
+  'Zemin Kat',
+  'Giriş Katı',
+  'Yüksek Giriş',
+  'Bahçe Katı',
+  'Çatı Katı',
+  'Teras',
+  'Müstakil',
+  'Villa Tipi',
+  'Kot 1',
+  'Kot 2',
+  'Kot 3',
+  'Kot 4',
+  '1', '2', '3', '4', '5', '6', '7', '8', '9', '10',
+  '11', '12', '13', '14', '15', '16', '17', '18', '19', '20',
+  '21', '22', '23', '24', '25', '26', '27', '28', '29',
+  '30 ve Üzeri',
+];
+
 interface Props {
   isOpen: boolean;
   onClose: () => void;
@@ -34,6 +57,15 @@ interface ComboboxProps {
   label: string;
   disabled?: boolean;
   loading?: boolean;
+}
+
+interface MultiSelectDropdownProps {
+  options: string[];
+  value: string[];
+  onChange: (values: string[]) => void;
+  placeholder: string;
+  label: string;
+  disabled?: boolean;
 }
 
 // Simplified Combobox for mobile modal
@@ -251,6 +283,303 @@ function Combobox({
           )}
         </div>
       )}
+    </div>
+  );
+}
+
+// MultiSelectDropdown component for multiple selections (simplified for mobile)
+function MultiSelectDropdown({
+  options,
+  value,
+  onChange,
+  placeholder,
+  label,
+  disabled = false
+}: MultiSelectDropdownProps) {
+  const [isOpen, setIsOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  // Normalize Turkish characters for consistent matching
+  const normalizeTurkish = (str: string) => {
+    const turkishCharMap: {[key: string]: string} = {
+      'İ': 'i', 'I': 'ı', 'ı': 'i',
+      'Ş': 's', 'ş': 's',
+      'Ğ': 'g', 'ğ': 'g',
+      'Ü': 'u', 'ü': 'u',
+      'Ö': 'o', 'ö': 'o',
+      'Ç': 'c', 'ç': 'c'
+    };
+
+    let result = str;
+    let iterations = 0;
+    const maxIterations = 5;
+
+    while (iterations < maxIterations) {
+      const newResult = result.split('').map(char => turkishCharMap[char] || char).join('');
+      if (newResult === result) break;
+      result = newResult;
+      iterations++;
+    }
+
+    return result.toLowerCase();
+  };
+
+  // Filter options based on search term
+  const filteredOptions = searchTerm
+    ? options.filter(option => {
+        const optionNormalized = normalizeTurkish(option);
+        const searchTermNormalized = normalizeTurkish(searchTerm);
+        return optionNormalized.includes(searchTermNormalized);
+      })
+    : options;
+
+  const handleInputFocus = () => {
+    if (!disabled) {
+      setIsOpen(true);
+    }
+  };
+
+  const handleInputClick = () => {
+    if (!disabled) {
+      setIsOpen(!isOpen);
+    }
+  };
+
+  const handleInputBlur = () => {
+    setTimeout(() => {
+      setIsOpen(false);
+    }, 200);
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newValue = e.target.value;
+    setSearchTerm(newValue);
+  };
+
+  const handleOptionToggle = (option: string, e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (value.includes(option)) {
+      onChange(value.filter(item => item !== option));
+    } else {
+      onChange([...value, option]);
+    }
+  };
+
+  const handleRemoveValue = (optionToRemove: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    onChange(value.filter(item => item !== optionToRemove));
+  };
+
+  const handleClear = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    onChange([]);
+    setSearchTerm('');
+  };
+
+  const displayText = value.length === 0
+    ? placeholder
+    : value.length === 1
+    ? value[0]
+    : `${value.length} seçenek seçildi`;
+
+  return (
+    <div className="filter-group" style={{ position: 'relative' }} ref={dropdownRef}>
+      <label className="filter-label">
+        {label}
+      </label>
+      <div style={{ position: 'relative' }}>
+        <input
+          type="text"
+          className="filter-input"
+          placeholder={displayText}
+          value={searchTerm}
+          onChange={handleInputChange}
+          onFocus={handleInputFocus}
+          onBlur={handleInputBlur}
+          disabled={disabled}
+          style={{
+            paddingRight: value.length > 0 ? '70px' : '40px',
+            cursor: disabled ? 'not-allowed' : 'text',
+            color: searchTerm ? 'inherit' : (value.length === 0 ? 'var(--text-muted)' : 'inherit')
+          }}
+        />
+
+        {/* Selected values display */}
+        {value.length > 0 && searchTerm === '' && (
+          <div
+            style={{
+              position: 'absolute',
+              top: '50%',
+              left: '8px',
+              transform: 'translateY(-50%)',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '4px',
+              pointerEvents: 'none'
+            }}
+          >
+            {value.slice(0, 2).map(selectedValue => (
+              <span
+                key={selectedValue}
+                style={{
+                  backgroundColor: 'var(--primary-color)',
+                  color: 'white',
+                  padding: '2px 6px',
+                  borderRadius: '12px',
+                  fontSize: '12px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '4px'
+                }}
+              >
+                {selectedValue}
+                <button
+                  type="button"
+                  onClick={(e) => handleRemoveValue(selectedValue, e)}
+                  style={{
+                    background: 'none',
+                    border: 'none',
+                    color: 'white',
+                    cursor: 'pointer',
+                    fontSize: '12px',
+                    padding: '0',
+                    marginLeft: '2px',
+                    width: '12px',
+                    height: '12px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    pointerEvents: 'auto'
+                  }}
+                >
+                  ×
+                </button>
+              </span>
+            ))}
+            {value.length > 2 && (
+              <span
+                style={{
+                  backgroundColor: 'var(--bg-secondary)',
+                  color: 'var(--text-muted)',
+                  padding: '2px 6px',
+                  borderRadius: '12px',
+                  fontSize: '12px'
+                }}
+              >
+                +{value.length - 2}
+              </span>
+            )}
+          </div>
+        )}
+
+        {/* Right side buttons */}
+        <div style={{
+          position: 'absolute',
+          right: '8px',
+          top: '50%',
+          transform: 'translateY(-50%)',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '4px'
+        }}>
+          {value.length > 0 && searchTerm === '' && (
+            <button
+              type="button"
+              onClick={handleClear}
+              style={{
+                background: 'none',
+                border: 'none',
+                color: 'var(--text-muted)',
+                cursor: 'pointer',
+                fontSize: '14px',
+                padding: '2px'
+              }}
+            >
+              <i className="fas fa-times"></i>
+            </button>
+          )}
+          <i
+            className={`fas fa-chevron-${isOpen ? 'up' : 'down'}`}
+            style={{
+              color: 'var(--text-muted)',
+              fontSize: '12px'
+            }}
+          />
+        </div>
+
+        {/* Dropdown */}
+        {isOpen && !disabled && (
+          <div
+            style={{
+              position: 'absolute',
+              top: '100%',
+              left: 0,
+              right: 0,
+              backgroundColor: 'white',
+              border: '1px solid var(--border-color)',
+              borderRadius: '4px',
+              boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+              maxHeight: '200px',
+              overflowY: 'auto',
+              zIndex: 2000,
+              marginTop: '2px'
+            }}
+          >
+            {filteredOptions.length > 0 ? (
+              filteredOptions.map(option => (
+                <div
+                  key={option}
+                  onClick={(e) => handleOptionToggle(option, e)}
+                  style={{
+                    padding: '8px 12px',
+                    cursor: 'pointer',
+                    borderBottom: '1px solid var(--border-color)',
+                    backgroundColor: value.includes(option) ? 'var(--primary-color)' : 'white',
+                    color: value.includes(option) ? 'white' : 'inherit',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                    fontSize: '13px',
+                    lineHeight: '1.4'
+                  }}
+                  onMouseEnter={(e) => {
+                    if (!value.includes(option)) {
+                      e.currentTarget.style.backgroundColor = 'var(--bg-secondary)';
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (!value.includes(option)) {
+                      e.currentTarget.style.backgroundColor = 'white';
+                    }
+                  }}
+                >
+                  <input
+                    type="checkbox"
+                    checked={value.includes(option)}
+                    onChange={() => {}}
+                    style={{ margin: 0 }}
+                  />
+                  {option}
+                </div>
+              ))
+            ) : (
+              <div
+                style={{
+                  padding: '12px',
+                  textAlign: 'center',
+                  color: 'var(--text-muted)',
+                  fontSize: '14px'
+                }}
+              >
+                Sonuç bulunamadı
+              </div>
+            )}
+          </div>
+        )}
+      </div>
     </div>
   );
 }
@@ -953,6 +1282,33 @@ function FilterModal({ isOpen, onClose, filters, onFiltersChange, totalCount, is
                 {(filters.category === 'konut') && (
                   <PropertyFilters filters={filters} onFiltersChange={onFiltersChange} />
                 )}
+
+                {/* Bina Yaşı */}
+                <MultiSelectDropdown
+                  options={binaYasiOptions}
+                  value={filters.binaYaslari}
+                  onChange={(values) => handleFilterChange('binaYaslari', values)}
+                  placeholder="Bina yaşı seçin..."
+                  label="Bina Yaşı"
+                />
+
+                {/* Oda Sayısı */}
+                <MultiSelectDropdown
+                  options={odaSayisiOptions}
+                  value={filters.odaSayilari}
+                  onChange={(values) => handleFilterChange('odaSayilari', values)}
+                  placeholder="Oda sayısı seçin..."
+                  label="Oda Sayısı"
+                />
+
+                {/* Bulunduğu Kat */}
+                <MultiSelectDropdown
+                  options={katOptions}
+                  value={filters.katlar}
+                  onChange={(values) => handleFilterChange('katlar', values)}
+                  placeholder="Bulunduğu kat seçin..."
+                  label="Bulunduğu Kat"
+                />
               </>
             )}
 
