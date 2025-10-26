@@ -376,7 +376,6 @@ function MultiSelectDropdown({
     }, [isOpen]);
 
   const handleOptionToggle = (option: string, e: React.MouseEvent) => {
-    e.preventDefault();
     e.stopPropagation();
 
     if (value.includes(option)) {
