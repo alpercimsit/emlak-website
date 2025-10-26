@@ -2953,11 +2953,11 @@ textarea.form-control {
     max-width: 95vw !important;
     width: 95vw !important;
     max-height: 80vh !important;
-    height: auto !important;
+    height: 80vh !important;
     border-radius: var(--radius-lg) !important;
     margin: 0 auto !important;
     position: absolute !important;
-    top: 157px !important;
+    top: 15vh !important;
     left: 50% !important;
     transform: translateX(-50%) !important;
     z-index: 1003 !important;
