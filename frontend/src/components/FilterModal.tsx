@@ -348,12 +348,6 @@ function MultiSelectDropdown({
   // All options are available since we don't have search
   const filteredOptions = options;
 
-  const handleInputFocus = () => {
-    if (!disabled) {
-      setIsOpen(true);
-    }
-  };
-
   const handleInputClick = () => {
     if (!disabled) {
       setIsOpen(!isOpen);
@@ -401,7 +395,7 @@ function MultiSelectDropdown({
           placeholder={displayText}
           value={displayText}
           onChange={() => {}} // Prevent typing
-          onFocus={handleInputFocus}
+          onClick={handleInputClick}
           onBlur={handleInputBlur}
           disabled={disabled}
           readOnly={true} // Make input read-only
