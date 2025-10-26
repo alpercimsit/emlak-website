@@ -389,6 +389,29 @@ function MultiSelectDropdown({
   const dropdownRef = useRef<HTMLDivElement>(null);
   const dropdownDirection = useSmartDropdownPosition(dropdownRef);
 
+  useEffect(() => {
+    // Sadece dropdown açıkken dışarıya tıklamaları dinle
+    if (!isOpen) return;
+
+    const handleClickOutside = (event: MouseEvent) => {
+      // dropdownRef'in dışında bir yere tıklandıysa kapat
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        // Kapatma animasyonu için
+        setIsClosing(true);
+        setTimeout(() => {
+          setIsOpen(false);
+          setIsClosing(false);
+        }, 200);
+      }
+    };
+    
+    document.addEventListener('mousedown', handleClickOutside);
+    
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isOpen]);
+
   // Normalize Turkish characters for consistent matching
   const normalizeTurkish = (str: string) => {
     const turkishCharMap: {[key: string]: string} = {
@@ -436,15 +459,6 @@ function MultiSelectDropdown({
     }
   };
 
-  const handleInputBlur = () => {
-    // Start closing animation
-    setIsClosing(true);
-    setTimeout(() => {
-      setIsOpen(false);
-      setIsClosing(false);
-    }, 200);
-  };
-
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value;
     setSearchTerm(newValue);
@@ -480,113 +494,109 @@ function MultiSelectDropdown({
     setSearchTerm('');
   };
 
-  const displayText = value.length === 0
-    ? placeholder
-    : value.length === 1
-    ? value[0]
-    : `${value.length} seçenek seçildi`;
-
   return (
     <div className="filter-group" ref={dropdownRef}>
       <label className="filter-label">
         {label}
       </label>
       <div style={{ position: 'relative' }}>
-        <input
-          type="text"
-          className="filter-input"
-          placeholder={displayText}
-          value={searchTerm}
-          onChange={handleInputChange}
-          onFocus={handleInputFocus}
-          onBlur={handleInputBlur}
-          disabled={disabled}
+        {/* === YENİ "FAKE INPUT" ALANI BAŞLANGIÇ === */}
+        <div
+          className="filter-input" // Gerçek input'un stillerini al
+          onClick={handleInputFocus} // Tıklayınca focusla (ve dropdown'ı aç)
           style={{
-            paddingRight: value.length > 0 ? '70px' : '40px',
+            display: 'flex',
+            flexWrap: 'wrap', // Badge'ler sığmazsa alt satıra atar
+            alignItems: 'center',
+            gap: '4px', // Badge'ler/input arası boşluk
             cursor: disabled ? 'not-allowed' : 'text',
-            color: searchTerm ? 'inherit' : (value.length === 0 ? 'var(--text-muted)' : 'inherit')
+            padding: '4px 8px', // Sığdırmak için padding'i ayarla
+            minHeight: '38px', // filter-input yüksekliğine göre ayarla
+            // Butonlar için sağda boşluk bırak
+            paddingRight: value.length > 0 ? '70px' : '40px', 
           }}
-        />
-
-        {/* Selected values display */}
-        {value.length > 0 && searchTerm === '' && (
-          <div
-            style={{
-              position: 'absolute',
-              top: '50%',
-              left: '8px',
-              transform: 'translateY(-50%)',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '4px',
-              pointerEvents: 'none'
-            }}
-          >
-            {value.slice(0, 2).map(selectedValue => (
-              <span
-                key={selectedValue}
+        >
+          {/* Seçili değer varsa badge'leri göster */}
+          {value.map(selectedValue => (
+            <span
+              key={selectedValue}
+              style={{
+                backgroundColor: 'var(--primary-color, #007bff)',
+                color: 'white',
+                padding: '2px 8px',
+                borderRadius: '12px',
+                fontSize: '12px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '4px',
+                whiteSpace: 'nowrap'
+              }}
+            >
+              {selectedValue}
+              <button
+                type="button"
+                onClick={(e) => handleRemoveValue(selectedValue, e)}
                 style={{
-                  backgroundColor: 'var(--primary-color, #007bff)',
+                  background: 'none',
+                  border: 'none',
                   color: 'white',
-                  padding: '2px 6px',
-                  borderRadius: '12px',
-                  fontSize: '12px',
+                  cursor: 'pointer',
+                  fontSize: '14px',
+                  padding: '0',
+                  marginLeft: '2px',
+                  width: '14px',
+                  height: '14px',
                   display: 'flex',
                   alignItems: 'center',
-                  gap: '4px'
+                  justifyContent: 'center',
+                  pointerEvents: 'auto',
+                  lineHeight: '1'
                 }}
               >
-                {selectedValue}
-                <button
-                  type="button"
-                  onClick={(e) => handleRemoveValue(selectedValue, e)}
-                  style={{
-                    background: 'none',
-                    border: 'none',
-                    color: 'white',
-                    cursor: 'pointer',
-                    fontSize: '12px',
-                    padding: '0',
-                    marginLeft: '2px',
-                    width: '12px',
-                    height: '12px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    pointerEvents: 'auto'
-                  }}
-                >
-                  ×
-                </button>
-              </span>
-            ))}
-            {value.length > 2 && (
-              <span
-                style={{
-                  backgroundColor: 'var(--background-secondary, #f8f9fa)',
-                  color: 'var(--text-muted)',
-                  padding: '2px 6px',
-                  borderRadius: '12px',
-                  fontSize: '12px'
-                }}
-              >
-                +{value.length - 2}
-              </span>
-            )}
-          </div>
-        )}
+                ×
+              </button>
+            </span>
+          ))}
+
+          {/* Arama Input'u (artık badge'lerin içinde) */}
+          <input
+            type="text"
+            value={searchTerm}
+            // Sadece hiç seçili değer yoksa placeholder'ı göster
+            placeholder={value.length === 0 ? placeholder : ''} 
+            onChange={handleInputChange}
+            onFocus={handleInputFocus}
+            // onBlur SİLİNDİ
+            disabled={disabled}
+            style={{
+              flex: 1, // Kalan boşluğu doldur
+              border: 'none',
+              outline: 'none',
+              padding: 0,
+              margin: 0,
+              background: 'transparent',
+              minWidth: '100px', // Yazı yazmak için minimum alan
+              height: '26px', // Badge yüksekliğine yakın
+              color: 'inherit',
+              fontFamily: 'inherit',
+              fontSize: 'inherit',
+            }}
+          />
+        </div>
+        {/* === YENİ "FAKE INPUT" ALANI BİTİŞ === */}
 
         {/* Right side buttons */}
         <div style={{
-          position: 'absolute',
-          right: '8px',
-          top: '50%',
-          transform: 'translateY(-50%)',
-          display: 'flex',
-          alignItems: 'center',
-          gap: '4px'
-        }}>
-          {value.length > 0 && searchTerm === '' && (
+            position: 'absolute',
+            right: '8px',
+            top: '0', // DEĞİŞTİ
+            height: '38px', // EKLENDİ (min-height ile aynı)
+            // transform: 'translateY(-50%)', // SİLİNDİ
+            display: 'flex',
+            alignItems: 'center',
+            gap: '4px'
+          }}>
+          {value.length > 0 && (
             <button
               type="button"
               onClick={handleClear}
