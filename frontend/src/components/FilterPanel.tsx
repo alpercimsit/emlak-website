@@ -1359,7 +1359,7 @@ function FilterPanel({ filters, onFiltersChange, totalCount, isAdmin }: Props) {
         </div>
 
         {/* Arsa Özel Filtreleri */}
-        {filters.category === 'arsa' && (
+        {(filters.category === 'all' || filters.category === 'arsa') && (
           <>
             {/* Ada No ve Parsel No - Yan yana */}
             <div className="filter-group">

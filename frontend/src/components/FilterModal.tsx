@@ -915,7 +915,7 @@ function FilterModal({ isOpen, onClose, filters, onFiltersChange, totalCount, is
             </div>
 
             {/* Arsa Özel Filtreleri */}
-            {filters.category === 'arsa' && (
+            {(filters.category === 'all' || filters.category === 'arsa') && (
               <div className="filter-group">
                 <div style={{ display: 'flex', gap: 'var(--spacing-sm)', alignItems: 'flex-end' }}>
                   <div style={{ flex: 1 }}>
